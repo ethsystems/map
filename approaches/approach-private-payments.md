@@ -239,7 +239,7 @@ maturity: documented
 context: i2i
 crops: { cr: medium, o: no, p: full, s: low }
 uses_patterns: [pattern-tee-based-privacy]
-example_vendors: []
+example_vendors: [inco]
 ```
 
 **Summary:** Trusted execution enclave processes transfers privately; on-chain artefact is an attestation of correct enclave execution.
