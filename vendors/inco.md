@@ -17,7 +17,7 @@ Inco Lightning is a Solidity library and Trusted Execution Environment coprocess
 - [TEE Key Manager](../patterns/pattern-tee-key-manager.md) - decryption keys never leave attested enclaves
 - [Shielding](../patterns/pattern-shielding.md) - confidential ERC-20 balances, transfers, and allowances
 - [Private Stablecoin Shielded Payments](../patterns/pattern-private-stablecoin-shielded-payments.md) - confidential token transfers for stablecoins
-- [Confidential ERC3643](../patterns/pattern-erc3643-rwa.md) - confidential ERC3643 for RWAs
+- [Confidential ERC-3643](../patterns/pattern-erc3643-rwa.md) - confidential ERC-3643 for RWAs
 - [User-controlled viewing keys](../patterns/pattern-user-controlled-viewing-keys.md) - programmable per-handle access control decides who may decrypt each value
 - [Private Intent-Based Vaults](../patterns/pattern-private-vaults.md) - private strategy execution for DeFi
 
