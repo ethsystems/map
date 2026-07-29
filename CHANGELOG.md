@@ -6,6 +6,8 @@ All notable changes to the EthSystems Map are documented here.
 
 - docs: add Espalier preprint reference to [ZK Proof Systems](patterns/pattern-zk-proof-systems.md), [Post-Quantum Threats](domains/post-quantum.md), and [Safe Proof Delegation](patterns/pattern-safe-proof-delegation.md) `## See also` sections
 - feat(jurisdiction): [EU / EUDR (Deforestation Regulation)](jurisdictions/eu-EUDR.md) -- Article 9 plot-level geolocation and the DDS reference-number model, ahead of the 30 December 2026 application date ([#181](https://github.com/ethsystems/map/pull/181))
+- feat(vendor): add [The Graph](vendors/the-graph.md), decentralized indexing and query infrastructure as the audit read path ([#186](https://github.com/ethsystems/map/pull/186))
+- feat(pattern): add [Reproducible Audit Extraction](patterns/pattern-reproducible-audit-extraction.md), the verifier's data-acquisition leg the disclosure patterns presuppose ([#186](https://github.com/ethsystems/map/pull/186))
 
 ## [0.4.0] - 2026-07-02
 
