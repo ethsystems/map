@@ -4,6 +4,8 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- feat(jurisdiction): [EU / EUDR (Deforestation Regulation)](jurisdictions/eu-EUDR.md) -- Article 9 plot-level geolocation and the DDS reference-number model, ahead of the 30 December 2026 application date
+
 ## [0.4.0] - 2026-07-02
 
 23 commits, 166 files changed since [v0.3.0](https://github.com/ethsystems/map/releases/tag/v0.3.0) (Apr 2026). Major additions: resilience use cases (civic participation, disbursement rails, identity continuity), I2U protection patterns, pattern/approach schema v2 (strict flip) with CROPS and post-quantum analysis, domain reframing beyond FIs, and a Q2 2026 content QA audit.
