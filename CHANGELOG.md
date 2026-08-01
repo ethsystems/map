@@ -4,6 +4,8 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- feat(jurisdiction): [Indonesia / OJK (Digital Financial Assets)](jurisdictions/id-OJK.md) and [Singapore / MAS](jurisdictions/sg-MAS.md) -- adds ASEAN coverage, including the POJK 27/2024 listing criterion that bars assets whose features conceal ownership or transaction information
+
 ## [0.4.0] - 2026-07-02
 
 23 commits, 166 files changed since [v0.3.0](https://github.com/ethsystems/map/releases/tag/v0.3.0) (Apr 2026). Major additions: resilience use cases (civic participation, disbursement rails, identity continuity), I2U protection patterns, pattern/approach schema v2 (strict flip) with CROPS and post-quantum analysis, domain reframing beyond FIs, and a Q2 2026 content QA audit.
