@@ -4,6 +4,8 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- feat(pattern): [Confidential Policy Verdicts](patterns/pattern-confidential-policy-verdicts.md) -- pre-execution allow/deny for agent actions, proven in zero knowledge against a policy never disclosed on-chain, bridging [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) identity and [ERC-7812](https://eips.ethereum.org/EIPS/eip-7812) policy commitments ([ethereum/ERCs#1919](https://github.com/ethereum/ERCs/pull/1919))
+
 ## [0.4.0] - 2026-07-02
 
 23 commits, 166 files changed since [v0.3.0](https://github.com/ethsystems/map/releases/tag/v0.3.0) (Apr 2026). Major additions: resilience use cases (civic participation, disbursement rails, identity continuity), I2U protection patterns, pattern/approach schema v2 (strict flip) with CROPS and post-quantum analysis, domain reframing beyond FIs, and a Q2 2026 content QA audit.
