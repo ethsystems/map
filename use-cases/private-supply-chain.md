@@ -67,11 +67,11 @@ Counterfeit goods (particularly pharmaceuticals) are a safety and economic risk.
 
 ## 5) Recommended Approaches
 
-Approach TBD. Key architectural considerations:
+See [Approach: Private Supply Chain](../approaches/approach-private-supply-chain.md) for the full comparison and trade-off analysis. Three architectures cover the problems above:
 
-- Attestation chains with selective disclosure: each party attests to their step; downstream parties verify without seeing upstream details
-- Commitment schemes for batch-level data: commit to logistics data on-chain, reveal only to authorized parties
-- ZK proofs for compliance: prove regulatory compliance (origin, handling, temperature) without revealing logistics specifics
+- **Attestation chains with selective disclosure**: each party attests to its own step, and downstream parties verify the chain without seeing upstream details. Addresses Problems 1 and 2.
+- **Zero-knowledge geospatial and compliance proofs**: prove origin, handling, and regulatory predicates without revealing coordinates or logistics specifics. Addresses Problems 1 and 3, and covers the plot-level geolocation that the EU Deforestation Regulation requires from 30 December 2026.
+- **Encrypted off-chain audit with on-chain anchoring**: commit to batch and logistics data on-chain, and disclose to authorised parties on demand. Addresses Problem 3 at serialization scale.
 
 ## 6) Open Questions
 
@@ -83,6 +83,6 @@ Approach TBD. Key architectural considerations:
 
 ## 7) Notes And Links
 
-- Related patterns: [Verifiable Attestation](../patterns/pattern-verifiable-attestation.md), [L2 Encrypted Offchain Audit](../patterns/pattern-l2-encrypted-offchain-audit.md), [Commit and Prove](../patterns/pattern-commit-and-prove.md)
-- Regulatory drivers: EU Falsified Medicines Directive (FMD), US Drug Supply Chain Security Act (DSCSA)
+- Related patterns: [Verifiable Attestation](../patterns/pattern-verifiable-attestation.md), [L2 Encrypted Offchain Audit](../patterns/pattern-l2-encrypted-offchain-audit.md), [Commit and Prove](../patterns/pattern-commit-and-prove.md), [Private Geospatial Attestation](../patterns/pattern-private-geospatial-attestation.md)
+- Regulatory drivers: EU Falsified Medicines Directive (FMD), US Drug Supply Chain Security Act (DSCSA), [EU Deforestation Regulation (EUDR)](../jurisdictions/eu-EUDR.md)
 - See also: [EPIC map](https://epic-webapp.vercel.app/) (GovTech & EPIC team): pharmaceuticals, food aid, supply integrity, customs

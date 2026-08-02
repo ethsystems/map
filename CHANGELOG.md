@@ -4,6 +4,9 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- feat(pattern): [Private Geospatial Attestation](patterns/pattern-private-geospatial-attestation.md) -- prove a plot polygon does not intersect a committed deforestation layer without revealing coordinates, with the reference-layer commitment named as the load-bearing assumption ([#184](https://github.com/ethsystems/map/pull/184))
+- feat(approach|use-case): [Approach: Private Supply Chain](approaches/approach-private-supply-chain.md), replacing the "Approach TBD" stub in section 5 of [Private Supply Chain](use-cases/private-supply-chain.md) and adding EUDR to its regulatory drivers ([#184](https://github.com/ethsystems/map/pull/184))
+
 ## [0.4.0] - 2026-07-02
 
 23 commits, 166 files changed since [v0.3.0](https://github.com/ethsystems/map/releases/tag/v0.3.0) (Apr 2026). Major additions: resilience use cases (civic participation, disbursement rails, identity continuity), I2U protection patterns, pattern/approach schema v2 (strict flip) with CROPS and post-quantum analysis, domain reframing beyond FIs, and a Q2 2026 content QA audit.
