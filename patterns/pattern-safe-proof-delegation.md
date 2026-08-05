@@ -101,3 +101,4 @@ A user holds shielded balances in a mobile wallet that cannot generate zero-know
 
 - [EIP-8182: Private ETH and ERC-20 Transfers](https://eips.ethereum.org/EIPS/eip-8182)
 - [Railgun](../vendors/railgun.md)
+- [Espalier: succinct lattice arguments for client-side proving (Palmette, 2026)](https://palmette.xyz/espalier.pdf): targets on-device proving that would reduce the need for delegation, but is a preprint with no public implementation
