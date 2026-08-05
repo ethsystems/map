@@ -127,3 +127,4 @@ Ethereum inherits PQ transport encryption for some surfaces (Go 1.24 ships hybri
 - [NIST PQC standards](https://csrc.nist.gov/projects/post-quantum-cryptography)
 - [Ethereum PQ tasklist (ethresear.ch)](https://ethresear.ch/t/tasklist-for-post-quantum-eth/21296)
 - [How to hard-fork to save most users' funds in a quantum emergency](https://ethresear.ch/t/how-to-hard-fork-to-save-most-users-funds-in-a-quantum-emergency/18901)
+- [Espalier: succinct lattice arguments for client-side proving (Palmette, 2026)](https://palmette.xyz/espalier.pdf): lattice-based transparent proof system, preprint stage

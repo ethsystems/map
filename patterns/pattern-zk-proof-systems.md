@@ -84,7 +84,7 @@ Give designers a decision framework for choosing a zero-knowledge proof system o
 | PLONK over IPA    | Transparent           | No (EC)          | ~1 KB      | Medium      | Medium        | ZCash                                                                                                  |
 | STARK over FRI    | Transparent           | Yes (hash-based) | ~50-200 KB | High        | Medium        | [Miden](../vendors/miden.md)                                                                           |
 | Hash-based SNARKs | Transparent           | Yes (hash-based) | ~70-250 KB | High        | Medium        | Plonky3, Binius                                                                                        |
-| Lattice-based     | Transparent           | Yes (lattices)   | TBD        | TBD         | TBD           | Research stage (Latticefold)                                                                           |
+| Lattice-based     | Transparent           | Yes (lattices)   | TBD        | TBD         | TBD           | Research stage (Latticefold, Espalier)                                                                 |
 
 Benchmarks for Ethereum block-proving workloads are available at [ethproofs.org CSP benchmarks](https://ethproofs.org/csp-benchmarks). The table above reflects typical privacy-application proof characteristics; block-proving benchmarks differ in scale.
 
@@ -128,3 +128,4 @@ A privacy L2 uses pairing-based PLONK for transaction proofs today. To prepare f
 - [Post-Quantum Threats](../domains/post-quantum.md)
 - [Collaborative zk-SNARKs (Ozdemir & Boneh, 2021)](https://eprint.iacr.org/2021/1530.pdf)
 - [EthProofs CSP benchmarks](https://ethproofs.org/csp-benchmarks)
+- [Espalier: succinct lattice arguments for client-side proving (Palmette, 2026)](https://palmette.xyz/espalier.pdf): v0.9 preprint, no public implementation, prover figures self-reported

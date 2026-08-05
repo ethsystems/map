@@ -4,6 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- docs: add Espalier preprint reference to [ZK Proof Systems](patterns/pattern-zk-proof-systems.md), [Post-Quantum Threats](domains/post-quantum.md), and [Safe Proof Delegation](patterns/pattern-safe-proof-delegation.md) `## See also` sections
 - feat(jurisdiction): [Indonesia / OJK (Digital Financial Assets)](jurisdictions/id-OJK.md) and [Singapore / MAS](jurisdictions/sg-MAS.md) -- adds ASEAN coverage, including the POJK 27/2024 listing criterion that bars assets whose features conceal ownership or transaction information ([#182](https://github.com/ethsystems/map/pull/182))
 
 ## [0.4.0] - 2026-07-02

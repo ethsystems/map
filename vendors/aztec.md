@@ -50,9 +50,11 @@ It uses the **Noir** language along with the Aztec.nr framework to write smart c
 
 - zkSNARKs: Plonkish proving system with efficient verifier contracts.
 - UTXO note commitments with nullifiers to prevent double spends.
+- Wallets discover notes via a [note tagging mechanism](https://docs.aztec.network/developers/docs/foundational-topics/advanced/storage/note_discovery#note-tagging) to avoid having to trial-decrypt all note history.
 - L1/L2 communication relies on "Portals". These are pairs of contracts (one on Ethereum L1, one on Aztec L2) that pass messages asynchronously via the rollup contract, enabling token bridges and cross-chain governance without trusted 3rd parties.
 - Native account abstraction at the protocol level; all accounts are smart contracts.
-- Decentralized sequencer (Fernet), block production uses a randomized leader election (VRF-based) to select sequencers, ensuring fair participation. It includes a Based Fallback mechanism, allowing users to submit transactions directly to L1 if the L2 sequencers attempt to censor them.
+- Decentralized block building. Validators stake AZTEC tokens to participate in block production. A proposer is chosen per L2 slot at random through RANDAO, and a committee must attest to the validity of the blocks it produces.
+- An escape hatch mechanism allows users to exit the chain even if the validator set censors them.
 
 ## Strengths
 
@@ -62,8 +64,8 @@ It uses the **Noir** language along with the Aztec.nr framework to write smart c
 
 ## Risks and open questions
 
-- State Synchronization, users must download and trial-decrypt note history to discover their funds (cannot simply query a balance). Wallets must actively track, discover, and consume Notes, creating sync bottlenecks compared to public L2s.
-- Client-Side Proving, private execution requires local proof generation (via PXE), demanding significant compute resources for end users.
+- State Storage, user wallets must store their entire private state to be able to access it, rather than just querying a node.
+- Client-Side Proving, private execution requires local execution and proof generation (via PXE), demanding compute resources for end users (eg an AMM swap takes 8s to prove in an Android device).
 - Compliance vs. Permissionlessness, While "Selective Disclosure" exists, it is unclear if regulators will accept retroactive auditing over proactive censorship (e.g., OFAC lists at the sequencer level).
 - Performances, this system requires a lot of engineering at the cost of a lower throughput, raising the question of use cases that it could tackle.
 
