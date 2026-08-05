@@ -5,6 +5,7 @@ All notable changes to the EthSystems Map are documented here.
 ## [Unreleased]
 
 - docs: add Espalier preprint reference to [ZK Proof Systems](patterns/pattern-zk-proof-systems.md), [Post-Quantum Threats](domains/post-quantum.md), and [Safe Proof Delegation](patterns/pattern-safe-proof-delegation.md) `## See also` sections
+- feat(jurisdiction): [EU / EUDR (Deforestation Regulation)](jurisdictions/eu-EUDR.md) -- Article 9 plot-level geolocation and the DDS reference-number model, ahead of the 30 December 2026 application date ([#181](https://github.com/ethsystems/map/pull/181))
 
 ## [0.4.0] - 2026-07-02
 
