@@ -4,6 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- docs: add Espalier preprint reference to [ZK Proof Systems](patterns/pattern-zk-proof-systems.md), [Post-Quantum Threats](domains/post-quantum.md), and [Safe Proof Delegation](patterns/pattern-safe-proof-delegation.md) `## See also` sections
 - feat(pattern): [Confidential Policy Verdicts](patterns/pattern-confidential-policy-verdicts.md) -- pre-execution allow/deny for agent actions, proven in zero knowledge against a policy never disclosed on-chain, bridging [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) identity and [ERC-7812](https://eips.ethereum.org/EIPS/eip-7812) policy commitments ([#183](https://github.com/ethsystems/map/pull/183), tracks [ethereum/ERCs#1919](https://github.com/ethereum/ERCs/pull/1919))
 
 ## [0.4.0] - 2026-07-02
