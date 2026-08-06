@@ -31,3 +31,5 @@ description: "Prove eligibility and authority without exposing PII, even when th
 - [Curvy](../vendors/curvy.md)
 - [Peer](../vendors/peer.md)
 - [EY Nightfall](../vendors/ey.md)
+## Reference
+- [Privacy Standards Survey](../surveys/privacy-standards.md) — catalog of institutional privacy standards (ERC-3643 through ERC-8065), with gap analysis and decision guidance.
