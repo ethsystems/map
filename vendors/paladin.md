@@ -40,12 +40,12 @@ A strong design principle of the project is that existing privacy preserving tok
   - UTXO-based privacy preserving tokens
   - FHE based confidential tokens (future plans)
   - Private EVM contracts in privacy groups
-- Key management integrates with enterprise HSM/SSM; supports native Ethereum signing, EIP-712 endorsements, ZKP proof generation, as well as FHE wallet-side cryptography in future plans.
+- Key management integrates with enterprise HSM/SSM; supports native Ethereum signing, EIP-712 endorsements, zero-knowledge proof generation, as well as FHE wallet-side cryptography in future plans.
 - Programming model includes plug points for:
   - Wallet functions (coin/state indexing and selection for submission)
   - Endorsement coordination and signature collection with flexible endorsement policies
   - Distributed sequencer for transaction coordination
-  - Proof generation (ZK proofs, notary certificates, and others)
+  - Proof generation (zero-knowledge proofs, notary certificates, and others)
   - High-performance code modules in Java and WebAssembly
 
 Privacy domains are implementations of a plug-point for the on-chain logic (pure on-chain EVM), and the app-layer logic (proof systems, merkle tree management, private EVM execution, endorsement/attestation coordination), that are the common components of every privacy-preserving smart contract in the EVM ecosystem.
@@ -56,7 +56,7 @@ Hardened reference implementations are provided out of the box as follows:
 
 - Zeto (ZK UTXO tokens)
   - Onchain commitments hide ownership/amounts/history of the UTXOs.
-  - Enforces mass conservation and other spending policies (KYC, auditability, etc.) via ZK proofs.
+  - Enforces mass conservation and other spending policies (KYC, auditability, etc.) via zero-knowledge proofs.
   - Currently implemented with zkSNARKs in Circom based circuits, using groth16 by default.
   - Paladin runtime includes a token indexer, UTXO selector, and proof generator.
   - Optional ERC20 bridge via deposit/withdraw.
@@ -85,7 +85,7 @@ Hardened reference implementations are provided out of the box as follows:
   - Transport principles: asynchronous message transfer, idempotent requests with retries, end-to-end encryption even via hubs/buses.
 - Approval-based atomic transactions (DvP/PvP)
   - Pre-approval/setup: parties reach a private state root; prepare token transfers.
-  - Approval/prepare: swap contract deployed; each domain pre-approves (privacy group endorsement, notary approval, ZK proof).
+  - Approval/prepare: swap contract deployed; each domain pre-approves (privacy group endorsement, notary approval, zero-knowledge proof).
   - Execution/commit: call execute() on the swap contract; all sub-transactions commit or revert atomically.
   - Post-execution: domains remain independent; provenance is hidden except to entitled parties.
 

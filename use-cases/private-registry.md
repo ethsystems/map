@@ -79,7 +79,7 @@ Approach TBD. Key architectural considerations:
 - How do privacy-preserving registries interact with existing registry legal frameworks (e.g., eWpG crypto-registry requirements)?
 - What is the minimum viable cross-border registry query protocol that satisfies both privacy and sovereignty requirements?
 - How to handle registry corrections (errors, court orders) in an append-only privacy-preserving system?
-- What trust assumptions must registered entities make about the registry operator (liveness, censorship resistance, data availability, honest state transitions), and how can these be minimized or made verifiable?
+- What trust assumptions must registered entities make about the registry operator (liveness, censorship resistance, Data Availability, honest state transitions), and how can these be minimized or made verifiable?
 
 ## 7) Notes And Links
 
