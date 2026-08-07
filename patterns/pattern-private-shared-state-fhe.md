@@ -46,7 +46,7 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/zama-ai/fhevm
-    description: "Zama fhEVM, Fully Homomorphic Encryption runtime for EVM contracts (testnet)"
+    description: "Zama fhEVM, Fully Homomorphic Encryption runtime for EVM contracts (mainnet)"
     language: "Solidity, Rust"
   - url: https://github.com/zama-ai/tfhe-rs
     description: "TFHE-rs, pure-Rust implementation of TFHE primitives used by coprocessors"
@@ -109,4 +109,4 @@ Threat model:
 
 - [Zama](../vendors/zama.md)
 - [Fhenix](../vendors/fhenix.md)
-- [Zama fhEVM documentation](https://docs.zama.ai/fhevm)
+- [Zama Protocol documentation (FHE on blockchain)](https://docs.zama.org/protocol/protocol/overview)
