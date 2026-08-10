@@ -48,11 +48,12 @@ control plane.
 
 ## Architecture
 
-Clients authenticate through Privado ID zero-knowledge credentials, Microsoft
-Entra ID, or linked wallets and continue to use Ethereum JSON-RPC. OPS resolves
-organization, group, user, method, contract, function, and parameter permissions.
-Before forwarding a transaction, it can use `debug_traceCall` to inspect internal
-calls and reject access through intermediary or multicall contracts.
+Clients authenticate through [Privado ID](https://www.privado.id/) zero-knowledge
+credentials, [Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/fundamentals/what-is-entra),
+or linked wallets and continue to use Ethereum JSON-RPC. OPS resolves organization,
+group, user, method, contract, function, and parameter permissions. Before forwarding
+a transaction, OPS simulates its execution to inspect internal calls and reject
+attempts to bypass policy through intermediary or batched calls.
 
 Responses and explorer views are filtered for the caller. Disclosure grants can
 be scoped, consented, time-limited, and logged. PostgreSQL stores policies and
