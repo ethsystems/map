@@ -8,7 +8,7 @@ last_reviewed: 2026-08-07
 maturity: testnet
 ---
 
-# Gateway.fm - Open Privacy Suite (governed access for EVM networks)
+# Gateway.fm: Open Privacy Suite (governed access for EVM networks)
 
 ## What it is
 
