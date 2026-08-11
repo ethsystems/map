@@ -45,7 +45,7 @@ On-chain RWA tokenization exposes ownership, valuation, and transfer history by 
 
 ## 5) Recommended Approaches
 
-See [Private Bonds](../approaches/approach-private-bonds.md) and [Private Payments](../approaches/approach-private-payments.md) approaches - RWA tokenization can inherit private transfer solutions with emphasis on transfer compliance checks and RWA-specific standards (ERC-3643, ERC-7943 with privacy modifications using commitments).
+See [Private Bonds](../approaches/approach-private-bonds.md) and [Private Payments](../approaches/approach-private-payments.md) approaches - RWA tokenization can inherit private transfer solutions with emphasis on transfer compliance checks and RWA-specific standards (ERC-3643, ERC-7943, or CMTAT with privacy modifications using commitments).
 
 ## 6) Open Questions
 
@@ -59,4 +59,4 @@ See [Private Bonds](../approaches/approach-private-bonds.md) and [Private Paymen
   - [pattern-l2-encrypted-offchain-audit.md](../patterns/pattern-l2-encrypted-offchain-audit.md)
   - [pattern-zk-kyc-ml-id-erc734-735.md](../patterns/pattern-zk-kyc-ml-id-erc734-735.md)
   - [pattern-co-snark.md](../patterns/pattern-co-snark.md)
-- **Standards:** ERC-3643, ERC-7943
+- **Standards:** ERC-3643, ERC-7943, CMTAT
