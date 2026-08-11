@@ -1,10 +1,10 @@
 ---
 title: "Approach: Private Trade Settlement"
 status: ready
-last_reviewed: 2026-06-24
+last_reviewed: 2026-08-11
 
 use_case: private-bonds
-related_use_cases: [private-derivatives, private-rwa-tokenization, private-corporate-bonds, private-government-debt]
+related_use_cases: [private-derivatives, private-rwa-tokenization, private-corporate-bonds, private-government-debt, private-stocks, private-commodities, private-fx, private-repo]
 
 primary_patterns:
   - pattern-shielding

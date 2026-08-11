@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: L1
-last_reviewed: 2026-04-22
+last_reviewed: 2026-08-11
 
 works-best-when:
   - Regulatory compliance is mandatory.
@@ -88,6 +88,7 @@ Threat model:
 - Additional compliance checks on every transfer raise gas costs.
 - Not suitable for permissionless DeFi composition. Many protocols will reject permissioned tokens.
 - Compliance rules must be maintained and updated as regulations evolve, which requires ongoing governance.
+- CMTAT covers the same intent through a rule-engine and allowlist model instead of an identity registry with claim issuers; it is blockchain-agnostic (EVM, Tezos, Solana) and has an existing privacy-preserving implementation in Noir for Aztec, relevant where transaction-level confidentiality is a goal.
 
 ## Example
 
@@ -97,3 +98,4 @@ An issuer tokenizes a bond as a permissioned token with investor accreditation r
 
 - [Private Bonds Approach](../approaches/approach-private-bonds.md)
 - [ERC-3643 documentation](https://docs.erc3643.org/erc-3643)
+- [CMTAT (CMTA Token) standard](https://cmta.ch/standards/cmta-token-cmtat)

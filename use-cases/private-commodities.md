@@ -51,7 +51,7 @@ Commodity trading strategies depend on information asymmetry. Public trading act
 
 ## 5) Recommended Approaches
 
-Approach TBD. Consider:
+See [approach-private-trade-settlement.md](../approaches/approach-private-trade-settlement.md) for general settlement architecture. Commodity-specific considerations:
 - Privacy-preserving custody attestations (proof of reserves without position disclosure)
 - Integration with physical commodity tracking
 - Synthetic vs physically-backed privacy trade-offs

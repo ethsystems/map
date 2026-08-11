@@ -51,7 +51,7 @@ International payments reveal business relationships and transaction patterns th
 
 ## 5) Recommended Approaches
 
-Approach TBD. Consider:
+See [approach-private-trade-settlement.md](../approaches/approach-private-trade-settlement.md) for general settlement architecture. FX-specific considerations:
 - Privacy-preserving PvP (Payment vs Payment) settlement
 - Integration with [approach-private-bonds.md](../approaches/approach-private-bonds.md) DvP patterns for cash leg
 - Stablecoin privacy patterns from [private-stablecoins.md](private-stablecoins.md)
