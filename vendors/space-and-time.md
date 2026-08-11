@@ -21,7 +21,7 @@ The proof can be verified by an EVM-compatible verifier contract, enabling downs
 ## Not a substitute for
 
 - Price-feed oracle networks (e.g., curated feeds + aggregation + publisher diversity)
-- A general-purpose data availability layer (it proves query correctness; DA is a separate concern)
+- A general-purpose Data Availability layer (it proves query correctness; DA is a separate concern)
 - Full identity/compliance policy engine (you can query compliance tables, but policy definition/enforcement is up to the app)
 - Not a programmable privacy rollup or App-chain (functions only as contracts on existing L1/L2)
 
@@ -29,7 +29,7 @@ The proof can be verified by an EVM-compatible verifier contract, enabling downs
 ## Architecture
 
 - **Decentralized validator set holding tamperproof tables:** Indexed blockchain data (events, txns, balances, etc with block hashes as attestation source) as well as signed user/enterprise-loaded datasets are held by a global validator network that collectively updates commitments on each table (with BFT consensus and threshold signatures) as batches of new data are added.
-- **Prover nodes:** When a contract or API issues a query, a prover executes the SQL and generates a ZK proof, then relays both to a relayer contract for verification and data callback to the client contract. This pipeline enables proofs for aggregate queries over tables with 1M+ rows in under one second.
+- **Prover nodes:** When a contract or API issues a query, a prover executes the SQL and generates a zero-knowledge proof, then relays both to a relayer contract for verification and data callback to the client contract. This pipeline enables proofs for aggregate queries over tables with 1M+ rows in under one second.
   1. **AST:** SQL is parsed into an AST and relational plan
   2. **Witnesses:** The plan is executed to produce witness data
   3. **Commitments:** Witnesses are committed using standard polynomial commitment schemes
@@ -66,7 +66,7 @@ The proof can be verified by an EVM-compatible verifier contract, enabling downs
 ## Strengths
 
 - **Performance:** The protocol is designed to execute and prove analytical SQL queries over large datasets, including aggregate queries over 1M+ rows, in under one second (see [benchmarks](https://github.com/spaceandtimefdn/sxt-proof-of-sql#benchmarks)). It can aggregate over millions of rows of indexed data within Ethereum block time on a single NVIDIA T4 GPU.
-- **Cryptographic integrity at scale:** Proof of SQL scales to return ZK proofs for queries against tables with hundreds of millions of rows of indexed events/transactions without consensus-style re-execution.
+- **Cryptographic integrity at scale:** Proof of SQL scales to return zero-knowledge proofs for queries against tables with hundreds of millions of rows of indexed events/transactions without consensus-style re-execution.
 - **SQL-native developer experience:** Leverage a mature query model (joins, filters, aggregates) instead of bespoke onchain indexing logic. 
 - **Composable with EVM apps: **Verified results can directly gate contract execution via onchain verifier + callback pattern.
 - **Works for both crypto-native and enterprise data:** Supports “join onchain + offchain” workflows (including pulling from attested sources like institutional portfolios).

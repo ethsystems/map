@@ -10,7 +10,7 @@ maturity: PoC
 
 Polygon Miden is a privacy focused Ethereum rollup (zk-zk-rollup) that prioritizes throughput and privacy over full EVM compatibility. It uses the Miden VM, a STARK-based virtual machine designed for client-side proving.
 
-Unlike Ethereum (where the network executes everything), Miden pushes execution to the user (the "Edge"). Users execute their own transactions locally, generate a ZK proof, and the network simply verifies the proof and updates the state.
+Unlike Ethereum (where the network executes everything), Miden pushes execution to the user (the "Edge"). Users execute their own transactions locally, generate a zero-knowledge proof, and the network simply verifies the proof and updates the state.
 
 ## Fits with patterns
 
