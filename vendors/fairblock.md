@@ -10,11 +10,11 @@ maturity: testnet
 
 Fairblock provides confidential balances and transfers for assets (e.g., stablecoins) that remain issued and liquid on an originating chain (e.g., EVM networks), while confidentiality logic executes on **FairyRing**, a purpose-built confidentiality execution layer.
 
-The core idea is a cross-chain confidential layer: users lock tokens into a minimal smart contract on the originating chain, receive an encrypted balance maintained by FairyRing, and execute confidential transfers backed by ZK proofs and homomorphic balance updates, then optionally withdraw back to the originating chain.
+The core idea is a cross-chain confidential layer: users lock tokens into a minimal smart contract on the originating chain, receive an encrypted balance maintained by FairyRing, and execute confidential transfers backed by zero-knowledge proofs and homomorphic balance updates, then optionally withdraw back to the originating chain.
 
 ## Fits with patterns
 
-- [Selective disclosure (viewing keys + ZK proofs)](../patterns/pattern-regulatory-disclosure-keys-proofs.md): scoped disclosure for audit and compliance workflows
+- [Selective disclosure (viewing keys + zero-knowledge proofs)](../patterns/pattern-regulatory-disclosure-keys-proofs.md): scoped disclosure for audit and compliance workflows
 
 ## Not a substitute for
 
@@ -31,7 +31,7 @@ High-level components:
    - User-facing interface for deposit/transfer/withdraw flows
 2. FairyRing: confidentiality execution layer
    - CosmWasm contracts maintain an encrypted chain
-   - Verifies ZK proofs for valid encrypted state transitions
+   - Verifies zero-knowledge proofs for valid encrypted state transitions
    - Performs lightweight homomorphic add/subtract for balance updates
 3. Cross-chain messaging (IBC-style)
    - Relays packets between the origin chain and FairyRing
@@ -61,7 +61,7 @@ FairyRing supports selective disclosure for audits and investigations via scoped
 ## Technical details
 
 - Cross-chain design connecting an origin chain locking contract with FairyRing as confidentiality layer
-- Encrypted layer and ZK proof verification for valid state transitions
+- Encrypted layer and zero-knowledge proof verification for valid state transitions
 - Lightweight homomorphic operations for balance updates
 - Threshold IBE for scoped selective disclosure
 

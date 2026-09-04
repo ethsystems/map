@@ -57,7 +57,7 @@ open_source_implementations:
 
 ## Intent
 
-Split a typical ZK proof flow into two roles. The client signs a portable signed message offline. A relay generates the SNARK over that message and submits it on-chain. To prevent a front-runner from lifting the proof off the mempool and re-submitting it from their own address, the proof binds to the relay's submitter address as a public input that the application contract checks against `msg.sender`.
+Split a typical zero-knowledge proof flow into two roles. The client signs a portable signed message offline. A relay generates the SNARK over that message and submits it on-chain. To prevent a front-runner from lifting the proof off the mempool and re-submitting it from their own address, the proof binds to the relay's submitter address as a public input that the application contract checks against `msg.sender`.
 
 The pattern is distinct from `pattern-safe-proof-delegation.md`, which addresses intent-based delegation in a wallet UX context (the client *could* prove locally but chooses to delegate). Relay-mediated proving is for clients that cannot prove locally at all.
 
