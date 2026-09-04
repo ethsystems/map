@@ -67,7 +67,7 @@ Key loss in issuer-independent systems is permanent unless recovery mechanisms e
 
 ### Problem 4: Universal Verification Without Registry or Issuer Contact
 
-Verification in existing private identity systems often requires contacting a registry operator or issuer for revocation checks or credential status. In an issuer-hostile setting, verification must work with the on-chain trust anchor and a ZK proof, without external service calls.
+Verification in existing private identity systems often requires contacting a registry operator or issuer for revocation checks or credential status. In an issuer-hostile setting, verification must work with the on-chain trust anchor and a zero-knowledge proof, without external service calls.
 
 **Requirements:**
 
@@ -83,7 +83,7 @@ Verification in existing private identity systems often requires contacting a re
 | Credential anchoring | On-chain commitment via distributed enrollment | No issuer dependency after enrollment |
 | Sybil resistance | Layered (cryptographic + economic + social) | Degrades gracefully when credential sources are compromised |
 | Recovery | Threshold (Shamir) + social (guardian-based) | No issuer participation required |
-| Verification | Universal (on-chain trust anchor + ZK proof) | Any verifier, no registry contact |
+| Verification | Universal (on-chain trust anchor + zero-knowledge proof) | Any verifier, no registry contact |
 
 See the [**Issuer-Independent Enrollment approach**](../approaches/approach-private-identity.md#issuer-independent-enrollment-via-distributed-oprf) for detailed architecture and trade-offs.
 

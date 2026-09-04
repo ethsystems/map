@@ -71,6 +71,8 @@ A dedicated network or service that publishes and stores the data required for D
 
 **[ERC-3643](https://eips.ethereum.org/EIPS/eip-3643)**: Ethereum standard for permissioned tokenized securities with built-in compliance framework
 
+**[CMTAT](https://cmta.ch/standards/cmta-token-cmtat)**: CMTA's open standard for tokenizing financial instruments, using a rule-engine and allowlist model rather than an identity registry. Blockchain-agnostic, with reference implementations on EVM, Tezos, Solana, and a privacy-preserving Aztec/Noir variant
+
 **[ERC-7573](https://ercs.ethereum.org/ERCS/erc-7573)**: Standard for conditional cross-chain settlement coordination
 
 **[EIP-6123](https://eips.ethereum.org/EIPS/eip-6123)**: Ethereum standard for derivatives contracts with automated lifecycle management

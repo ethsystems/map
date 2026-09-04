@@ -52,7 +52,7 @@ Visible funding costs and patterns enable competitors to undercut pricing or fro
 
 ## 5) Recommended Approaches
 
-Approach TBD. Consider:
+See [approach-private-trade-settlement.md](../approaches/approach-private-trade-settlement.md) for general settlement architecture. Repo-specific considerations:
 - Privacy-preserving collateral verification
 - Atomic settlement with privacy (similar to DvP patterns in [approach-private-bonds.md](../approaches/approach-private-bonds.md))
 - Integration with existing clearing infrastructure
