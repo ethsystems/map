@@ -4,10 +4,15 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
-- docs: add Espalier preprint reference to [ZK Proof Systems](patterns/pattern-zk-proof-systems.md), [Post-Quantum Threats](domains/post-quantum.md), and [Safe Proof Delegation](patterns/pattern-safe-proof-delegation.md) `## See also` sections
 - feat(pattern): [Confidential Policy Verdicts](patterns/pattern-confidential-policy-verdicts.md) -- pre-execution allow/deny for agent actions, proven in zero knowledge against a policy never disclosed on-chain, bridging [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) identity and [ERC-7812](https://eips.ethereum.org/EIPS/eip-7812) policy commitments ([#183](https://github.com/ethsystems/map/pull/183), tracks [ethereum/ERCs#1919](https://github.com/ethereum/ERCs/pull/1919))
+- feat(approach): link private-stocks, private-commodities, private-fx, and private-repo to [Private Trade Settlement](approaches/approach-private-trade-settlement.md), and private-treasuries to [Private Payments](approaches/approach-private-payments.md), as explicit variants ([#190](https://github.com/ethsystems/map/pull/190), part of [#138](https://github.com/ethsystems/map/issues/138))
+- feat(pattern): add [CMTAT](https://cmta.ch/standards/cmta-token-cmtat) as an alternative to ERC-3643 in [ERC-3643 Tokenized RWAs](patterns/pattern-erc3643-rwa.md), a blockchain-agnostic compliant-tokenization standard with an Aztec/Noir privacy-preserving implementation, cross-referenced in GLOSSARY.md and [Private RWA Tokenization](use-cases/private-rwa-tokenization.md) ([#190](https://github.com/ethsystems/map/pull/190), closes [#174](https://github.com/ethsystems/map/issues/174))
+- feat(vendor): [Gateway Open Privacy Suite](vendors/gateway-open-privacy-suite.md) — governed JSON-RPC access, selective disclosure, and compliance controls for private EVM networks and Gateway L2/validium deployments ([#189](https://github.com/ethsystems/map/pull/189))
+- docs: add Espalier preprint reference to [ZK Proof Systems](patterns/pattern-zk-proof-systems.md), [Post-Quantum Threats](domains/post-quantum.md), and [Safe Proof Delegation](patterns/pattern-safe-proof-delegation.md) `## See also` sections
+- feat(jurisdiction): [Indonesia / OJK (Digital Financial Assets)](jurisdictions/id-OJK.md) and [Singapore / MAS](jurisdictions/sg-MAS.md) -- adds ASEAN coverage, including the POJK 27/2024 listing criterion that bars assets whose features conceal ownership or transaction information ([#182](https://github.com/ethsystems/map/pull/182))
 - feat(jurisdiction): [EU / EUDR (Deforestation Regulation)](jurisdictions/eu-EUDR.md) -- Article 9 plot-level geolocation and the DDS reference-number model, ahead of the 30 December 2026 application date ([#181](https://github.com/ethsystems/map/pull/181))
 - fix(vendor): [Zama](vendors/zama.md) -- mainnet maturity, symbolic-execution architecture, TFHE-rs, ERC-7984; sync fhEVM status and docs link in [Private Shared State (FHE)](patterns/pattern-private-shared-state-fhe.md) ([#180](https://github.com/ethsystems/map/pull/180))
+- chore: fix 18 terminology inconsistencies across 11 files -- ZK proof, zk-SNARK, Data Availability, FHE encryption, ERC-3643 ([#67](https://github.com/ethsystems/map/issues/67))
 
 ## [0.4.0] - 2026-07-02
 

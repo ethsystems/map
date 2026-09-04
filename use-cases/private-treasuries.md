@@ -54,7 +54,7 @@ Aggregate cash positions and treasury investment strategies are competitively se
 
 ## 5) Recommended Approaches
 
-Approach TBD. Consider:
+See [approach-private-payments.md](../approaches/approach-private-payments.md) for general payment architecture. Treasury-specific considerations:
 - Privacy-preserving cash pooling mechanisms
 - Integration with [private-money-market-funds.md](private-money-market-funds.md) for yield
 - Multi-entity identity management with selective disclosure
