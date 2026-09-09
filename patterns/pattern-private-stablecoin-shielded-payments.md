@@ -115,6 +115,7 @@ Threat model:
 - [Aztec](../vendors/aztec.md)
 - [Zama](../vendors/zama.md)
 - [Fhenix](../vendors/fhenix.md)
+- [Inco](../vendors/inco.md)
 - [Canton Network press release on weekend USDC cash leg](https://www.canton.network/canton-network-press-releases/digital-asset-complete-on-chain-us-treasury-financing)
 - [Aztec programmable-privacy documentation](https://docs.aztec.network/)
 - [Zama confidential ERC-20 overview](https://www.zama.ai/post/confidential-erc-20-tokens-using-homomorphic-encryption)
