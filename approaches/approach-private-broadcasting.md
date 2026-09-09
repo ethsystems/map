@@ -92,9 +92,9 @@ uses_patterns: [pattern-pretrade-privacy-encryption]
 example_vendors: [shutter]
 ```
 
-**Summary:** Transactions are encrypted before submission and decrypted only after ordering is fixed. See [Pre-trade Privacy Encryption](../patterns/pattern-pretrade-privacy-encryption.md) for the underlying primitive.
+**Summary:** Transactions are encrypted before submission. Decryption happens after ordering is fixed, never before. See [Pre-trade Privacy Encryption](../patterns/pattern-pretrade-privacy-encryption.md) for the underlying primitive.
 
-**How it works:** The user encrypts the transaction or expresses an intent under a private execution environment ([Shutter](../vendors/shutter.md); the earlier SUAVE design has been superseded by Flashbots BuilderNet). Submissions are ordered by the proposer first and decrypted afterwards by a threshold network. Content is not visible until the ordering is committed.
+**How it works:** The user encrypts the transaction or expresses an intent under a private execution environment ([Shutter](../vendors/shutter.md); the earlier SUAVE design has been superseded by Flashbots BuilderNet). The proposer orders submissions before any decryption. A threshold committee decrypts afterwards network. Content is not visible until the ordering is committed.
 
 **Trust assumptions:**
 - Threshold key holders (t-of-n) for decryption
@@ -108,7 +108,7 @@ example_vendors: [shutter]
 
 **Works best when:**
 - MEV protection is the primary concern and venue trust is unattractive
-- The chain or rollup supports encrypted-first ordering primitives
+- The chain or rollup supports ordering primitives that run over encrypted payloads
 - Threshold network trust is administratively manageable
 
 **Avoid when:**

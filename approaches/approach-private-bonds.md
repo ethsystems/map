@@ -123,7 +123,7 @@ example_vendors: [aztec, miden]
 
 **Summary:** Bonds as native private notes inside a privacy-native rollup; protocol-level privacy without dedicated circuit work.
 
-**How it works:** Aztec exposes private notes and contracts as first-class primitives; bond issuance, transfer, and coupon logic run in private functions with client-side proving. Incoming Viewing Keys (IVKs) provide account-level read access; nullifier keys are app-siloed for damage containment.
+**How it works:** Aztec exposes private notes and contracts as native primitives. Bond issuance, transfer, and coupon logic run in private functions with client-side proving. Incoming Viewing Keys (IVKs) provide account-level read access; nullifier keys are app-siloed for damage containment.
 
 **Trust assumptions:**
 - Sequencer for ordering (currently centralized in early deployments)
@@ -165,7 +165,7 @@ example_vendors: [taceo-merces]
 
 **Threat model:**
 - Collusion of two of the three nodes breaks confidentiality
-- Counterparty addresses leak; only amount confidentiality is provided
+- Counterparty addresses leak. Confidentiality covers amounts alone
 - Batch latency creates a settlement window
 
 **Works best when:**

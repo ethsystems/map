@@ -47,7 +47,7 @@ A dedicated network or service that publishes and stores the data required for D
 
 **Privacy Rollup**: ZK rollup designed for encrypted/private state (Aztec)
 
-**Validium**: Validity proofs on L1; data availability off-chain
+**Validium**: Validity proofs on L1. Data Availability off-chain
 
 **Volition**: Hybrid model allowing per-transaction choice between on-chain and off-chain DA
 
@@ -111,7 +111,7 @@ A dedicated network or service that publishes and stores the data required for D
 
 **TEE (Trusted Execution Environment)**: Hardware-based secure computation environment
 
-**MPC (Multi-Party Computation)**: Cryptographic technique for joint computation without revealing inputs
+**MPC (multi-party computation)**: Cryptographic technique for joint computation without revealing inputs
 
 **OPRF (Oblivious Pseudorandom Function)**: Cryptographic protocol where a server evaluates a pseudorandom function on a client's input without learning the input, and the client learns the output without learning the server's key. Used for private set intersection, password-hardening, and privacy-preserving authentication.
 
