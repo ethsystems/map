@@ -9,7 +9,7 @@ maturity: production
 ## What it is
 
 Renegade is a decentralized dark pool protocol for trading digital assets.  
-It combines **maliciously-secure MPC** (for private order matching) with **zkSNARK proofs** (for verifiable settlement), ensuring balances, orders, and trade history remain confidential while still settling on-chain.
+It combines **maliciously-secure MPC** (for private order matching) with **zk-SNARK proofs** (for verifiable settlement), ensuring balances, orders, and trade history remain confidential while still settling on-chain.
 
 ## Fits with patterns
 
@@ -28,7 +28,7 @@ It combines **maliciously-secure MPC** (for private order matching) with **zkSNA
 - **Wallet model**: Each trader has a private wallet committed on-chain (`C(W) = H(B||O||F||K||r)`), with balances and orders hidden.
 - **Key hierarchy**: Separate keys for root control, order matching, settlement, and viewing. Enables delegation without loss of custody.
 - **Order matching**: Performed in MPC clusters (SPDZ-style protocols), ensuring neither relayers nor counterparties learn each other’s hidden state.
-- **Settlement**: MPC outputs are wrapped in a collaborative zkSNARK that proves correct matching. Settlement notes are encrypted under counterparties’ keys and appended to the global commitment tree.
+- **Settlement**: MPC outputs are wrapped in a collaborative zk-SNARK that proves correct matching. Settlement notes are encrypted under counterparties’ keys and appended to the global commitment tree.
 - **Relayers**: Traders typically delegate matching to relayer clusters; relayers coordinate MPC handshakes but never see balances or order flow.
 
 ## Privacy domains
@@ -47,7 +47,7 @@ It combines **maliciously-secure MPC** (for private order matching) with **zkSNA
 
 ## Technical details
 
-- Proof system: zkSNARKs (Groth16-style collaborative proofs).
+- Proof system: zk-SNARKs (Groth16-style collaborative proofs).
 - MPC protocols: maliciously-secure SPDZ variants for order matching.
 - Commitment scheme: Merkle trees for wallets and nullifiers.
 - Encrypted settlement notes bound to on-chain commitments.
@@ -57,7 +57,7 @@ It combines **maliciously-secure MPC** (for private order matching) with **zkSNA
 
 - Eliminates MEV: no pre-trade or post-trade transparency.
 - Fully private balances and orders, unlike lit AMMs.
-- On-chain verifiability via zkSNARK proofs.
+- On-chain verifiability via zk-SNARK proofs.
 - Delegation model allows separation of custody, matching, and settlement.
 
 ## Risks and open questions

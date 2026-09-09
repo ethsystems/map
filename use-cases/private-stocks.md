@@ -51,7 +51,7 @@ Traditional exchanges tokenizing equity need privacy to differentiate from trans
 
 ## 5) Recommended Approaches
 
-Approach TBD. Consider:
+See [approach-private-trade-settlement.md](../approaches/approach-private-trade-settlement.md) for general settlement architecture. Stock-specific considerations:
 - Integration with existing transfer agent infrastructure
 - Privacy-preserving beneficial ownership registries
 - Hybrid on-chain/off-chain settlement models

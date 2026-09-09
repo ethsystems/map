@@ -132,7 +132,7 @@ Failure modes and mitigations:
 A bank deploys a confidential matching engine for block trades inside a hardware-isolated enclave. Traders verify the attestation before submitting encrypted orders; matching runs inside the enclave and only fills are published. Attestation logs record that the approved matching code was executed for each batch, while auditors can verify the code measurement without seeing order flow. Threshold key shares and a zero-knowledge proof of execution are added in a later phase to reduce the blast radius of any single compromise.
 
 ## See also
-
+- [Inco](../vendors/inco.md)
 - [Confidential Computing Consortium](https://confidentialcomputing.io/)
 - [awesome-tee-blockchain](https://github.com/dineshpinto/awesome-tee-blockchain)
 - [Fhenix](../vendors/fhenix.md)
