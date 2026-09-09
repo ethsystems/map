@@ -8,7 +8,7 @@ last_reviewed: 2026-09-03
 maturity: testnet
 ---
 
-# Bermuda – Privacy and compliance layer for the EVM
+# Bermuda (Privacy and compliance layer for the EVM)
 
 ## What it is
 
@@ -20,6 +20,13 @@ issuer's policy for that token. Sanctions screening, retroactive flagging with
 Proof of Innocence, issuer policies and clawback are enforced by the smart
 contract and its circuits, not by an operator who reads transactions. It is
 middleware, not a chain, wallet or custodian.
+
+Compliance is a pluggable module rather than a fixed rule set. An
+integrator configures KYC/AML workflows, jurisdiction-specific rules and
+custom policies without modifying the core protocol. Deposit screening is
+delegated to an external compliance engine that the deployment chooses.
+Two deployments under different regulatory regimes can therefore share one
+privacy layer.
 
 ## Fits with patterns
 
@@ -42,42 +49,42 @@ middleware, not a chain, wallet or custodian.
 
 ## Architecture
 
-- **Smart contract**: holds funds as shielded UTXOs: commitments in
-  an incremental Merkle tree, chain-bound nullifiers, one `transact` entry point.
-  Notes are encrypted to the recipient's x25519 key and emitted as events.
-- **Proofs and keys**: Noir circuits, Barretenberg as ZK proving backend, 
-  client-side proving in WASM. Spend authorization is Schnorr over Grumpkin; FROST
-  threshold Schnorr puts a Safe's owners behind a shielded account.
-- **Issuer policy engine**: the token owner (typically a Safe) sets a
-  per-token policy — spending limit per period, allow and deny lists, an
-  optional issuer viewing key — that every transfer proves in-circuit against
-  the smart contract's live policy root. The circuit checks a commitment to the policy's
-  fields, so an issuer can publish its rules or keep them private; list
-  membership stays off-chain either way. The viewing key yields an encrypted
-  view of that token's transfers; the issuer can claw back funds with a proof.
-- **Compliance Gateway**: deposits bind the compliance engine's key and an
-  expiry block into the proof, so a delisted address cannot replay an
-  approval. Flagged deposit ids live in an indexed Merkle tree: private
-  withdrawals prove exclusion, disclosed ones inclusion. Depositors and
-  recipients are also screened on-chain by the Chainalysis sanctions oracle.
-- **Roles**: the smart contract and verifiers are non-upgradeable. A governor
-  sets fees,
-  recovery parameters and the public-withdrawal delay and assigns a pauser,
-  who halts `transact` and `claim` for incident response.
-- **Cross-chain DvP**: two smart contracts act as escrows: a leg is locked,
-  released
-  once the counterparty's lock is proven present, or reclaimed on a proof of
-  absence after the cutoff — ERC-7888 broadcast proofs, no coordinator. Linea
+- **Smart contract**: holds funds as shielded UTXOs. Commitments sit in an
+  incremental Merkle tree. Each spend publishes a nullifier bound to that
+  chain. Notes are encrypted to the recipient and emitted as events.
+- **Proofs**: circuits are written in Noir. Proving runs on the user's own
+  device.
+- **Issuer policy engine**: the token owner, typically a Safe, sets a
+  per-token policy covering a spending limit per period, allow and deny lists
+  and an optional viewing key. Every transfer proves in-circuit that it
+  satisfies the live policy. The circuit checks a commitment to the policy
+  fields, so an issuer can publish its rules or keep them private. List
+  membership stays off-chain in either case. The viewing key decrypts that
+  token's transfers. The issuer can claw back funds with a proof.
+- **Compliance gateway**: a deposit binds the compliance engine's approval and
+  an expiry block into the proof. A delisted address cannot replay an old
+  approval. Flagged deposit ids are tracked in an indexed Merkle tree. A
+  private withdrawal proves the deposit is absent from that tree. A disclosed
+  withdrawal proves it is present. Depositors and recipients are also screened
+  on-chain by the Chainalysis sanctions oracle.
+- **Submission path**: a Bermuda relayer submits shielded transactions on
+  behalf of users. ERC-4337 bundlers and an x402 facilitator cover gas
+  abstraction and agent payments.
+- **Roles**: the smart contract and its verifiers are non-upgradeable. A
+  governor sets fees, recovery parameters and the public-withdrawal delay. The
+  governor assigns a pauser who halts `transact` and `claim` for incident
+  response.
+- **Cross-chain DvP**: two contracts act as escrows. One leg locks, then
+  releases once the counterparty's lock is proven present. It is reclaimed on
+  a proof of absence after the cutoff. No coordinator sits in the path. Linea
   proof of concept, June 2026.
-- **Products**:
-  - SDK suite: `core-sdk`, `issuer-sdk`, `safe-sdk`, `fireblocks-sdk`, etc.
-  - E2E apps: Private Safe Wallet, universal/mobile app in progress
-- **Services**:
-  - E2E enterprise applications, from development through operations to compliance, for instance:
-    - Exclusive OTC/DvP/RFQ networks (always private, cross-chain capable)
-    - Customized private wallet UX, especially enterprise- and institution-focused
-    - Accounting/reporting and compliance adapters, and middleware
-  - MPC overlay upgrades on top of institutions’ physical HSMs through the partnership with Utila
+- **Products**: SDK suite (`core-sdk`, `issuer-sdk`, `safe-sdk`,
+  `fireblocks-sdk`) and end-user apps (Private Safe Wallet, with universal and
+  mobile apps in progress).
+- **Services**: enterprise delivery from build through operations to
+  compliance. Private OTC, DvP and RFQ networks. Institutional wallet UX.
+  Accounting, reporting and compliance adapters. MPC overlay on institutional
+  HSMs through the Utila partnership.
 
 ## Privacy domains
 
@@ -104,12 +111,28 @@ middleware, not a chain, wallet or custodian.
 - **Asset management**: shielded ERC-4626 positions, private yield and DeFi,
   private order books
 
+Related approaches: [Private Payments](../approaches/approach-private-payments.md),
+[Atomic DvP Settlement](../approaches/approach-dvp-atomic-settlement.md),
+[Private Trade Settlement](../approaches/approach-private-trade-settlement.md),
+[White-Label Infrastructure Deployment](../approaches/approach-white-label-deployment.md)
+
+Related use cases: [Private Stablecoins](../use-cases/private-stablecoins.md),
+[Private RWA Tokenization](../use-cases/private-rwa-tokenization.md),
+[Private Treasuries](../use-cases/private-treasuries.md),
+[Private Payments](../use-cases/private-payments.md),
+[Private Repo](../use-cases/private-repo.md),
+[Private Stocks](../use-cases/private-stocks.md)
+
 ## Technical details
 
-- Curves in use: BN254 (proof system), Grumpkin (signatures), Curve25519 (encryption)
-- Proof system: Noir, Barretenberg (UltraHonk); no circuit-specific trusted setup (universal SRS)
-- Signing: Schnorr, FROST, Golden DKG
-- Encryption: XChaCha20-Poly1305
+- Proving curve: BN254. Grumpkin is its cycle partner and carries the spend
+  signatures
+- Proof system: Noir with Barretenberg (UltraHonk). Universal SRS, so there
+  is no circuit-specific trusted setup
+- Spend authorization: Schnorr over Grumpkin. FROST supplies the threshold
+  variant, keyed by Golden DKG
+- Note key agreement: X25519 ECDH, with a fresh ephemeral keypair per note
+- Note encryption: XChaCha20-Poly1305 under the derived shared secret
 
 Post-quantum implementation in progress.
 
@@ -133,6 +156,16 @@ Post-quantum implementation in progress.
 
 - Testnet stage: no mainnet deployment, third-party audit or bug bounty published
 - Anonymity depends on activity in the contracts per chain and asset
+- Relayer dependence: the Bermuda relayer sees submission metadata and can
+  censor or delay a shielded transaction. Self-submission is the fallback,
+  at the cost of network-level anonymity
+- Compliance engine dependence: entry to the pool requires an approval from
+  an external screening provider
+- Governor powers: fees, recovery parameters and the public-withdrawal delay
+  are governor-controlled. The pauser can halt transfers and claims
+- Issuer powers cut both ways: freezing and clawback follow holders into the
+  shielded domain
+- Client-side proving cost on constrained devices is not published
 
 ## Links
 
