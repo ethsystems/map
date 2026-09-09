@@ -1,7 +1,7 @@
 ---
 title: "Vendor: The Interfold"
 status: draft
-maturity: testnet
+maturity: mainnet
 ---
 
 # The Interfold – Distributed Network for Confidential Coordination (E3 Protocol)
@@ -12,20 +12,20 @@ The Interfold is an open-source protocol that coordinates **Encrypted Execution 
 
 ## Fits with patterns
 
-- [Publicly Verifiable DKG & Threshold Decryption](../patterns/pattern-verifiable-dkg-threshold-decryption.md) — core cryptographic layer: PVSS-based DKG with on-chain verifier circuits, threshold decryption with per-share ZK proofs, and slashing for provable misbehavior
-- [Ephemeral Committees & Disposable Encrypted State](../patterns/pattern-ephemeral-committees.md) — single-use committees with mandatory key disposal after decryption, rendering all undecrypted state permanently inaccessible
-- [Private Shared State (FHE)](../patterns/pattern-private-shared-state-fhe.md) — FHE-based computation across multiple independent parties
-- [Private Set Intersection (FHE)](../patterns/pattern-private-set-intersection-fhe.md) — encrypted computation over datasets from multiple sources
-- [Pretrade Privacy (Encryption)](../patterns/pattern-pretrade-privacy-encryption.md) — sealed-bid auctions and confidential matching
-- [Threshold Encrypted Mempool](../patterns/pattern-threshold-encrypted-mempool.md) — shared threshold cryptography approach for distributed trust
-- [TEE-Based Privacy](../patterns/pattern-tee-based-privacy.md) — E3s are an alternative to TEEs, replacing trusted hardware with distributed threshold cryptography
-- [Noir Private Contracts](../patterns/pattern-noir-private-contracts.md) — Interfold uses Noir for ZK circuit (C0–C7) development
+- [Publicly Verifiable DKG & Threshold Decryption](../patterns/pattern-verifiable-dkg-threshold-decryption.md). Core cryptographic layer: PVSS-based DKG with on-chain verifier circuits, threshold decryption with per-share ZK proofs, and slashing for provable misbehavior
+- [Ephemeral Committees & Disposable Encrypted State](../patterns/pattern-ephemeral-committees.md). Single-use committees with mandatory key disposal after decryption, rendering all undecrypted state permanently inaccessible
+- [Private Shared State (FHE)](../patterns/pattern-private-shared-state-fhe.md). FHE-based computation across multiple independent parties
+- [Private Set Intersection (FHE)](../patterns/pattern-private-set-intersection-fhe.md). Encrypted computation over datasets from multiple sources
+- [Pretrade Privacy (Encryption)](../patterns/pattern-pretrade-privacy-encryption.md). Sealed-bid auctions and confidential matching
+- [Threshold Encrypted Mempool](../patterns/pattern-threshold-encrypted-mempool.md). Shared threshold cryptography approach for distributed trust
+- [TEE-Based Privacy](../patterns/pattern-tee-based-privacy.md). E3s are an alternative to TEEs, replacing trusted hardware with distributed threshold cryptography
+- [Noir Private Contracts](../patterns/pattern-noir-private-contracts.md). Interfold uses Noir for ZK circuit (C0–C7) development
 
 ## Not a substitute for
 
-- ZK-based L2 privacy (e.g., Aztec, Scroll) — Interfold coordinates ephemeral computations, not persistent shielded state
-- General-purpose MPC — Interfold targets specific multiparty coordination use cases with FHE-based execution
-- TEEs — Interfold replaces hardware trust with cryptographic and economic guarantees, not hardware enclaves
+- ZK-based L2 privacy (e.g., Aztec, Scroll). Interfold coordinates ephemeral computations, not persistent shielded state
+- General-purpose MPC. Interfold targets specific multiparty coordination use cases with FHE-based execution
+- TEEs. Interfold replaces hardware trust with cryptographic and economic guarantees, not hardware enclaves
 
 ## Architecture
 
@@ -38,35 +38,36 @@ The protocol coordinates five lifecycle phases per E3:
 5. **Decryption**: The CiCo collectively performs threshold decryption of the output and publishes the plaintext result. Rewards are distributed to committee members on completion.
 
 **Smart contract suite** (EVM, deployed on Sepolia testnet):
-- **Interfold Contract** — central coordinator managing E3 lifecycle, committee selection, and Merkle-tree input integrity
-- **E3 Program (E3P) Contract** — defines computation logic, validates inputs, and verifies execution proofs
-- **Decryption Verifier** — validates threshold decryption shares
-- **Bonding Registry** — manages FOLD token license bonds, tFOLD ticket balances, registration, and exit queues
-- **Slashing Manager** — processes slashing for misbehavior (attestation-based and evidence-based lanes with appeal windows)
-- **E3 Refund Manager** — calculates and distributes refunds on E3 failure
+- **Interfold Contract**: central coordinator managing E3 lifecycle, committee selection, and Merkle-tree input integrity
+- **E3 Program (E3P) Contract**: defines computation logic, validates inputs, and verifies execution proofs
+- **Decryption Verifier**: validates threshold decryption shares
+- **Bonding Registry**: manages FOLD token license bonds, tFOLD ticket balances, registration, and exit queues
+- **Slashing Manager**: processes slashing for misbehavior (attestation-based and evidence-based lanes with appeal windows)
+- **E3 Refund Manager**: calculates and distributes refunds on E3 failure
 
-**Compute Providers** support multiple trust models: verifiable (RISC Zero, with SP1 and Jolt planned) and oracle-based (zkTLS VMs, committee-based, game-theoretic — all coming soon).
+**Compute Providers** support multiple trust models: verifiable (RISC Zero, with SP1 and Jolt planned) and oracle-based (zkTLS VMs, committee-based, game-theoretic, all coming soon).
 
 ## Privacy domains
 
 - **FHE**: BFV scheme via `fhe.rs` and the SAFE library for computation on encrypted data
 - **Threshold cryptography**: PVSS-based distributed key generation; decryption requires a threshold of ciphernodes
 - **ZKPs**: Noir circuits for input validation (C0–C7 phases) and proof of correct execution
-- **Ephemeral keys**: Single-use committee keys eliminate long-lived key material risks — keys are treated as toxic waste after decryption
+- **Ephemeral keys**: Single-use committee keys eliminate long-lived key material risks. Keys are treated as toxic waste after decryption
 
 ## Enterprise demand and use cases
 
 The Interfold targets three coordination categories:
 
-- **Competitive coordination**: sealed-bid auctions, RFQ desks, and allocation mechanisms where bid strategy must remain hidden until the outcome is finalized — without granting the operator privileged visibility.
+- **Competitive coordination**: sealed-bid auctions, RFQ desks, and allocation mechanisms where bid strategy must remain hidden until the outcome is finalized. The operator gains no privileged visibility.
 - **Collective coordination**: secret ballots, governance voting, and committee selection where private preferences must produce verifiable, coercion-resistant results without a trusted tallying authority.
 - **Data coordination**: cross-institutional analysis (medical research, financial risk modeling, collaborative AI training) where sensitive datasets from multiple organizations contribute to a shared result without pooling or custodial transfer of raw data.
 
-**Concrete implementations**: The CRISP (Coercion-Resistant Impartial Selection Protocol) is Interfold's flagship application — an Aragon plugin enabling secret ballot governance for DAOs with voter registry, key switching, and coercion resistance (building on MACI concepts but replacing the single trusted coordinator with distributed ciphernodes).
+**Concrete implementations**: The CRISP (Coercion-Resistant Impartial Selection Protocol) is Interfold's flagship application. It is an Aragon plugin enabling secret ballot governance for DAOs with voter registry, key switching, and coercion resistance (building on MACI concepts but replacing the single trusted coordinator with distributed ciphernodes).
 
 ## Technical details
 
-- **Networks**: Sepolia testnet and Ethereum mainnet (both deployed)
+- **Networks**: Sepolia testnet and Ethereum mainnet, both deployed. Network
+  Alpha is the live mainnet deployment
 - **Cryptography**: Threshold BFV FHE, PV-TBFV key generation, Noir ZK circuits (C0–C7 phases), RISC Zero zkVM for verifiable compute
 - **SDK**: Interfold SDK for Rust, with Noir circuit toolchain (`interfold noir` CLI)
 - **Tokenomics**: FOLD (license bonding, governance), tFOLD (non-transferable ticket token for sortition), USDC for ticket purchases
@@ -82,17 +83,16 @@ The Interfold targets three coordination categories:
 - **Open-source**: full protocol and toolchain publicly available, built by Gnosis Guild
 - **Coercion resistance**: CRISP demonstrates practical coercion-resistant voting without a trusted coordinator
 
-## CROPS profile
-
-| Product | CR | OS | Privacy | Security | Context |
-|---------|----|----|---------|----------|---------|
-| Interfold (E3 Protocol) | high | yes | high | high | both |
-
 ## Risks and open questions
 
-- Production alpha network is live; real-world throughput and long-term network decentralization remain to be proven at scale
+- Network Alpha runs with an initial operator set. Public ciphernode
+  participation is not open yet
+- Early committees support up to 19 ciphernodes at a threshold of 9. DKG runs
+  on the order of hours, which bounds what is practical today
+- Real-world throughput and long-term network decentralization remain to be
+  proven at scale
 - FHE compute cost and latency may limit applicability for time-sensitive or high-volume use cases
-- For verifiable Compute Providers (RISC Zero), anyone can run the program over published inputs and generate a valid proof — the CP is an on-chain verifier contract with no single party that can refuse to publish or halt the E3. For oracle-based providers (planned), trust assumptions will differ
+- For verifiable Compute Providers (RISC Zero), anyone can run the program over published inputs and generate a valid proof. The CP is an on-chain verifier contract with no single party that can refuse to publish or halt the E3. For oracle-based providers (planned), trust assumptions will differ
 
 ## Links
 
