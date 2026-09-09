@@ -109,3 +109,4 @@ Threat model:
 - [Fhenix](../vendors/fhenix.md)
 - [Orion Finance](../vendors/orion-finance.md)
 - [Aztec](../vendors/aztec.md)
+- [Inco](../vendors/inco.md)

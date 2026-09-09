@@ -108,7 +108,7 @@ Threat model:
 - Three banks share a tokenised-bond collateral pool on an Ethereum settlement L2. Each bank's deposit is encrypted to the enclave cluster's public key. A margin call triggers enclave computation: the enclave decrypts inputs, evaluates aggregate collateral coverage at native speed, and emits the updated encrypted state with an attestation report. The regulator uses enclave-mediated disclosure to audit one bank's position without learning the others.
 
 ## See also
-
 - [Oasis Sapphire ParaTime](https://oasisprotocol.org/sapphire)
 - [Intel SGX documentation](https://www.intel.com/content/www/us/en/developer/tools/software-guard-extensions/overview.html)
 - [AWS Nitro Enclaves documentation](https://docs.aws.amazon.com/enclaves/latest/user/nitro-enclave.html)
+- [Inco Lightning](https://docs.inco.org/home)

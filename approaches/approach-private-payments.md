@@ -1,10 +1,10 @@
 ---
 title: "Approach: Private Payments"
 status: ready
-last_reviewed: 2026-06-24
+last_reviewed: 2026-08-11
 
 use_case: private-stablecoins
-related_use_cases: [resilient-disbursement-rails]
+related_use_cases: [resilient-disbursement-rails, private-treasuries]
 
 primary_patterns:
   - pattern-shielding
@@ -239,7 +239,7 @@ maturity: documented
 context: i2i
 crops: { cr: medium, o: no, p: full, s: low }
 uses_patterns: [pattern-tee-based-privacy]
-example_vendors: []
+example_vendors: [inco]
 ```
 
 **Summary:** Trusted execution enclave processes transfers privately; on-chain artefact is an attestation of correct enclave execution.

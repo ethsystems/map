@@ -65,10 +65,11 @@ Instead of merely unlinking deposits and withdrawals, users can provide **member
 - Privacy depends on **set size and accuracy**: small or poorly curated sets reduce anonymity.
 - Requires trust in Association Set Providers (risk of manipulation or censorship).
 - No native cross-chain support.
-- Not yet deployed at large scale; governance of set definitions is unresolved.
+- Governance of set definitions is unresolved; 0xbow operates the ASP for the Ethereum mainnet deployment, live since March 2025.
 
 ## Links
 
-- [Privacy Pools GitHub](https://github.com/ameensol/privacy-pools)
+- [Privacy Pools Core (0xbow) GitHub](https://github.com/0xbow-io/privacy-pools-core)
+- [Original Privacy Pools research repo (ameensol)](https://github.com/ameensol/privacy-pools)
 - [SSRN Paper: Blockchain Privacy and Regulatory Compliance](https://ssrn.com/abstract=4563364)
 - [Vitalik blog on Privacy Pools](https://vitalik.eth.limo/general/2023/09/06/privacy.html)

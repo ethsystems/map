@@ -9,7 +9,7 @@ maturity: production
 ## What it is
 
 Railgun is a set of smart contracts providing **shielded transfers and private DeFi interactions** on Ethereum and other EVM-compatible chains.  
-It uses zkSNARKs to maintain a UTXO-like note system (commitments and nullifiers) that allows users to send, receive, and interact with DeFi protocols while hiding wallet balances and transaction details.
+It uses zk-SNARKs to maintain a UTXO-like note system (commitments and nullifiers) that allows users to send, receive, and interact with DeFi protocols while hiding wallet balances and transaction details.
 
 ## Fits with patterns
 
@@ -27,7 +27,7 @@ It uses zkSNARKs to maintain a UTXO-like note system (commitments and nullifiers
 ## Architecture
 
 - **Execution model**: UTXO-style commitments (`note commitments`, `nullifiers`) stored in smart contracts.
-- **Proof system**: zkSNARKs (Groth16) validate note creation and spending.
+- **Proof system**: zk-SNARKs (Groth16) validate note creation and spending.
 - **Settlement**: ERC-20/ERC-721/ERC-1155 tokens are deposited into Railgun contracts, converted to private notes, then spent/withdrawn.
 - **Integration**: Railgun “Adapt Modules” allow private interactions with existing DeFi protocols by wrapping function calls.
 - **Data availability**: all commitments stored publicly on-chain; privacy relies on zk proofs, not off-chain DA.
@@ -46,7 +46,7 @@ It uses zkSNARKs to maintain a UTXO-like note system (commitments and nullifiers
 
 ## Technical details
 
-- zkSNARK proving via Groth16, circuit for note validity and nullifier uniqueness.
+- zk-SNARK proving via Groth16, circuit for note validity and nullifier uniqueness.
 - Smart contract architecture deployed on Ethereum mainnet, BNB Chain, Polygon, and others.
 - UTXO model: each note represents a claim on deposited tokens; nullifiers prevent double spends.
 - Adapt Modules: special contracts that wrap DeFi calls (e.g. swaps, lending) to preserve privacy of user identity.
@@ -63,7 +63,7 @@ It uses zkSNARKs to maintain a UTXO-like note system (commitments and nullifiers
 - **No regulator-oriented audit path**: may limit institutional adoption.
 - **Prover costs & UX**: Groth16 proofs are relatively heavy for end-users, requiring wallet integration, high gas operations (~2m).
 - **On-chain DA**: all commitments are public; long-term scalability may be constrained.
-- **Trust assumptions**: requires careful ceremony setup for zkSNARK parameters (trusted setup).
+- **Trust assumptions**: requires careful ceremony setup for zk-SNARK parameters (trusted setup).
 
 ## Links
 
