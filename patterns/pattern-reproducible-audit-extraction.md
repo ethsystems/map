@@ -7,7 +7,7 @@ layer: offchain
 last_reviewed: 2026-07-16
 
 works-best-when:
-  - An auditor, regulator, or counterparty must verify that disclosed or reported figures reflect the complete set of on-chain emissions, not a curated subset.
+  - An auditor, regulator, or counterparty must verify that disclosed or reported figures reflect the complete set of on-chain events, not a curated subset.
   - Disclosure patterns (viewing keys, predicate proofs, encrypted audit logs) are in place and the open question is what the disclosed material is checked against.
   - The verifying party can run, or commission, an independent re-execution of the data pipeline.
 avoid-when:
@@ -44,23 +44,20 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/streamingfast/firehose-core
-    description: "Firehose: deterministic, content-addressed flat-file extraction of chain history (The Graph / StreamingFast, Apache 2.0)"
+    description: "Firehose covers the extraction leg. Deterministic, content-addressed flat-file capture of chain history (The Graph / StreamingFast, Apache 2.0)"
     language: "Go"
   - url: https://github.com/streamingfast/substreams
-    description: "Substreams: deterministic WASM transform modules over Firehose files (Apache 2.0)"
-    language: "Rust"
-  - url: https://github.com/TrueBlocks/trueblocks-core
-    description: "TrueBlocks: local, reproducible index of Ethereum address appearances (GPL-3.0)"
-    language: "Go"
-  - url: https://github.com/paradigmxyz/cryo
-    description: "cryo: deterministic extraction of chain data to Parquet/CSV datasets (Apache 2.0)"
+    description: "Substreams covers the transform leg. Deterministic WASM modules over Firehose files, addressed by module hash (Apache 2.0)"
     language: "Rust"
   - url: https://github.com/graphprotocol/graph-node
-    description: "graph-node: deterministic indexing of extracted data into a queryable entity store, with proofs of indexing over the result (Apache 2.0)"
+    description: "graph-node covers the transform leg with a verification hook. Deterministic indexing into a queryable entity store, with proofs of indexing over the result (Apache 2.0)"
     language: "Rust"
-  - url: https://github.com/subsquid/squid-sdk
-    description: "Subsquid: independent indexing framework serving queryable indexes over extracted chain data (Apache 2.0)"
-    language: "TypeScript"
+  - url: https://github.com/TrueBlocks/trueblocks-core
+    description: "TrueBlocks covers extraction plus manifest. A local index of address appearances, published as IPFS-addressed chunks whose publisher pointers are recorded on-chain (GPL-3.0)"
+    language: "Go"
+  - url: https://github.com/paradigmxyz/cryo
+    description: "cryo covers the extraction leg alone. Deterministic extraction of chain data to Parquet/CSV, carrying no manifest or attestation of its own (Apache 2.0)"
+    language: "Rust"
 ---
 
 ## Intent
@@ -74,7 +71,7 @@ Give auditors, regulators, and counterparties a read path over public chain stat
 - Re-execution manifest: input content hashes, transform code version and hash, output hashes, and the block range covered.
 - Completeness scope: the contract addresses, event signatures, and block range that bound "the complete set" for an engagement.
 - Optional on-chain anchor: a hash or Merkle root of the output posted on-chain as a fixed point for later verification.
-- Serving layer: a queryable index over the extracted record, so a relying party can ask completeness-shaped questions (every in-scope entry across a range, in order, with gaps and conflicts surfaced) without re-running the pipeline. It is audit infrastructure rather than convenience only if it **reports what the record contains**, including malformed and conflicting entries, since dropping them silently is indistinguishable from their absence, and if the serving party is **identifiable and answerable** for a wrong answer. Serving never replaces re-execution as the trust mechanism.
+- Serving layer: a queryable index over the extracted record, so a relying party can ask completeness-shaped questions (every in-scope entry across a range, in order, with gaps and conflicts surfaced) without re-running the pipeline. It counts as audit infrastructure rather than convenience under two conditions. It must **report what the record contains**, including malformed and conflicting entries, since dropping them silently is indistinguishable from their absence. The serving party must be **identifiable and answerable** for a wrong answer. Serving never replaces re-execution as the trust mechanism.
 
 ## Protocol
 

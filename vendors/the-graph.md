@@ -8,11 +8,11 @@ last_reviewed: 2026-08-05
 maturity: production
 ---
 
-# The Graph – Firehose, Substreams, Subgraphs (decentralized indexing and query infrastructure)
+# The Graph (decentralized indexing and query infrastructure)
 
 ## What it is
 
-An open source indexing stack. 76 networks are supported for subgraph indexing; on 23 of them (18 mainnets, including Ethereum) subgraphs are served by a decentralized network of independent, GRT-staked indexers. The Graph indexes public chain state and is not a privacy technology. Its role in privacy architectures is the read and audit path: deterministic, re-executable extraction and serving of the public artifacts confidential systems emit (commitments, nullifiers, anchored roots, attestation logs), so auditors and regulators can check disclosures against an independently recomputable record of on-chain emissions.
+An open source indexing stack. 76 networks are supported for subgraph indexing; on 23 of them (18 mainnets, including Ethereum) subgraphs are served by a decentralized network of independent indexers. The Graph indexes public chain state and is not a privacy technology. Its role in privacy architectures is the read and audit path: deterministic, re-executable extraction and serving of the public artifacts confidential systems emit (commitments, nullifiers, anchored roots, attestation logs), so auditors and regulators can check disclosures against an independently recomputable record of on-chain emissions.
 
 ## Fits with patterns
 
@@ -38,7 +38,7 @@ An open source indexing stack. 76 networks are supported for subgraph indexing; 
 - **Firehose** is the extraction layer beneath Substreams, also usable by other indexing systems: full chain history captured as deterministic, content-addressed flat files surviving execution-layer history pruning (EIP-4444); open source tooling recomputes receipt and transaction roots from extracted data and proves pre-Merge block inclusion against Ethereum's canonical header accumulator.
 - **Decentralized network:** publishing is permissionless; indexers stake GRT and serve queries for fees. Paid responses carry EIP-712 signed attestations binding request and response hashes to the indexer's staked allocation; conflicting attestations ground an on-chain dispute settled by arbitration with slashing. Attestations are signatures, not validity proofs: responses become non-repudiable and slashable.
 - **Gateways:** optional open source routing; anyone can operate one; clients can query indexers directly or pin one to cross-check.
-- **Hosted delivery** is the common enterprise path: a single operator runs Firehose, Substreams, or subgraph APIs under contract. Open source core, but deployment, billing and API layers are proprietary; one operator can exclude a customer and attestations become contractual terms. The self-hosting exit stays open but is operationally heavy.
+- **Hosted delivery** is the common enterprise path: a single operator runs Firehose, Substreams, or subgraph APIs under contract. The core is open source. Deployment, billing and API layers are proprietary. That operator can exclude a customer. Attestations reduce to contractual terms. Self-hosting stays available at meaningful operational cost.
 
 ## Privacy domains
 
@@ -73,7 +73,7 @@ An open source indexing stack. 76 networks are supported for subgraph indexing; 
 - Query results are attested, not proof-carrying: extraction-level verification exists, but validity proofs for derived results are research.
 - Completeness ceiling: an index attests on-chain emissions, never what went unrecorded nor off-chain reality; indexer output is not evidence of reserves or solvency.
 - Read privacy: query patterns leak to the serving operator; multi-server private information retrieval over independent indexers is research.
-- Serving plaintext is not on offer: The Graph serves ciphertext and the client decrypts, which works today and is an application concern. Indexers would need viewing keys only for general-purpose plaintext queries. Restricted predicates need no keys and largely work at the application layer today, since a deterministically encrypted field can be matched for equality as bytes; but such schemes buy selectivity by leaking structure (equality patterns, ordering), with a real inference-attack literature. General computation over ciphertext (FHE) is far from query-serving latency; enclave-based serving is research.
+- Serving plaintext is not on offer: The Graph serves ciphertext and the client decrypts, which works today and is an application concern. Indexers would need viewing keys for general-purpose plaintext queries. Restricted predicates need no keys. Those largely work at the application layer today, since a deterministically encrypted field can be matched for equality as bytes. Such schemes buy selectivity by leaking structure such as equality patterns and ordering. The inference-attack literature on that is substantial. General computation over ciphertext (FHE) is far from query-serving latency; enclave-based serving is research.
 - Accountability is economic and procedural, not cryptographic: disputes are settled by a governance-appointed arbitrator, and protocol contracts are upgradeable under council governance.
 - The decentralized network offers no SLA or SOC-type report; those come from hosting operators, which reintroduce single-operator trust.
 
