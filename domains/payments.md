@@ -32,3 +32,4 @@ description: "Move value with stakeholder-scoped visibility, from institutional 
 - [Zama](../vendors/zama.md)
 - [Privacy Pools](../vendors/privacypools.md)
 - [Fairblock](../vendors/fairblock.md)
+- [Inco](../vendors/inco.md)

@@ -20,3 +20,4 @@ description: "Protect keys, controls, and recovery while preserving scoped overs
 - [Fireblocks](../vendors/fireblocks.md)
 - [iExec](../vendors/iexec.md)
 - [Soda Labs](../vendors/soda-labs.md)
+- [Inco](../vendors/inco.md)
