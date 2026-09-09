@@ -4,6 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- feat(vendor): add [Interfold](vendors/interfold.md), plus patterns [Publicly Verifiable DKG and Threshold Decryption](patterns/pattern-verifiable-dkg-threshold-decryption.md) and [Ephemeral Committees](patterns/pattern-ephemeral-committees.md), covering single-use committees that dispose of key material after decryption ([#178](https://github.com/ethsystems/map/pull/178))
 - feat(vendor): add [The Graph](vendors/the-graph.md), decentralized indexing and query infrastructure as the audit read path ([#186](https://github.com/ethsystems/map/pull/186), landed via [#193](https://github.com/ethsystems/map/pull/193))
 - feat(pattern): add [Reproducible Audit Extraction](patterns/pattern-reproducible-audit-extraction.md), the verifier's data-acquisition leg the disclosure patterns presuppose ([#186](https://github.com/ethsystems/map/pull/186), landed via [#193](https://github.com/ethsystems/map/pull/193))
 - feat(pattern): [Confidential Policy Verdicts](patterns/pattern-confidential-policy-verdicts.md) -- pre-execution allow/deny for agent actions, proven in zero knowledge against a policy never disclosed on-chain, bridging [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) identity and [ERC-7812](https://eips.ethereum.org/EIPS/eip-7812) policy commitments ([#183](https://github.com/ethsystems/map/pull/183), tracks [ethereum/ERCs#1919](https://github.com/ethereum/ERCs/pull/1919))
