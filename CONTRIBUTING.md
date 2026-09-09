@@ -11,7 +11,7 @@
 
 ### Adding an Enterprise Use Case
 
-1. Check [use-cases](./use-cases/) and [approaches](./approaches/) directories first
+1. Check the [use-cases](./use-cases/) and [approaches](./approaches/) directories before starting
 2. Create a new file describing your use case
 3. Submit a Pull Request using the use-case [template](./use-cases/_template.md)
 
@@ -66,7 +66,7 @@ CROPS are the four non-negotiable properties defined by the Ethereum Foundation.
 
 In I2U contexts, `medium` requires a concrete user escape path such as forced withdrawal, credential portability, or an L1 exit. Without that, the institution is the effective point of control over user participation.
 
-If the answer to the first two below questions is “yes” and the fallback is not independently enforceable, the score should usually be `low` or `none`.
+If the answer to both questions below is “yes” and the fallback is not independently enforceable, the score should usually be `low` or `none`.
 
 Use these to justify the score in one or two lines:
 
