@@ -32,3 +32,4 @@ description: "Hold and transfer claims with hidden positions and verifiable audi
 - [Fhenix](../vendors/fhenix.md)
 - [Zama](../vendors/zama.md)
 - [TACEO Merces](../vendors/taceo-merces.md)
+- [Inco](../vendors/inco.md)
