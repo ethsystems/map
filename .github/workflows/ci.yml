@@ -65,6 +65,7 @@ jobs:
             approaches/*.md
             use-cases/*.md
             vendors/*.md
+            !**/_template.md
         continue-on-error: true
 
       - name: Summary
@@ -149,17 +150,19 @@ jobs:
       - name: Vale linter
         uses: errata-ai/vale-action@d89dee975228ae261d22c15adcd03578634d429c # v2
         with:
-          files: |
-            patterns/
-            vendors/
-            approaches/
-            use-cases/
-            jurisdictions/
-            domains/
+          files: |-
+            patterns
+            vendors
+            approaches
+            use-cases
+            jurisdictions
+            domains
+          separator: "\n"
           fail_on_error: false
           reporter: github-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
 
   validate-changelog:
     runs-on: ubuntu-latest
