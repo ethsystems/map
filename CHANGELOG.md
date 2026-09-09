@@ -4,6 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- feat(pattern): [Confidential Policy Verdicts](patterns/pattern-confidential-policy-verdicts.md) -- pre-execution allow/deny for agent actions, proven in zero knowledge against a policy never disclosed on-chain, bridging [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) identity and [ERC-7812](https://eips.ethereum.org/EIPS/eip-7812) policy commitments ([#183](https://github.com/ethsystems/map/pull/183), tracks [ethereum/ERCs#1919](https://github.com/ethereum/ERCs/pull/1919))
 - feat(pattern): [Private Geospatial Attestation](patterns/pattern-private-geospatial-attestation.md) -- prove a plot polygon does not intersect a committed deforestation layer without revealing coordinates, with the reference-layer commitment named as the load-bearing assumption ([#184](https://github.com/ethsystems/map/pull/184))
 - feat(vendor): add [Bermuda](vendors/bermuda.md), a shielded-UTXO privacy layer for EVM chains with in-circuit issuer policy enforcement ([#191](https://github.com/ethsystems/map/pull/191))
 - fix(vendor): [Privacy Pools](vendors/privacypools.md) -- v1 has been live on Ethereum mainnet since March 2025; replace the stale "not yet deployed at large scale" line and point the GitHub link at [0xbow-io/privacy-pools-core](https://github.com/0xbow-io/privacy-pools-core) (reported by 0xbow in [#92](https://github.com/ethsystems/map/pull/92))
