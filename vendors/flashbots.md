@@ -46,7 +46,7 @@ Flashbots develops MEV infrastructure including private mempools, block building
 
 - Established MEV mitigation with significant adoption
 - Strong relationship with the Ethereum ecosystem
-- Active development of next-generation infrastructure (SUAVE)
+- Active development of new infrastructure (SUAVE)
 - Revenue-sharing mechanisms align user incentives
 
 ## Risks and open questions

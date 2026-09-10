@@ -50,7 +50,7 @@ When an L2 sequencer, relayer, or operator becomes unavailable, users need a uni
 
 ## Components
 
-- Data availability source lets the user reconstruct their position. Can be L1 calldata, L1 blobs, an external DA layer, a validium DA committee, or client-side storage.
+- Data availability source lets the user reconstruct their position. Can be L1 calldata, L1 blobs, an external DA Layer, a validium DA committee, or client-side storage.
 - L1 state-root oracle stores the last verified L2 state root. Validity rollups anchor with a zero-knowledge proof; optimistic rollups anchor after a challenge period survives.
 - Proof verifier contract accepts Merkle proofs (transparent systems) or zero-knowledge proofs (privacy systems) and checks them against the anchored root.
 - Nullifier registry records completed withdrawals to prevent double-claims.
@@ -63,7 +63,7 @@ Where the data lives determines the trust assumption:
 | ----------------------- | ------------------------------------- | --------------------------------- |
 | L1 calldata             | Ethereum consensus                    | Nothing (permanent, expensive)    |
 | L1 blobs (EIP-4844)     | Ethereum plus archival within ~18 days | Pruned if nobody archives         |
-| External DA layer       | DA layer liveness plus economic security | DA layer offline or withholds   |
+| External DA Layer       | DA Layer liveness plus economic security | DA Layer offline or withholds   |
 | DA committee (validium) | Honest committee majority             | Committee withholds; funds frozen |
 | Client-side             | The user                              | User loses data; funds gone       |
 
@@ -106,7 +106,7 @@ Threat model:
 ## Trade-offs
 
 - Upgrade risk: 86% of 129 L2 projects allow instant contract upgrades without exit windows ([Ethical Risk Analysis of L2 Rollups, 2025](https://arxiv.org/html/2512.12732v1)). An escape hatch the operator can remove via upgrade provides no meaningful guarantee. L2Beat Stages requires 7-day (Stage 1) or 30-day (Stage 2) upgrade delays, minus any withdrawal delay.
-- DA withholding: validium DA committees can freeze all funds by refusing to share state. External DA layers add a liveness dependency. On-chain calldata and blobs are immune but expensive. For privacy systems, data can sit on-chain yet be useless without decryption keys.
+- DA withholding: validium DA committees can freeze all funds by refusing to share state. External DA Layers add a liveness dependency. On-chain calldata and blobs are immune but expensive. For privacy systems, data can sit on-chain yet be useless without decryption keys.
 - State freshness gap: users can prove only against the most recently anchored root. Any transactions after that root are lost. Anchoring intervals range from minutes (validity rollups) to hours.
 - Mass exit: everyone hits L1 at once. Gas prices spike, users with no L1 ETH cannot participate, and leveraged DeFi positions may create claims exceeding underlying bridge deposits.
 - Proving liveness: for privacy systems, the user must retain secrets and run a compatible prover. The prover code must be open-source, deterministically compilable, and match the L1 verifier's expected proof format. A version mismatch means funds are frozen until governance acts. Browser WASM proving works but is materially slower than native.
@@ -119,5 +119,5 @@ A bank operates a private payment L2 for its clients. The sequencer goes offline
 
 - [L2Beat Stages Framework](https://l2beat.com/stages): maturity classification for rollup escape hatches
 - [A Practical Rollup Escape Hatch Design (Zircuit, 2025)](https://arxiv.org/html/2503.23986v1): resolver contracts for DeFi positions
-- [L2Beat DA Risk Framework](https://forum.l2beat.com/t/the-data-availability-risk-framework/318): DA layer risk evaluation methodology
+- [L2Beat DA Risk Framework](https://forum.l2beat.com/t/the-data-availability-risk-framework/318): DA Layer risk evaluation methodology
 - [Introducing Stages (Medium)](https://medium.com/l2beat/introducing-stages-a-framework-to-evaluate-rollups-maturity-d290bb22befe)

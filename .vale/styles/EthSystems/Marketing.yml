@@ -1,6 +1,10 @@
 # EthSystems Marketing Language Detector
 # Catches promotional/marketing language that should not appear in technical docs
-# Mirrors patterns from .marketing-exceptions.txt
+#
+# Scope rule: match promotional claims, not ordinary English. Words such as
+# "only", "first" and "unique" are normal technical prose ("only the sender
+# learns the amount", "the first step", "a unique nullifier"), so they are
+# matched only in their promotional forms.
 
 extends: existence
 message: "Avoid marketing language: '%s'. Use neutral, factual terms."
@@ -14,7 +18,9 @@ tokens:
   - world-class
   - top-tier
   - premier
-  - leading
+  - industry leader
+  - market leader
+  - leading (?:provider|platform|solution|protocol|vendor|network)
   - superior
   - unmatched
   - unrivaled
@@ -43,26 +49,19 @@ tokens:
   - comprehensive
   - one-stop
 
-  # Exclusive claims
-  - unique(?! identifier| ID)
-  - only(?! works with| supports| available| if| when)
-  - first(?!-come| step| phase)
+  # Exclusive claims (promotional forms only)
+  - the only (?:solution|platform|protocol|provider|network|option|way|choice)
+  - (?:world's|industry's|market's) (?:first|best|fastest|most)
+  - first-ever
+  - first-of-its-kind
+  - industry-first
+  - truly unique
+  - uniquely positioned
+  - unique (?:advantage|selling|value proposition)
   - fastest
   - most secure
 
 # Exceptions - these terms are allowed in context
 exceptions:
-  - unique identifier
-  - unique ID
-  - first-come-first-served
-  - end-to-end encryption
-  - end-to-end encrypted
-  - only works with
-  - only supports
-  - only available
-  - only if
-  - only when
-  - first step
-  - first phase
   - Best Execution
   - best execution

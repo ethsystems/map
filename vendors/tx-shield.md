@@ -85,7 +85,7 @@ OpenTMP LLM:
 - Privacy-preserving AI model training and inferences for enterprises and regulated sectors, such as healthcare, finance, and government. 
 
 Collab-Key:
-Institutional wallets, custodians, and enterprise-grade signing infrastructure requiring fault-tolerant, hardware-secure (ReRAM) key management to eliminate single points of failure.
+Institutional wallets, custodians, and signing infrastructure requiring fault-tolerant, hardware-secure (ReRAM) key management to eliminate single points of failure.
 
 ---
 

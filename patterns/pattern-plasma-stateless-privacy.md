@@ -66,7 +66,7 @@ Use a stateless Plasma architecture to enable private token transfers where tran
 - L1 anchor contract: stores block commitments (Merkle roots of transaction hashes) and handles deposits, withdrawals, and forced exits.
 - Block producer: aggregates transactions, collects signatures, and posts the block commitment to L1. Stateless with respect to transaction contents.
 - Client-side prover: users generate ZK balance and transfer proofs locally (e.g., recursive FRI-based proofs).
-- User-held Data Availability: users custody their own note and transfer history. Optional trust-minimized DA layer for redundancy.
+- User-held Data Availability: users custody their own note and transfer history. Optional trust-minimized DA Layer for redundancy.
 - Forced-exit mechanism: L1 contract accepts exit proofs independently of the block producer, bypassing liveness failure.
 
 ## Protocol
