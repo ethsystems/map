@@ -1,6 +1,12 @@
 # EthSystems Terminology Consistency
 # Enforces canonical spellings from GLOSSARY.md
 # See also: scripts/check-terminology.js for programmatic checking
+#
+# Case rule: the swap direction must agree with GLOSSARY.md. The glossary
+# writes "MPC (Multi-Party Computation)", "FHE (Fully Homomorphic
+# Encryption)" and "TEE (Trusted Execution Environment)" in title case, so
+# a swap that forced "Multi-Party Computation" down to lower case
+# contradicted both the glossary and the two entries next to it.
 
 extends: substitution
 message: "Use '%s' instead of '%s' for consistency with GLOSSARY.md."
@@ -56,7 +62,6 @@ swap:
 
   # Cryptographic terms
   multiparty computation: multi-party computation
-  Multi-Party Computation: multi-party computation
   fully homomorphic encryption: Fully Homomorphic Encryption
   trusted execution environment: Trusted Execution Environment
 

@@ -150,19 +150,16 @@ jobs:
       - name: Vale linter
         uses: errata-ai/vale-action@d89dee975228ae261d22c15adcd03578634d429c # v2
         with:
-          files: |-
-            patterns
-            vendors
-            approaches
-            use-cases
-            jurisdictions
-            domains
-          separator: "\n"
+          # vale-action accepts a single path, a JSON array, or a string split
+          # on `separator`. A YAML block scalar is none of those, and a
+          # whitespace `separator` is trimmed away by core.getInput before the
+          # action reads it, so both forms end in "path is invalid; falling
+          # back to 'all'" and the whole repository gets linted.
+          files: '["patterns/", "vendors/", "approaches/", "use-cases/", "jurisdictions/", "domains/"]'
           fail_on_error: false
           reporter: github-check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        continue-on-error: true
 
   validate-changelog:
     runs-on: ubuntu-latest

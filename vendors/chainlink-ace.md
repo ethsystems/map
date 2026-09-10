@@ -11,7 +11,7 @@ Modular compliance layer built on the Chainlink Runtime Environment (CRE) to def
 ## Fits with patterns
 - [Regulatory Disclosure Keys Proofs](../patterns/pattern-regulatory-disclosure-keys-proofs.md)
 - [Crypto Registry Bridge eWpG EAS](../patterns/pattern-crypto-registry-bridge-ewpg-eas.md)
-- [DvP ERC7573](../patterns/pattern-dvp-erc7573.md)
+- [DvP ERC-7573](../patterns/pattern-dvp-erc7573.md)
 
 ## Not a substitute for
 - Privacy L2 or App-chain

@@ -19,7 +19,7 @@ A strong design principle of the project is that existing privacy preserving tok
 
 ## Fits with patterns
 - [Shielding](../patterns/pattern-shielding.md)
-- [DvP ERC7573](../patterns/pattern-dvp-erc7573.md)
+- [DvP ERC-7573](../patterns/pattern-dvp-erc7573.md)
 - [Private Stablecoin Shielded Payments](../patterns/pattern-private-stablecoin-shielded-payments.md)
 - [Crypto Registry Bridge eWpG EAS](../patterns/pattern-crypto-registry-bridge-ewpg-eas.md)
 

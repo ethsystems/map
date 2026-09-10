@@ -47,7 +47,7 @@ Target segments include financial institutions tokenizing treasuries and fund sh
 
 ## Strengths
 
-- Comprehensive enterprise features including compliance, KYC/AML, and selective disclosure
+- Enterprise features including compliance, KYC/AML, and selective disclosure
 - Efficient ZK Proving
 - Modularity and interop accross Prividiums
 - L1 as final settlement layer

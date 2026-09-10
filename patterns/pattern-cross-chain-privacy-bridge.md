@@ -96,7 +96,7 @@ Threat model:
 - Two-phase commit workflow, not instant atomic settlement. Latency depends on source finality and any challenge window.
 - Cost scales with the verification mechanism. zero-knowledge proofs are expensive to generate; optimistic systems impose challenge delays; custodial designs are cheap but centralized.
 - Reorg handling and cross-domain confusion (wrong chain ID, token mismatch) are recurring failure modes that must be guarded at the contract layer.
-- Griefing through deposits that are never minted locks funds until timeout. The recovery path must be robust and well-documented.
+- Griefing through deposits that are never minted locks funds until timeout. The recovery path must be tested and well-documented.
 - Key and governance risks: TSS or MPC signer collusion, view-key misuse, and malicious contract upgrades each sit outside the cryptographic trust model and require operational controls.
 - Deployment topologies: pre-bridge mixing (deposit through a source-chain shielded pool first, then bridge: full sender privacy at added latency); hub-and-spoke (L1 as verification hub; multiple L2s prove deposits via the L1 bridge contract); privacy-to-privacy (shielded pools on both ends: privacy on both sender and receiver ends, more complex verification); asymmetric (one direction private, e.g. public L1 to private L2).
 

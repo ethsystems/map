@@ -8,7 +8,7 @@ maturity: testnet
 
 ## What it is
 
-Fhenix builds a CoProcessor that brings Fully Homomorphic Encryption (FHE) to EVM chains, enabling developers to compute directly on encrypted data without ever decrypting it. This allows dApps to offer on-chain privacy by default. At its core, Fhenix introduces CoFHE, a decentralized coprocessor that makes encrypted computation fast, scalable, and easy for Solidity developers to adopt.
+Fhenix builds a CoProcessor that brings Fully Homomorphic Encryption (FHE) to EVM chains, enabling developers to compute directly on encrypted data without ever decrypting it. This allows dApps to offer on-chain privacy by default. At its core, Fhenix introduces CoFHE, a decentralized coprocessor that runs encrypted computation off-chain and exposes it to Solidity developers.
 
 ## Fits with patterns
 
