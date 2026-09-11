@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-11
 
 works-best-when:
   - Asset and cash legs live on different networks (L1 or L2).
@@ -63,27 +63,27 @@ In this pattern:
 
 ## Protocol
 
-1. [user] Two institutions agree off-chain on the asset, quantity, payment token, amount, shared trade identifier `T`, and a latest time to settle or unwind.
+1. [user] Two institutions agree off-chain on the asset, quantity, payment token, amount, shared trade identifier `T`, and a target settlement time (ERC-7573 enforces no on-chain deadline).
 2. [user] The trade-setup system generates two outcome keys for `T` (one meaning "deliver to buyer", one meaning "return to seller") and distributes them off-chain.
 3. [contract] The seller locks the asset in the locking contract on the asset network under `T`, registering hashed values of the two outcome keys.
 4. [contract] The buyer registers `T` and payment details in the decryption contract on the payment network, along with encrypted forms of the same two outcome keys.
 5. [user] The buyer executes the payment through the decryption contract. The contract checks the payment against the registered details for `T`.
-6. [operator] The decryption contract calls the oracle, which decrypts the encrypted key matching the actual outcome (success or failure) and returns it.
-7. [contract] An authorized party submits the outcome key to the locking contract, which verifies it against the registered hashes and either delivers the asset to the buyer (on success) or lets the seller reclaim it (on failure or timeout).
+6. [operator] The decryption contract calls the oracle, which decrypts the encrypted key matching the actual outcome (success or failure) and returns it only after that outcome is final.
+7. [contract] An authorized party submits the outcome key to the locking contract, which verifies it against the registered hashes and either delivers the asset to the buyer (on success) or lets the seller reclaim it (on failure).
 
 ## Guarantees & threat model
 
 Guarantees:
 
-- Atomic settlement: for each trade, both asset and cash legs settle together, or the asset is reclaimed by the seller. One-sided settlement is not an intended state.
-- Defined failure behavior: if the payment fails, is cancelled, no outcome key is released, or the latest time passes, the contracts expose a predictable reclaim path for the seller.
+- Atomic settlement, conditional on verified key setup, correct contracts, an honest and available decryption oracle, finality on both networks, and eventual key delivery and inclusion: for each trade, both asset and cash legs settle, or the payment fails and the seller reclaims the asset. A completed payment is final; the protocol cannot reverse it.
+- Defined failure behavior: if the payment fails or is cancelled, the failure key lets the seller reclaim the asset. ERC-7573 defines no timeout. A latest-time reclaim added by a deployment is safe only if key delivery is bounded; a late key lets the seller reclaim after the buyer has paid.
 - Optional privacy extensions allow observers to see that a trade settled or not without seeing full terms; institutions can still disclose details off-chain when required.
 
 Threat model:
 
 - Soundness of the commitment scheme binding outcome key hashes.
 - Non-colluding decryption oracle operators. A single operator in a centralized deployment can withhold decryption or release the wrong outcome key, breaking atomicity or liveness.
-- Non-censoring sequencers on both networks during the settlement window. A censored payment or settlement transaction forces the fallback to the reclaim path.
+- Non-censoring sequencers on both networks during the settlement window. A censored payment or key-submission transaction blocks settlement or reclaim until it is included.
 - Honest trade-setup system that generates unique, unpredictable outcome keys and distributes them correctly. Collision or replay across trades breaks the guarantee.
 - Network-layer metadata (IP, timing, gas patterns) is out of scope.
 
@@ -98,7 +98,7 @@ Threat model:
 ## Example
 
 - An issuer issues a tokenized bond on Ethereum L1 (asset leg). A buyer holds EURC stablecoin on an L2 rollup (cash leg).
-- They agree off-chain on trade identifier `T`, bond quantity, payment amount, and a latest settlement time.
+- They agree off-chain on trade identifier `T`, bond quantity, payment amount, and a target settlement time.
 - The seller locks the bond in the locking contract on L1 under `T`.
 - The buyer registers `T` and executes the EURC payment via the decryption contract on the rollup; the oracle releases the success outcome key for `T`.
 - That key is submitted to the L1 locking contract, which transfers the bond to the buyer. If the payment had failed or been cancelled, the failure outcome key would have been used instead and the seller would reclaim the bond.
