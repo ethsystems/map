@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: offchain
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-11
 
 works-best-when:
   - Multiple financial institutions each operate their own permissioned ledger but require atomic cross-ledger settlement.
@@ -81,16 +81,16 @@ Enable atomic transactions and data exchange across distinct permissioned ledger
 
 Guarantees:
 
-- Atomicity: cross-ledger operations settle consistently or abort.
+- Atomicity, assuming an honest coordinator: cross-ledger operations settle consistently or abort.
 - Counterparty privacy: only transacting parties see payload state; other domains observe only commitment envelopes.
 - Regulatory audit: scoped access for supervisory entities via dedicated disclosure paths.
 
 Threat model:
 
-- Honesty of the sync coordinator or relayer set. A malicious coordinator can stall commits but cannot unilaterally fabricate state.
+- Honesty of the sync coordinator or relayer set. A crashed coordinator blocks domains that have already prepared. A malicious one can send different decisions to different domains, breaking atomicity, unless a Byzantine fault tolerant commit protocol prevents conflicting decisions.
 - Each domain's local consensus. A compromised domain can produce inconsistent views to counterparties.
 - Operator control over admission. Each ledger operator retains the ability to deny access, freeze assets, or refuse to process transactions within its domain.
-- Cross-chain atomicity under partition is out of scope for simple two-phase commit; stronger protocols are needed when domains lose connectivity mid-commit.
+- Partitions. Two-phase commit keeps atomicity during a partition by blocking: prepared domains wait until they reconnect. Non-blocking commit needs stronger protocols.
 
 ## Trade-offs
 
