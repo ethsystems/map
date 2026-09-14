@@ -63,7 +63,7 @@ In this pattern:
 
 ## Protocol
 
-1. [user] Two institutions agree off-chain on the asset, quantity, payment token, amount, shared trade identifier `T`, and a target settlement time (ERC-7573 enforces no on-chain deadline).
+1. [user] Two institutions agree off-chain on the asset, quantity, payment token, amount, shared trade identifier `T`, and a target settlement time.
 2. [user] The trade-setup system generates two outcome keys for `T` (one meaning "deliver to buyer", one meaning "return to seller") and distributes them off-chain.
 3. [contract] The seller locks the asset in the locking contract on the asset network under `T`, registering hashed values of the two outcome keys.
 4. [contract] The buyer registers `T` and payment details in the decryption contract on the payment network, along with encrypted forms of the same two outcome keys.
