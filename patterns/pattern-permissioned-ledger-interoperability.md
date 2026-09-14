@@ -87,7 +87,7 @@ Guarantees:
 
 Threat model:
 
-- Honesty of the sync coordinator or relayer set. A crashed coordinator blocks domains that have already prepared. A malicious one can send different decisions to different domains, breaking atomicity, unless a Byzantine fault tolerant commit protocol prevents conflicting decisions.
+- Honesty of the sync coordinator or relayer set. An unavailable coordinator prevents execution of transactions in its domains. A malicious one can send different decisions to different domains, breaking atomicity, unless a Byzantine fault tolerant commit protocol prevents conflicting decisions.
 - Each domain's local consensus. A compromised domain can produce inconsistent views to counterparties.
 - Operator control over admission. Each ledger operator retains the ability to deny access, freeze assets, or refuse to process transactions within its domain.
 - Partitions. Two-phase commit keeps atomicity during a partition by blocking: prepared domains wait until they reconnect. Non-blocking commit needs stronger protocols.
