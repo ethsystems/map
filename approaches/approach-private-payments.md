@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Payments"
 status: ready
-last_reviewed: 2026-08-11
+last_reviewed: 2026-09-18
 
 use_case: private-stablecoins
 related_use_cases: [resilient-disbursement-rails, private-treasuries]

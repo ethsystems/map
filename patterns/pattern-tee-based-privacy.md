@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: offchain
-last_reviewed: 2026-06-17
+last_reviewed: 2026-09-18
 
 works-best-when:
   - Confidential computation is needed with lower latency than zero-knowledge proofs or multi-party computation can deliver.

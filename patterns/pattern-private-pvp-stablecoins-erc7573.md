@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-11
+last_reviewed: 2026-09-18
 
 works-best-when:
   - Two permissioned or regulated stablecoins (same L2 or cross-L2) must settle against each other with amount privacy, and both parties accept an oracle as the settlement trigger.

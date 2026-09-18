@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-17
+last_reviewed: 2026-09-18
 
 works-best-when:
   - You need hidden amounts and positions with a minimal on-chain footprint.
