@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: L2
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-18
 
 works-best-when:
   - High transaction volume with privacy requirements.
@@ -86,7 +86,7 @@ Guarantees:
 - Transaction amounts, sender, and receiver are hidden from chain observers; only commitments and per-block sender lists are visible.
 - zero-knowledge proofs ensure no double-spend or inflation without revealing transaction details.
 - Users control their own data; no operator can freeze specific balances if forced exit is implemented.
-- Funds are secured by L1; users can always exit with a valid proof.
+- Funds are secured by L1: a user can exit without the block producer's cooperation only if they hold their own transaction history.
 
 Threat model:
 
@@ -111,10 +111,10 @@ Threat model:
 - The block producer includes the transaction in a block and posts only the Merkle root to L1.
 - Institution B receives the note, verifies the proof, and stores it locally.
 - On-chain observers see only that a deposit occurred and that a state root was updated; no amounts and no parties.
-- Institution B can later withdraw to any L1 address, breaking the link to the original depositor.
+- Institution B can later withdraw to any L1 address. That breaks the direct deposit-to-withdrawal link, but sender-side unlinkability is bounded by the per-block sender lists published on L1: the anonymity set is the set of senders in the blocks involved, not the whole chain.
 
 ## See also
 
 - [Plasma original paper](https://plasma.io/)
-- [Intmax2 paper (eprint 2023/1082)](https://eprint.iacr.org/2023/1082)
+- [Intmax2 paper (eprint 2023/1082)](https://eprint.iacr.org/2023/1082) -- the paper presents Intmax2 as a ZK-rollup; it is grouped with Plasma here because Data Availability sits with users rather than on L1, which is the property this pattern turns on
 - [Post-Quantum Threats](../domains/post-quantum.md)

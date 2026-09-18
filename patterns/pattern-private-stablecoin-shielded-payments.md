@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: L2
-last_reviewed: 2026-06-17
+last_reviewed: 2026-09-18
 
 works-best-when:
   - The cash leg must be private in both amounts and counterparties, with selective disclosure available to auditors.
@@ -116,7 +116,6 @@ Threat model:
 - [Zama](../vendors/zama.md)
 - [Fhenix](../vendors/fhenix.md)
 - [Inco](../vendors/inco.md)
-- [Canton Network press release on weekend USDC cash leg](https://www.canton.network/canton-network-press-releases/digital-asset-complete-on-chain-us-treasury-financing)
 - [Aztec programmable-privacy documentation](https://docs.aztec.network/)
 - [Zama confidential ERC-20 overview](https://www.zama.ai/post/confidential-erc-20-tokens-using-homomorphic-encryption)
 - [Fhenix encrypted computation overview](https://blog.arbitrum.io/fhenix-private-computation/)

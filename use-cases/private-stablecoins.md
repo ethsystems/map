@@ -47,9 +47,9 @@ See detailed solution architecture and trade-offs in [**Approach: Private Paymen
 
 **Jurisdiction-Specific Implementations:**
 
-- **China:** Apply these patterns to e-CNY (Digital Yuan) infrastructure through approved BSN channels
+- **China:** Stablecoins are out of scope; the state-sanctioned analogue is e-CNY, a centrally operated PBoC system distributed through licensed operator banks rather than a public ledger. Permissioned enterprise chains (BSN) are a separate programme and are not an access channel to e-CNY, so these patterns apply only where an approved operator admits them
 - **EU/US:** Licensed stablecoins under MiCA/GENIUS frameworks
-- **Hong Kong:** SFC-licensed digital payment token services
+- **Hong Kong:** HKMA-licensed issuers of fiat-referenced stablecoins under the [Stablecoins Ordinance (Cap. 656)](../jurisdictions/hk-crypto-licensing.md); SFC-licensed virtual asset trading platforms for the trading leg
 
 ### Non‑Solutions
 
