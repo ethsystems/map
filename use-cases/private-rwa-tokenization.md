@@ -14,10 +14,10 @@ Regulated real-world assets (RWAs) are tokenized on-chain to enable permissioned
 
 ### Market Signals
 
-- **Market size:** ~$15.8B on-chain RWA TVL (Sep 2025, [DefiLlama](https://defillama.com/protocols/RWA), excludes stablecoins); broader trackers (e.g. [rwa.xyz](https://app.rwa.xyz/)) report higher under wider scope
-- **Growth:** [Coinbase](https://assets.ctfassets.net/sygt3q11s4a9/6oinXHvVekdIUw2Ch7yIQw/22d0185eba3c49322ce7cf0d287ea872/SOCQ2Report_final.pdf) reported ~245× growth, $85M (April 2020) to $21B (April 2025); different scope from DefiLlama, not directly comparable
-- **Asset distribution:** Private credit (61%), Treasuries (30%), Commodities (7%), Institutional funds (2%)
-- **Deployed categories:** [US Treasuries](https://app.rwa.xyz/treasuries), [Global Bonds](https://app.rwa.xyz/global-bonds), [Private Credits](https://app.rwa.xyz/private-credit), [Commodities](https://app.rwa.xyz/commodities), [Institutional Funds](https://app.rwa.xyz/institutional-funds), [Stocks](https://app.rwa.xyz/stocks)
+- **Market size:** ~$38.6B distributed on-chain RWA value, excluding stablecoins (29 Sep 2026, [rwa.xyz](https://app.rwa.xyz/)); rwa.xyz counts a further ~$358B of [represented assets](https://rwa.xyz/blog/a-new-framework-for-tokenized-assets-distributed-and-represented), which are recorded on-chain but cannot leave the issuing platform or move peer-to-peer. [Binance Research](https://www.binance.com/en/research/analysis/the-rwa-activation-era), using [DefiLlama](https://defillama.com/rwa) data, reports $34.18B (15 Sep 2026)
+- **Growth:** [Coinbase](https://assets.ctfassets.net/sygt3q11s4a9/6oinXHvVekdIUw2Ch7yIQw/22d0185eba3c49322ce7cf0d287ea872/SOCQ2Report_final.pdf) reported ~245× growth, $85M (April 2020) to $21B (April 2025), using RWA.xyz data under its methodology at the time; not directly comparable to the figures above
+- **Asset distribution:** Share of distributed value (29 Sep 2026, rwa.xyz): US Treasuries (38%), credit (20%), commodities (13%), active strategies (10%), stocks (8%), private equity / venture capital (6%), non-US government debt (3%), real estate (<1%)
+- **Deployed categories:** [US Treasuries](https://app.rwa.xyz/treasuries), [Non-US Government Debt](https://app.rwa.xyz/government-bonds), [Credit](https://app.rwa.xyz/credit), [Commodities](https://app.rwa.xyz/commodities), [Active Strategies](https://app.rwa.xyz/active-strategies), [Private Equity / VC](https://app.rwa.xyz/private-equity-venture-capital), [Real Estate](https://app.rwa.xyz/real-estate), [Stocks](https://app.rwa.xyz/stocks)
 
 ## 3) Actors
 

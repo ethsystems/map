@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Bond Issuance & Trading"
 status: ready
-last_reviewed: 2026-06-24
+last_reviewed: 2026-09-29
 
 use_case: private-bonds
 related_use_cases: [private-corporate-bonds, private-government-debt]
@@ -43,7 +43,7 @@ open_source_implementations:
   - url: https://github.com/AztecProtocol/aztec-packages
     description: "Aztec privacy-native L2"
     language: TypeScript / Noir
-  - url: https://github.com/0xMiden/miden-base
+  - url: https://github.com/0xMiden/protocol
     description: "Miden client-side ZK rollup"
     language: Rust
 ---
@@ -54,7 +54,7 @@ open_source_implementations:
 
 ### Scenario
 
-A bank issues a EUR 100M corporate bond series with private allocation amounts to 50 institutional investors and operates an active secondary market with RFQ-based price discovery. The bank needs hidden positions and trade sizes, atomic same-chain DvP against EURC, jurisdiction-specific selective disclosure (eWpG, MiCA), and an automated 24/7 market with daily settlement.
+A bank issues a EUR 100M corporate bond series with private allocation amounts to 50 institutional investors and operates an active secondary market with RFQ-based price discovery. The bank needs hidden positions and trade sizes, atomic same-chain DvP against EURC, jurisdiction-specific selective disclosure (eWpG for the bond; MiCA for the EURC leg, since bonds that are MiFID II financial instruments fall outside MiCA), and an automated 24/7 market with daily settlement.
 
 ### Requirements
 
@@ -92,7 +92,7 @@ example_vendors: [paladin, railgun]
 - L1 consensus and the verifier contract
 - Gas relayer for liveness on private withdrawals
 - Issuer for the global-note-to-holder-notes split at issuance
-- No per-circuit trusted setup (UltraHonk uses a universal KZG SRS)
+- No per-circuit trusted setup in the PoC (UltraHonk uses a universal KZG SRS); Groth16-based vendors (Railgun, Paladin Zeto) rely on per-circuit setup ceremonies
 
 **Threat model:**
 - A circuit or verifier soundness bug (e.g., an under-constrained circuit) lets an attacker forge or double-spend notes; metadata leakage at deposit/withdraw boundaries is the practical privacy exposure
@@ -126,14 +126,14 @@ example_vendors: [aztec, miden]
 **How it works:** Aztec exposes private notes and contracts as native primitives. Bond issuance, transfer, and coupon logic run in private functions with client-side proving. Incoming Viewing Keys (IVKs) provide account-level read access; nullifier keys are app-siloed for damage containment.
 
 **Trust assumptions:**
-- Sequencer for ordering (currently centralized in early deployments)
+- Sequencer set for ordering (Aztec Alpha mainnet uses a staked, decentralized sequencer set; Alpha is early-stage and Aztec advises limiting deposits)
 - Bridge contract for L1 settlement
-- Aztec proving system soundness
+- Aztec proving system soundness (a critical soundness vulnerability in the Alpha V5 proving system was disclosed on 2026-07-27)
 
 **Threat model:**
 - Sequencer outage or censorship; rollup escape paths leak linkage during forced exit
 - Bridge boundary leaks deposit and withdraw amounts
-- IVK compromise reveals all account-level flows
+- IVK compromise reveals every note the account receives, including its own change notes; it grants no spending authority
 
 **Works best when:**
 - Bond logic is complex (coupons, lifecycle) and benefits from native privacy primitives
@@ -159,7 +159,7 @@ example_vendors: [taceo-merces]
 **How it works:** Bond state lives offchain under MPC sharing; institutional senders submit shares, the committee computes the transition under MPC, and emits a co-SNARK on chain. Account-model simplicity is preserved at the application layer; addresses remain visible.
 
 **Trust assumptions:**
-- Honest-majority 3-party MPC committee (TACEO coNoir uses REP3 / 3-party Shamir, tolerating one corrupt node)
+- Honest-majority 3-party MPC committee (Merces uses semi-honest 3-party replicated secret sharing, tolerating one corrupt node)
 - Co-SNARK soundness
 - Committee liveness
 
@@ -171,7 +171,7 @@ example_vendors: [taceo-merces]
 **Works best when:**
 - Institutional custodial models are acceptable
 - Amount confidentiality is sufficient and counterparty privacy is not required
-- Throughput target matches batched proving (~200 TPS, TACEO-reported)
+- Throughput target matches batched proving (~200-300 TPS, TACEO-reported)
 
 **Avoid when:**
 - Honest-majority assumption among MPC nodes is incompatible with the threat model
@@ -198,9 +198,9 @@ example_vendors: [zama, fhenix]
 - ACL model adoption by all bond participants
 
 **Threat model:**
-- Threshold compromise reveals ciphertexts
+- Compromise of the threshold network above its threshold decrypts all ciphertexts
 - No revocation per ciphertext; revocation requires a re-encryption / re-grant on balance update
-- Shared throughput (500-1000 TPS, vendor-reported) is a network-wide bottleneck
+- Shared per-chain throughput (over 20 TPS on CPU; 500-1000 TPS projected with GPUs by end-2026, vendor-reported) is a bottleneck
 
 **Works best when:**
 - Bond logic involves complex calculations (coupon accruals, derivatives) that map naturally to FHE
@@ -220,7 +220,7 @@ example_vendors: [zama, fhenix]
 | **CROPS** | CR:hi O:y P:full S:hi | CR:med O:part P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:part S:med |
 | **Trust model** | Self-custody (L1 + ZK) | Sequencer + bridge | Honest-majority 3-party MPC | t-of-n threshold network |
 | **Privacy scope** | Amounts + addresses (via gas relayer) | Amounts + addresses (account level) | Amounts only; addresses public | Amounts only; addresses public |
-| **Performance** | High gas, chain-dependent throughput | L2-internal fees, unknown TPS | ~95K gas/tx batched, ~200 TPS (vendor) | ~300K gas/tx, 500-1000 TPS shared (vendor) |
+| **Performance** | High gas, chain-dependent throughput | L2-internal fees, unknown TPS | ~0.9M gas per transfer intent plus ~3.8M per 50-tx batch, ~200-300 TPS (vendor) | ~300K gas/tx, 20+ TPS shared, 500-1000 projected (vendor) |
 | **Operator req.** | No (gas relayer optional) | Yes (sequencer) | Yes (MPC committee) | Yes (threshold network) |
 | **Cost class** | High (L1 verify) | Low (L2-internal) | Low (batched) | Medium |
 | **Regulatory fit** | Strong (per-note view keys) | Strong (IVKs, app-siloed nullifiers) | Strong for known counterparty | Strong (per-balance ACL) |
@@ -230,7 +230,7 @@ example_vendors: [zama, fhenix]
 
 ### Business perspective
 
-For institutional bond issuance and trading at scale, UTXO Shielded Notes is the default: production maturity (Railgun ~USD 5b lifetime shielded volume as of 2026), white-label vendor coverage (Paladin), privacy over amounts, counterparties, and addresses (addresses via gas relayer), and a regulatory story built on per-note viewing keys that maps cleanly onto eWpG and MiCA disclosure regimes. Privacy L2 fits where bond logic is complex (coupons, structured lifecycle) because it removes circuit-engineering work, but the issuer must accept the rollup's decentralization timeline. co-SNARKs and FHE fit specific institutional contexts: bilateral or club-mode markets where address visibility is acceptable, or coupon-heavy products where homomorphic arithmetic is the natural model.
+For institutional bond issuance and trading at scale, UTXO Shielded Notes is the default: production maturity (Railgun ~USD 5b lifetime shielded volume as of 2026), white-label vendor coverage (Paladin), privacy over amounts, counterparties, and addresses (addresses via gas relayer), and a disclosure story built on per-note viewing keys that can be assessed against eWpG (and MiCA for the EURC leg). Privacy L2 fits where bond logic is complex (coupons, structured lifecycle) because it removes circuit-engineering work, but the issuer must accept the rollup's decentralization timeline. co-SNARKs and FHE fit specific institutional contexts: bilateral or club-mode markets where address visibility is acceptable, or coupon-heavy products where homomorphic arithmetic is the natural model.
 
 ### Technical perspective
 
@@ -244,7 +244,7 @@ This is a perspective for legal review by the deploying issuer, not legal advice
 
 ### Default
 
-For institutional bond issuance and trading on a 1-2 year production timeline, default to UTXO Shielded Notes with [Paladin](../vendors/paladin.md) or [Railgun](../vendors/railgun.md) as the underlying shielded pool. This is the category with documented production volume, vendor coverage, and a disclosure interface that has been mapped onto eWpG / MiCA expectations.
+For institutional bond issuance and trading on a 1-2 year production timeline, default to UTXO Shielded Notes with [Paladin](../vendors/paladin.md) or [Railgun](../vendors/railgun.md) as the underlying shielded pool. This is the category with documented production volume, vendor coverage, and a per-note viewing-key disclosure interface that can be assessed against eWpG expectations.
 
 ### Decision factors
 

@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-29
 
 works-best-when:
   - A user or institution lacks the compute, memory, or battery to generate a zero-knowledge proof client-side and wants to offload the work without disclosing the witness.
@@ -26,14 +26,14 @@ crops_profile:
 
 crops_context:
   cr: "Reaches `high` when the prover network is permissionless and bond-backed with slashing for Byzantine behaviour. Drops to `low` when a single proving service controls the pipeline."
-  o: "Proving-framework implementations are published under permissive licenses; production deployments may bundle proprietary orchestration."
+  o: "Proving-framework implementations are open source (TACEO co-snarks: MIT/Apache-2.0, with the co-circom components under GPL-3.0); production deployments may bundle proprietary orchestration."
   p: "The witness stays hidden from each individual prover and from the verifier. Metadata about who requested a proof, when, and against which circuit can still leak."
-  s: "Rides on the soundness of the underlying SNARK and the honest-majority assumption of the MPC protocol. Trusted-setup requirements inherit from the SNARK (Groth16 needs per-circuit setup; PLONK/KZG uses universal setup)."
+  s: "Rides on the soundness of the underlying SNARK and the corruption threshold of the MPC protocol (honest majority for GSZ, replicated, or Shamir sharing; one honest node for SPDZ-style protocols). Trusted-setup requirements inherit from the SNARK (Groth16 needs per-circuit setup; PLONK/KZG uses universal setup)."
 
 post_quantum:
   risk: high
   vector: "Pairing-based SNARKs (Groth16, PLONK/KZG) broken by CRQC. MPC communication inherits the underlying key-exchange assumptions."
-  mitigation: "co-STARK alternatives with hash-based commitments. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  mitigation: "Collaborative versions of hash-based proof systems exist only as research (Ozdemir & Boneh adapt Fractal, at N-times proof size and verification cost). See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: []
 
@@ -44,20 +44,20 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/TaceoLabs/co-snarks
-    description: "co-SNARK proving framework supporting Groth16 and PLONK (research/testnet)"
+    description: "co-SNARK proving framework: Groth16 and PLONK (coCircom), UltraHonk (coNoir); README marks it experimental and un-audited"
     language: "Rust"
 ---
 
 ## Intent
 
-Offload zero-knowledge proof generation to a distributed prover network without revealing the witness. The user secret-shares their witness across several proving nodes; the nodes jointly run an MPC protocol to compute a single SNARK proof; no individual node ever reconstructs the full witness. The resulting proof is identical to one produced client-side and is verified on-chain or off-chain with no changes on the verifier side.
+Offload zero-knowledge proof generation to a distributed prover network without revealing the witness. The user secret-shares their witness across several proving nodes; the nodes jointly run an MPC protocol to compute a single SNARK proof; no individual node ever reconstructs the full witness. The resulting proof is indistinguishable from one produced client-side and is verified on-chain or off-chain with no changes on the verifier side.
 
 This pattern covers delegated proving for a single prover's witness. For multi-party joint computation over shared secret inputs (e.g. a consortium ledger), see `pattern-private-shared-state-cosnark`.
 
 ## Components
 
 - User or application holds the witness and wants a proof generated without exposing the witness.
-- Share-distribution layer splits the witness using secret-sharing (additive or Shamir) and routes shares to proving nodes.
+- Share-distribution layer splits the witness using secret-sharing (additive, replicated, or Shamir) and routes shares to proving nodes.
 - Distributed prover network runs the MPC protocol to jointly compute the SNARK. Each node sees only its share.
 - Coordinator sequences MPC rounds and assembles the final proof. Can be one of the proving nodes or a separate role.
 - Verifier checks the final proof exactly as it would check a client-side SNARK. No changes on the verification side.
@@ -76,21 +76,21 @@ Guarantees:
 
 - The witness stays hidden from every individual prover and from the verifier.
 - Verification cost is identical to a client-side SNARK for the same circuit.
-- Preserves trade secrets, user balances, or model weights under honest-majority assumptions.
+- Preserves trade secrets, user balances, or model weights while fewer nodes collude than the MPC protocol tolerates.
 
 Threat model:
 
 - Soundness of the underlying SNARK, including any trusted-setup ceremony.
-- Honest-majority assumption across proving nodes. A colluding majority can recover the witness and, in some constructions, forge proofs.
+- Corruption threshold of the MPC protocol: honest majority for GSZ, replicated, or Shamir sharing (TACEO co-snarks uses 3-party replicated and Shamir sharing), or one honest node for SPDZ. A coalition above the threshold can recover the witness. It cannot forge proofs of false statements: knowledge soundness comes from the underlying SNARK even if all provers collude.
 - Non-censoring coordinator. A malicious coordinator can refuse to finalize or selectively drop requests.
 - Authenticated and confidential channels between nodes. Metadata about participation and timing is out of scope.
 
 ## Trade-offs
 
-- Heavy communication overhead. Round count and bandwidth scale with both the number of provers and circuit size.
+- Communication overhead. Bandwidth grows with circuit size and the number of provers; round count is sub-linear in constraint count. PLONK-style provers need more communication than Groth16.
 - New infrastructure requirements: MPC nodes, share routing, key management.
 - Liveness depends on all designated nodes remaining online through the proving session. Dropouts typically force a restart.
-- Latency is higher than client-side proving because of MPC round trips; not suitable for sub-second proving budgets.
+- Latency is higher than a single prover on the same hardware for small circuits, where MPC round trips dominate. Ozdemir & Boneh measure near-single-prover runtime for large circuits with honest-majority GSZ over 3 Gb/s links, 2x for SPDZ, and slowdown growing on low-bandwidth links. Not suitable for sub-second proving budgets.
 
 ## Example
 
@@ -98,6 +98,6 @@ Threat model:
 
 ## See also
 
-- [Collaborative zk-SNARKs (Ozdemir & Boneh, 2021)](https://eprint.iacr.org/2021/1530.pdf)
+- [Collaborative zk-SNARKs (Ozdemir & Boneh, USENIX Security 2022)](https://eprint.iacr.org/2021/1530.pdf)
 - [TACEO private proof delegation](https://core.taceo.io/articles/private-proof-delegation/)
 - [TACEO Merces vendor page](../vendors/taceo-merces.md)

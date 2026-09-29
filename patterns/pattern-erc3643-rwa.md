@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: L1
-last_reviewed: 2026-08-11
+last_reviewed: 2026-09-29
 
 works-best-when:
   - Regulatory compliance is mandatory.
@@ -27,13 +27,13 @@ crops_profile:
 
 crops_context:
   cr: "Investor-initiated transfers are gated by the identity registry and compliance modules. The standard also gives owner- and agent-controlled administrative paths such as freezing and forced transfer, so censorship resistance is structurally `none` without strong governance constraints."
-  o: "Standard specification is open and the reference implementations are source-available, but claim issuer ecosystems are gatekept. Could reach `yes` by requiring copyleft licensing on compliance modules and a permissionless attestation registry for claim issuers."
+  o: "Standard specification is open and the reference implementations (T-REX, ONCHAINID) are open source under GPL-3.0, but claim issuer ecosystems are gatekept. Could reach `yes` by requiring copyleft licensing on third-party compliance modules and a permissionless attestation registry for claim issuers."
   p: "Identities and transfer parameters are public on chain. Could reach `partial` by replacing on-chain identity checks with zero-knowledge proofs of claim validity, enabling transfer validation without exposing PII."
   s: "Rides on correctness of the compliance modules and operational security of the token-agent key. Could reach `high` with multisig governance and time-locked upgrades on the issuer admin path."
 
 post_quantum:
   risk: medium
-  vector: "ECDSA signatures on agent and holder keys are broken by a CRQC. HNDL risk is moderate since on-chain identity data is public but linkable to off-chain PII."
+  vector: "ECDSA signatures on agent and holder keys are broken by a CRQC. On-chain identity data is public rather than encrypted, so there is no harvest-now-decrypt-later exposure; the risk is forged agent actions and forged identity claims."
   mitigation: "Migrate agent and governance keys to post-quantum signature schemes; anchor claims via hash-based attestation schemes rather than ECDSA-signed claims."
 
 standards: [ERC-3643, ERC-734, ERC-735]
@@ -55,7 +55,7 @@ Enable compliant tokenization of real-world assets with built-in identity manage
 - On-chain identity contract per participant stores claims (KYC, accreditation, jurisdiction) and exposes verification endpoints.
 - Identity registry maps wallet addresses to identity contracts and gates who is eligible to hold the token.
 - Compliance module suite is a pluggable rules engine that evaluates per-transfer restrictions (caps, lockups, eligibility classes).
-- Claim issuers are off-chain actors that sign claims written into identity contracts; the registry tracks trusted issuers.
+- Claim issuers sign claims written into identity contracts and are represented on chain by claim-issuer contracts; the Trusted Issuers Registry lists which issuers the token trusts for which claim topics.
 
 ## Protocol
 
@@ -78,7 +78,7 @@ Guarantees:
 - Every investor-initiated `transfer` or `transferFrom` path passes identity verification and compliance checks before execution.
 - Transfer rules can enforce KYC/AML status, investor accreditation, and jurisdictional restrictions automatically, subject to the configured claim issuers and compliance modules.
 - Administrative actions such as freezes and forced transfers are observable on chain, but their authority and policy constraints must be documented separately.
-- Interface compatibility with ERC-20 tooling, with additional transfer restrictions opaque to the caller.
+- Interface compatibility with ERC-20 tooling. Transfer restrictions sit outside the ERC-20 interface, but callers can pre-check them through the identity registry's `isVerified` and the compliance contract's `canTransfer`.
 
 Threat model:
 

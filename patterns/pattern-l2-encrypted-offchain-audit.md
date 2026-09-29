@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-18
+last_reviewed: 2026-09-29
 
 works-best-when:
   - You need hidden amounts and positions with a minimal on-chain footprint.
@@ -33,8 +33,8 @@ crops_context:
 
 post_quantum:
   risk: medium
-  vector: "Symmetric record encryption (AES-GCM) is PQ-safe; key wrapping under EC-based threshold schemes is broken by CRQC, with HNDL risk for long-retention archives."
-  mitigation: "Rotate wrapped keys using ML-KEM or hash-based threshold schemes before CRQC arrival. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "Symmetric record encryption with AES-256-GCM is PQ-safe; key wrapping under EC-based threshold schemes is broken by CRQC, with HNDL risk for long-retention archives."
+  mitigation: "Wrap record keys under ML-KEM or lattice-based threshold decryption. Re-wrapping before CRQC arrival does not protect copies of the log harvested earlier, so long-retention archives need PQ wrapping from the start. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [ERC-7573, EIP-4844, EAS]
 
@@ -59,7 +59,7 @@ Run settlement on a low-cost L2, publish only commitments and hashes on chain, a
 - Append-only encrypted log, replicated across regions, storing per-trade records keyed by a content address.
 - Per-trade symmetric key, wrapped to a threshold set of authorities so that disclosure requires a quorum rather than a single custodian.
 - Atomic settlement contract implementing cross-leg delivery-versus-payment over cash and asset legs.
-- Access-logging attestations emitted on chain whenever a scoped key is issued or used.
+- Access-logging attestations emitted on chain whenever a scoped key is issued.
 
 ## Protocol
 
@@ -74,10 +74,10 @@ Run settlement on a low-cost L2, publish only commitments and hashes on chain, a
 
 Guarantees:
 
-- Public observers see only commitments and hashes; amounts, identities, and positions remain off chain.
+- Public observers see only commitments and hashes of the audit records; amounts, identities, and positions in the log remain off chain. The settlement legs expose what the L2 token transfers expose: plain ERC-20 transfers on a public L2 reveal sender, recipient, and amount unless the legs use confidential or netted balances.
 - Merkle anchoring makes the log tamper-evident: any silent rewrite breaks the on-chain root.
-- Atomic delivery-versus-payment prevents one-sided settlement failure.
-- Disclosure is scoped and logged, so access is auditable after the fact.
+- Atomic delivery-versus-payment prevents one-sided settlement failure when both legs settle on the same L2. Across networks, [ERC-7573](https://ercs.ethereum.org/ERCS/erc-7573) settlement is conditional on the decryption oracle.
+- Disclosure is scoped and logged, so access is auditable after the fact. A released record key cannot be revoked or time-limited.
 
 Threat model:
 
@@ -95,10 +95,10 @@ Threat model:
 
 ## Example
 
-A dealer sells a bond to an asset manager on the L2. The chain records only the commitment and the hourly Merkle root; full trade details sit encrypted in the log. Delivery-versus-payment finalizes atomically on chain. The national supervisor later receives a 24-hour scoped key for that record, and the issuance is attested on chain so the disclosure is itself auditable.
+A dealer sells a bond to an asset manager on the L2. The audit contract records only the commitment and the hourly Merkle root; full trade details sit encrypted in the log. Delivery-versus-payment finalizes atomically on chain. The national supervisor later receives the decryption key for that record, and the issuance is attested on chain so the disclosure is itself auditable.
 
 ## See also
 
 - [ERC-7573 spec](https://ercs.ethereum.org/ERCS/erc-7573)
 - [EIP-4844 (blobs)](https://eips.ethereum.org/EIPS/eip-4844)
-- [EAS docs](https://easscan.org/docs)
+- [EAS docs](https://docs.attest.org/)
