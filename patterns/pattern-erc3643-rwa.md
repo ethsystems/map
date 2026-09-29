@@ -40,7 +40,7 @@ standards: [ERC-3643, ERC-734, ERC-735]
 
 related_patterns:
   composes_with: [pattern-crypto-registry-bridge-ewpg-eas, pattern-regulatory-disclosure-keys-proofs, pattern-zk-kyc-ml-id-erc734-735]
-  see_also: [pattern-shielding, pattern-compliance-monitoring]
+  see_also: [pattern-shielding, pattern-compliance-monitoring, pattern-private-mtp-auth]
 ---
 
 ## Intent
@@ -71,6 +71,18 @@ Enable compliant tokenization of real-world assets with built-in identity manage
 
 ERC-3643 distinguishes investor-initiated transfers from administrative actions. The canonical specification states that `mint` and `forcedTransfer` can bypass compliance rules while still requiring a verified recipient. Implementations can differ: the current ERC-3643 reference contract invokes `canTransfer` for `mint` but not for `forcedTransfer`. Integrators should verify the exact deployed version before treating the token as enforcing one uniform rule on every movement of value.
 
+## Confidentiality boundary
+
+This pattern treats transaction-level confidentiality as out of scope. For designs that add it, the boundary runs between two layers:
+
+- **The policy layer can be reused.** Claim topics, the Trusted Issuers Registry and ONCHAINID claims define rules without requiring any particular data to be public. ONCHAINID claims already carry `signature` and `data` byte fields that can hold a zero-knowledge proof, which hides a claim's content but not its existence.
+- **The execution layer cannot be made confidential without interface changes:**
+  - `balanceOf` and `Transfer` events, kept for ERC-20 compatibility
+  - the identity registry's `identity(address)` and `isVerified(address)`, which publish the wallet-to-identity mapping
+  - the compliance contract's `canTransfer(from, to, amount)`, which takes both parties and the amount in the clear
+
+A confidential design therefore reuses the policy layer and replaces the execution layer, for example with shielded notes and a membership proof in place of the identity registry (see [Private Client Authentication for Institutional EOAs](pattern-private-mtp-auth.md)). The same split applies to DS Protocol (see Trade-offs): its compliance configuration is policy, while the registry's public investor and country views and the per-transfer investor lookup are execution.
+
 ## Guarantees & threat model
 
 Guarantees:
@@ -94,6 +106,7 @@ Threat model:
 - Not suitable for permissionless DeFi composition. Many protocols will reject permissioned tokens.
 - Compliance rules must be maintained and updated as regulations evolve, which requires ongoing governance.
 - CMTAT covers the same intent through a rule-engine and allowlist model instead of an identity registry with claim issuers; it is blockchain-agnostic (EVM, Tezos, Solana) and has an existing privacy-preserving implementation in Noir for Aztec, relevant where transaction-level confidentiality is a goal.
+- Securitize's DS Protocol covers the same intent with a different architecture. The token resolves its registry service, compliance service, compliance configuration, lock manager, wallet manager and trust service through a service registry, and investors are identified by an issuer-assigned investor ID rather than an ONCHAINID contract. Tokenized funds on Ethereum use it. Two generations are in production: the omnibus-wallet mechanism was removed upstream in July 2025, and deployments that predate the change still carry it.
 
 ## Example
 
@@ -104,3 +117,4 @@ An issuer tokenizes a bond as a permissioned token with investor accreditation r
 - [Private Bonds Approach](../approaches/approach-private-bonds.md)
 - [ERC-3643 documentation](https://docs.erc3643.org/erc-3643)
 - [CMTAT (CMTA Token) standard](https://cmta.ch/standards/cmta-token-cmtat)
+- [DS Protocol (Securitize)](https://github.com/securitize-io/dstoken) and the [omnibus removal commit](https://github.com/securitize-io/dstoken/commit/e406ee17322ee1c1dc3fef669bf9a63fd479e5dc)
