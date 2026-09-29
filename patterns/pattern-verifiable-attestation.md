@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-18
+last_reviewed: 2026-09-29
 
 works-best-when:
   - Smart-contract logic must gate on off-chain attested facts (KYC status, accreditation, membership).

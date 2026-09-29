@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-29
 
 works-best-when:
   - Onboarding identities must be publicly verifiable on-chain, for example to enable instant settlement without manual gate-keeping.
@@ -33,7 +33,7 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "Pairing-based proof systems used in current zero-knowledge machine-learning stacks are broken by a CRQC. HNDL risk applies to any long-lived on-chain proof that will still be relied on when CRQCs arrive."
+  vector: "Pairing-based proof systems used in current zero-knowledge machine-learning stacks (for example, Halo2 with KZG in EZKL) and ECDSA issuer signatures on ERC-735 claims are broken by a CRQC, which allows forged proofs and claims. Any long-lived on-chain claim still relied on when CRQCs arrive loses soundness. The zero-knowledge property does not rest on the broken assumptions, so harvested proofs do not expose the private inputs."
   mitigation: "Migrate the proof backend to hash-based systems (STARK or hash-based SNARK). PQ-safe arithmetization of institutional signature schemes currently imposes a large circuit-size penalty and remains a research frontier. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [ERC-734, ERC-735]
@@ -48,7 +48,7 @@ open_source_implementations:
     description: "ONCHAINID reference implementation of ERC-734/735 (production)"
     language: "Solidity"
   - url: https://github.com/zkonduit/ezkl
-    description: "EZKL zero-knowledge machine-learning proving framework (research/testnet)"
+    description: "EZKL zero-knowledge machine-learning proving framework, Halo2-based (research/testnet; source-available, no open-source license since January 2024)"
     language: "Rust"
 ---
 
@@ -98,12 +98,12 @@ Threat model:
 
 ## Example
 
-A bank onboarding an investor runs a standard KYC and AML check off-chain. The bank's issuer service produces a zero-knowledge proof that the investor passed the bank's published policy. The investor submits the proof to their ERC-734/735 identity contract via the verifier contract, which writes an accredited-investor claim. A tokenized bond contract reads the claim when the investor subscribes and settles the transfer atomically, without ever seeing the investor's personal data.
+A bank onboarding an investor runs a standard KYC and AML check off-chain. The bank's issuer service produces a zero-knowledge proof that the investor passed the bank's published policy. The investor submits the proof to their ERC-734/735 identity contract via the verifier contract, which writes a KYC/AML claim. A tokenized bond contract reads the claim when the investor subscribes and settles the transfer atomically, without ever seeing the investor's personal data.
 
 ## See also
 
-- [ERC-734](https://eips.ethereum.org/EIPS/eip-734)
-- [ERC-735](https://eips.ethereum.org/EIPS/eip-735)
+- [ERC-734 (unmerged, GitHub issue)](https://github.com/ethereum/EIPs/issues/734)
+- [ERC-735 (unmerged, GitHub issue)](https://github.com/ethereum/EIPs/issues/735)
 - [EZKL documentation](https://docs.ezkl.xyz/)
 - [Approach: Private Identity](../approaches/approach-private-identity.md)
 - [Domain: Identity and Compliance](../domains/identity-compliance.md)

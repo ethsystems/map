@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Payments"
 status: ready
-last_reviewed: 2026-09-18
+last_reviewed: 2026-09-29
 
 use_case: private-stablecoins
 related_use_cases: [resilient-disbursement-rails, private-treasuries]
@@ -40,6 +40,10 @@ pocs:
       sub_approach: "Stateless Plasma"
       spec: pocs/private-payment/plasma/SPEC.md
       status: benchmarked
+    - name: "Resilient Disbursement Rails"
+      sub_approach: "Resilient Disbursement Rails"
+      spec: pocs/private-payment/resilient-disbursement-rails/SPEC.md
+      status: implemented
 
 open_source_implementations:
   - url: https://github.com/Railgun-Privacy/contract
@@ -105,7 +109,7 @@ example_vendors: [railgun]
 
 - L1 consensus and the verifier contract
 - Gas relayer is willing to relay (liveness only; not custodial)
-- No per-circuit trusted setup (UltraHonk uses a universal KZG SRS)
+- No per-circuit trusted setup in the PoC (UltraHonk uses a universal KZG SRS); Groth16-based vendors (Railgun, Paladin Zeto) rely on per-circuit setup ceremonies
 
 **Threat model:**
 
@@ -155,11 +159,11 @@ example_vendors: [aztec, fhenix]
 
 **Summary:** Confidential transfers run inside a privacy-native rollup where state is hidden by default at the protocol layer.
 
-**How it works:** Users post transactions with client-side zero-knowledge proofs to a privacy-native sequencer (Aztec) or use FHE-based confidential balances (Fhenix). Hidden state, encrypted memo, and account-level viewing keys give institutional readers controlled access. Bridging to L1 is the privacy boundary.
+**How it works:** Users post transactions with client-side zero-knowledge proofs to a privacy-native sequencer (Aztec) or use FHE-based confidential balances computed by a coprocessor on an existing EVM chain (Fhenix CoFHE, testnet only). Hidden state, encrypted memo, and account-level viewing keys give institutional readers controlled access. Bridging to L1 is the privacy boundary.
 
 **Trust assumptions:**
 
-- Sequencer for ordering (currently centralized in early deployments)
+- Sequencer set for ordering (centralized on most privacy L2s; Aztec runs a permissionless staked sequencer set)
 - Bridge contract for L1 settlement integrity
 - Viewing-key custody at the institution
 
@@ -219,7 +223,7 @@ poc_spec: pocs/private-payment/plasma/SPEC.md
 - User-side state custody is operationally infeasible
 - Exit-delay risk is not tolerable for the asset class
 
-**Implementation notes:** PoC uses Plonky2 with operator-side recursive aggregation; client proofs run in 5.9-9.8s, operator proofs in 42-49s. PlasmaBlind (folding-scheme aggregation) is a tracked alternative.
+**Implementation notes:** PoC uses Plonky2 with operator-side recursive aggregation; client proofs run in 5.9-9.8s, operator proofs in 38-49s. PlasmaBlind (folding-scheme aggregation) is a tracked alternative.
 
 #### Benchmarks
 
@@ -230,7 +234,7 @@ poc_spec: pocs/private-payment/plasma/SPEC.md
 | Gas: withdraw        | ~343K (operator, amortized)  |
 | Gas: batch           | ~255K (operator, amortized)  |
 | Proof gen (client)   | 5.9-9.8s                     |
-| Proof gen (operator) | 42-49s                       |
+| Proof gen (operator) | 38-49s                       |
 
 ### TEE-Based Privacy
 
@@ -325,6 +329,7 @@ uses_patterns:
     pattern-forced-withdrawal,
     pattern-verifiable-attestation,
   ]
+poc_spec: pocs/private-payment/resilient-disbursement-rails/SPEC.md
 example_vendors: []
 ```
 
@@ -363,7 +368,7 @@ example_vendors: []
 
 | Axis               | L1 Shielded                             | Privacy L2                          | Stateless Plasma                                     | TEE                              | MPC                                 | Resilient Disbursement                                   |
 | ------------------ | --------------------------------------- | ----------------------------------- | ---------------------------------------------------- | -------------------------------- | ----------------------------------- | -------------------------------------------------------- |
-| **Maturity**       | prototyped                              | prototyped                          | prototyped                                           | documented                       | prototyped                          | documented                                               |
+| **Maturity**       | prototyped                              | prototyped                          | prototyped                                           | documented                       | prototyped                          | prototyped                                               |
 | **Context**        | both                                    | both                                | both                                                 | i2i                              | i2i                                 | i2u                                                      |
 | **CROPS**          | CR:hi O:y P:part S:hi                   | CR:med O:part P:full S:med          | CR:med O:part P:full S:med                           | CR:med O:no P:full S:lo          | CR:med O:part P:part S:med          | CR:hi O:y P:full S:hi                                    |
 | **Trust model**    | L1 + relayer liveness                   | Sequencer + bridge                  | Operator + L1 anchor                                 | TEE vendor + supply chain        | Honest-majority MPC                 | Multi-relay + smartcard + IResilientIdentity             |
@@ -392,7 +397,7 @@ This is a perspective for legal review by the deploying institution, not legal a
 
 ### Default
 
-For institutional treasury and payment operations at moderate volume with standard compliance, default to a Hybrid L1/L2 composition: Privacy L2 (Aztec for native confidential transfers, Fhenix for FHE-based balances) handles frequent operations; L1 Shielded Payments (Railgun-style) handles high-value transfers or anonymity-sensitive flows. Selective disclosure runs through user-controlled viewing keys plus regulator viewing keys with time-bound, threshold-controlled scope. ISO 20022 message interpreters handle SWIFT compatibility; ERC-3643 handles compliance gating where the asset is a regulated security.
+For institutional treasury and payment operations at moderate volume with standard compliance, default to a Hybrid L1/L2 composition: Privacy L2 (Aztec for native confidential transfers, Fhenix CoFHE for FHE-based balances once it leaves testnet) handles frequent operations; L1 Shielded Payments (Railgun-style) handles high-value transfers or anonymity-sensitive flows. Selective disclosure runs through user-controlled viewing keys plus regulator viewing keys with time-bound, threshold-controlled scope. ISO 20022 message interpreters handle SWIFT compatibility; ERC-3643 handles compliance gating where the asset is a regulated security.
 
 ### Decision factors
 

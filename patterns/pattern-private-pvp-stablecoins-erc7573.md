@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-18
+last_reviewed: 2026-09-29
 
 works-best-when:
   - Two permissioned or regulated stablecoins (same L2 or cross-L2) must settle against each other with amount privacy, and both parties accept an oracle as the settlement trigger.
@@ -30,8 +30,8 @@ crops_context:
 
 post_quantum:
   risk: medium
-  vector: "Signatures over oracle reports, cross-domain proofs, and shielded-layer zero-knowledge proofs use elliptic-curve primitives that are broken by a CRQC."
-  mitigation: "Migrate oracle attestations and cross-domain proofs to post-quantum signature schemes; compose with a post-quantum shielding layer on each leg. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "Outcome keys are encrypted to the decryption oracle's public key and posted on chain. That encryption, signatures over oracle reports, cross-domain proofs, and shielded-layer zero-knowledge proofs typically use elliptic-curve primitives that are broken by a CRQC."
+  mitigation: "Move outcome-key encryption to a post-quantum KEM such as ML-KEM (FIPS 203); migrate oracle attestations and cross-domain proofs to post-quantum signature schemes; compose with a post-quantum shielding layer on each leg. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [ERC-7573, ERC-20]
 
@@ -75,7 +75,7 @@ Guarantees:
 
 - Conditional settlement across two chains or two assets: the locked leg moves only on the key for the paying leg's actual result. Assuming verified key setup, correct contracts, an honest and available oracle, finality on both chains, and eventual key delivery and inclusion, both legs settle or the locked leg returns.
 - No cross-chain revert: if the success key is withheld after payment, the locked leg stays locked with no protocol exit, and the payer has already paid. Recovery is then bilateral or legal.
-- Amount privacy: amounts are hidden on the chains themselves; only stakeholders and auditors with the viewing keys see the full trade.
+- Amount privacy: amounts are hidden on the chains themselves; only stakeholders and auditors with the viewing keys see the full trade. This holds only if the [ERC-7573](https://ercs.ethereum.org/ERCS/erc-7573) contracts execute inside the shielded layer, because the standard's calls and events carry `amount`, `from`, and `to` in the clear.
 - Scoped disclosure: attestations log regulator access without exposing amounts publicly.
 
 Threat model:
