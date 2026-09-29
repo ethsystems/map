@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: offchain
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-23
 
 works-best-when:
   - An institution needs hot or warm key custody with stronger isolation than a software-only wallet.

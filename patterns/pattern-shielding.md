@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: hybrid
-last_reviewed: 2026-04-22
+last_reviewed: 2026-09-23
 
 works-best-when:
   - You need confidential transfer amounts and counterparties.
