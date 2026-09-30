@@ -81,7 +81,10 @@ This pattern treats transaction-level confidentiality as out of scope. For desig
   - the identity registry's `identity(address)` and `isVerified(address)`, which publish the wallet-to-identity mapping
   - the compliance contract's `canTransfer(from, to, amount)`, which takes both parties and the amount in the clear
 
-A confidential design therefore reuses the policy layer and replaces the execution layer, for example with shielded notes and a membership proof in place of the identity registry (see [Private Client Authentication for Institutional EOAs](pattern-private-mtp-auth.md)). The same split applies to DS Protocol (see Trade-offs): its compliance configuration is policy, while the registry's public investor and country views and the per-transfer investor lookup are execution.
+A confidential design therefore reuses the policy layer and replaces some or all of the execution layer. Two directions exist:
+
+- **Encrypted balances, registry kept.** Amounts and balances become FHE ciphertexts, while the identity registry and compliance rules stay as they are. For example, Zama's confidentiality layer for the T-REX Ledger (which follows the ERC-3643 standard) takes this route; it hides amounts, not who transacts (see [Zama](../vendors/zama.md)).
+- **Notes, registry replaced.** Shielded notes and a membership proof also replace the identity registry, which additionally hides who transacts within the anonymity set (see [Private Client Authentication for Institutional EOAs](pattern-private-mtp-auth.md)).
 
 ## Guarantees & threat model
 
@@ -106,7 +109,6 @@ Threat model:
 - Not suitable for permissionless DeFi composition. Many protocols will reject permissioned tokens.
 - Compliance rules must be maintained and updated as regulations evolve, which requires ongoing governance.
 - CMTAT covers the same intent through a rule-engine and allowlist model instead of an identity registry with claim issuers; it is blockchain-agnostic (EVM, Tezos, Solana) and has an existing privacy-preserving implementation in Noir for Aztec, relevant where transaction-level confidentiality is a goal.
-- Securitize's DS Protocol covers the same intent with a different architecture. The token resolves its registry service, compliance service, compliance configuration, lock manager, wallet manager and trust service through a service registry, and investors are identified by an issuer-assigned investor ID rather than an ONCHAINID contract. Tokenized funds on Ethereum use it. Two generations are in production: the omnibus-wallet mechanism was removed upstream in July 2025, and deployments that predate the change still carry it.
 
 ## Example
 
@@ -117,4 +119,4 @@ An issuer tokenizes a bond as a permissioned token with investor accreditation r
 - [Private Bonds Approach](../approaches/approach-private-bonds.md)
 - [ERC-3643 documentation](https://docs.erc3643.org/erc-3643)
 - [CMTAT (CMTA Token) standard](https://cmta.ch/standards/cmta-token-cmtat)
-- [DS Protocol (Securitize)](https://github.com/securitize-io/dstoken) and the [omnibus removal commit](https://github.com/securitize-io/dstoken/commit/e406ee17322ee1c1dc3fef669bf9a63fd479e5dc)
+- [Zama's confidentiality layer for the T-REX Ledger](https://www.zama.org/post/zama-becomes-the-confidentiality-layer-for-the-t-rex-ledger)
