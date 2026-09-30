@@ -13,6 +13,7 @@ description: "Hold and transfer claims with hidden positions and verifiable audi
 
 ## Primary use cases
 - [Private Bonds](../use-cases/private-bonds.md)
+- [Private Money Market Funds](../use-cases/private-money-market-funds.md)
 - [Private RWA Tokenization](../use-cases/private-rwa-tokenization.md)
 - [Private Smart Derivatives (ERC-6123)](../use-cases/private-derivatives.md)
 
