@@ -40,7 +40,7 @@ standards: [ERC-3643, ERC-734, ERC-735]
 
 related_patterns:
   composes_with: [pattern-crypto-registry-bridge-ewpg-eas, pattern-regulatory-disclosure-keys-proofs, pattern-zk-kyc-ml-id-erc734-735]
-  see_also: [pattern-shielding, pattern-compliance-monitoring]
+  see_also: [pattern-shielding, pattern-compliance-monitoring, pattern-private-mtp-auth]
 ---
 
 ## Intent
@@ -70,6 +70,21 @@ Enable compliant tokenization of real-world assets with built-in identity manage
 ## Transfer-path note
 
 ERC-3643 distinguishes investor-initiated transfers from administrative actions. The canonical specification states that `mint` and `forcedTransfer` can bypass compliance rules while still requiring a verified recipient. Implementations can differ: the current ERC-3643 reference contract invokes `canTransfer` for `mint` but not for `forcedTransfer`. Integrators should verify the exact deployed version before treating the token as enforcing one uniform rule on every movement of value.
+
+## Confidentiality boundary
+
+This pattern treats transaction-level confidentiality as out of scope. For designs that add it, the boundary runs between two layers:
+
+- **The policy layer can be reused.** Claim topics, the Trusted Issuers Registry and ONCHAINID claims define rules without requiring any particular data to be public. ONCHAINID claims already carry `signature` and `data` byte fields that can hold a zero-knowledge proof, which hides a claim's content but not its existence.
+- **The execution layer cannot be made confidential without interface changes:**
+  - `balanceOf` and `Transfer` events, kept for ERC-20 compatibility
+  - the identity registry's `identity(address)` and `isVerified(address)`, which publish the wallet-to-identity mapping
+  - the compliance contract's `canTransfer(from, to, amount)`, which takes both parties and the amount in the clear
+
+A confidential design therefore reuses the policy layer and replaces some or all of the execution layer. Two directions exist:
+
+- **Encrypted balances, registry kept.** Amounts and balances become FHE ciphertexts, while the identity registry and compliance rules stay as they are. For example, Zama's confidentiality layer for the T-REX Ledger (which follows the ERC-3643 standard) takes this route; it hides amounts, not who transacts (see [Zama](../vendors/zama.md)).
+- **Notes, registry replaced.** Shielded notes and a membership proof also replace the identity registry, which additionally hides who transacts within the anonymity set (see [Private Client Authentication for Institutional EOAs](pattern-private-mtp-auth.md)).
 
 ## Guarantees & threat model
 
@@ -104,3 +119,4 @@ An issuer tokenizes a bond as a permissioned token with investor accreditation r
 - [Private Bonds Approach](../approaches/approach-private-bonds.md)
 - [ERC-3643 documentation](https://docs.erc3643.org/erc-3643)
 - [CMTAT (CMTA Token) standard](https://cmta.ch/standards/cmta-token-cmtat)
+- [Zama's confidentiality layer for the T-REX Ledger](https://www.zama.org/post/zama-becomes-the-confidentiality-layer-for-the-t-rex-ledger)

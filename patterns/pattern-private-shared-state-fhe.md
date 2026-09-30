@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-23
 
 works-best-when:
   - Multiple institutions share a ledger, pool, or order book and must hide individual positions from each other.
