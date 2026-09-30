@@ -11,6 +11,11 @@ Tokenized money market funds providing yield-bearing treasury management for ins
 
 ## 2) Additional Context
 
+- **Holders differ in what they want disclosed.** Reserve holders (for example, stablecoin issuers backing their token) publish positions on purpose; trading firms want the opposite. Confidentiality needs a per-holder choice.
+- **The transfer agent keeps the register of record** and must be able to rebuild it in full: eligibility, holder counts, sanctions screening, tax.
+- **Most tokenized MMFs on Ethereum today keep a stable USD 1 NAV** and pay yield as new shares; floating-NAV funds pay it through the share price.
+- **Collateral use is the likely next step.** Tokenized MMF shares already serve as collateral and as stablecoin reserves in the clear. Using them as collateral confidentially is a future extension (see [Private Repo](private-repo.md) and the approach card's open question 13).
+
 ## 3) Actors
 
 Asset Managers · Institutional Investors · Banks · Custodians · Regulators · NAV Calculation Agents
@@ -30,7 +35,7 @@ Large MMF positions reveal treasury management strategies and cash reserves. Com
 **Constraints:**
 
 - Daily NAV calculations
-- SEC Rule 2a-7 compliance (for US funds)
+- SEC Rule 2a-7 compliance (for registered US funds); offering rules such as eligibility and investor-count limits for private funds
 - Liquidity requirements for redemptions
 
 ### Problem 2: Redemption Pattern Privacy
@@ -46,7 +51,7 @@ Redemption patterns signal liquidity needs or market views. Large redemptions ca
 **Constraints:**
 
 - Same-day or T+1 redemption requirements
-- Gate and fee provisions
+- Fee provisions, and gates where the regime has them (ESMA MMFR; removed from Rule 2a-7 in 2023)
 - Systemic risk monitoring obligations
 
 ## 5) Recommended Approaches
@@ -59,9 +64,10 @@ See detailed solution architecture and trade-offs in [**Approach: Private Money 
 
 ## 6) Open Questions
 
-- How does yield attribution work with position privacy?
-- What's the relationship to stablecoin privacy patterns?
-- How to handle fund gates/fees with position privacy?
+- How does yield attribution work with position privacy? *(See the [approach card](../approaches/approach-private-money-market-funds.md#open-questions): answered for stable-NAV funds, where yield arrives as new shares; open for floating-NAV funds, open question 1.)*
+- What's the relationship to stablecoin privacy patterns? *(See the [approach card](../approaches/approach-private-money-market-funds.md#open-questions), open questions 4 and 5: the cash leg and a shared anonymity set.)*
+- How to handle fund gates/fees with position privacy? *(See the [approach card](../approaches/approach-private-money-market-funds.md#constraints): they depend only on aggregate flows; portfolio rules are unaffected by investor privacy.)*
+- How do holders that must stay public coexist with confidential ones? *(See the [approach card](../approaches/approach-private-money-market-funds.md#open-questions), open question 7.)*
 
 ## 7) Notes And Links
 
