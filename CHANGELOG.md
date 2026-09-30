@@ -4,6 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- chore(pattern): re-review [Private Client Authentication for Institutional EOAs](patterns/pattern-private-mtp-auth.md) and [Compliance Monitoring](patterns/pattern-compliance-monitoring.md); no content change.
 - feat(pattern): [Selective Disclosure](patterns/pattern-regulatory-disclosure-keys-proofs.md) adds standing register disclosure, a second mode in which a register of record (such as a transfer agent) receives a continuous encrypted feed and rebuilds beneficial ownership for any point in time without holder cooperation. It covers the key, protocol steps, the in-circuit ciphertext constraint and the added threat-model entries, and flags feed granularity as an open trade-off.
 - feat(pattern): [ERC-3643 Tokenized RWAs](patterns/pattern-erc3643-rwa.md) adds a confidentiality-boundary section: the policy layer (claim topics, trusted issuers, ONCHAINID claims) is reusable, and the execution layer (`balanceOf`, `identity`, `isVerified`, `canTransfer`) is replaced.
 - chore(pattern): re-review [Shielding](patterns/pattern-shielding.md), [Private Shared State (FHE)](patterns/pattern-private-shared-state-fhe.md) and [TEE Key Manager](patterns/pattern-tee-key-manager.md) against the Private Money Market Funds approach; no content change.
