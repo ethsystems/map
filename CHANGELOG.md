@@ -4,6 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
+- fix(approach): [Private Money Market Funds](approaches/approach-private-money-market-funds.md): Phase 1 review for the MMF approach cycle. Stable- vs floating-NAV yield, aggregates at the fund's cadence, disclosure-key custody instead of threshold NAV opening, investor-side vs portfolio compliance, maturity corrected to `documented`, three new comparison rows, a conditional recommendation, and new open questions (collateral as a future extension). Links: `private-vaults` removed; `erc3643-rwa` and `private-mtp-auth` added.
 - fix(use-case): [Private Money Market Funds](use-cases/private-money-market-funds.md): fills Additional Context, scopes Rule 2a-7 to registered funds, updates gates after the 2023 amendments, and cross-links open questions to the approach card.
 - chore(pattern): re-review [Private Client Authentication for Institutional EOAs](patterns/pattern-private-mtp-auth.md) and [Compliance Monitoring](patterns/pattern-compliance-monitoring.md); no content change.
 - feat(pattern): [Selective Disclosure](patterns/pattern-regulatory-disclosure-keys-proofs.md) adds standing register disclosure, a second mode in which a register of record (such as a transfer agent) receives a continuous encrypted feed and rebuilds beneficial ownership for any point in time without holder cooperation. It covers the key, protocol steps, the in-circuit ciphertext constraint and the added threat-model entries, and flags feed granularity as an open trade-off.
