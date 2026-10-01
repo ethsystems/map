@@ -64,10 +64,9 @@ See detailed solution architecture and trade-offs in [**Approach: Private Money 
 
 ## 6) Open Questions
 
-- How does yield attribution work with position privacy? *(See the [approach card](../approaches/approach-private-money-market-funds.md#open-questions): answered for stable-NAV funds, where yield arrives as new shares; open for floating-NAV funds, open question 1.)*
-- What's the relationship to stablecoin privacy patterns? *(See the [approach card](../approaches/approach-private-money-market-funds.md#open-questions), open questions 4 and 5: the cash leg and a shared anonymity set.)*
-- How to handle fund gates/fees with position privacy? *(See the [approach card](../approaches/approach-private-money-market-funds.md#constraints): they depend only on aggregate flows; portfolio rules are unaffected by investor privacy.)*
-- How do holders that must stay public coexist with confidential ones? *(See the [approach card](../approaches/approach-private-money-market-funds.md#open-questions), open question 7.)*
+- How is yield attributed across entry-NAV cohorts in floating-NAV funds without revealing positions?
+- Can the confidential set be shared with stablecoins used as the cash leg, and how are per-asset rules enforced then?
+- What does each crossing between public and confidential holdings leak, and how large must the confidential set be?
 
 ## 7) Notes And Links
 

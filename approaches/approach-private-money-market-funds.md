@@ -22,12 +22,6 @@ open_source_implementations:
   - url: https://github.com/ethsystems/pocs/tree/master/pocs/private-payment/shielded-pool-compliance
     description: "EthSystems PoC: KYC-gated shielded pool with in-circuit compliance"
     language: "Noir, Solidity, Rust"
-  - url: https://github.com/ethsystems/pocs/tree/master/pocs/private-bond/fhe
-    description: "EthSystems PoC (draft): FHE confidential bond on Zama's fhEVM"
-    language: "Solidity, TypeScript"
-  - url: https://github.com/ethsystems/pocs/tree/master/pocs/private-trade-settlement/tee_swap
-    description: "EthSystems PoC (draft): TEE-coordinated atomic swaps of private notes"
-    language: "Rust, Noir, Solidity"
   - url: https://github.com/Railgun-Privacy/contract
     description: "Railgun shielded pool"
     language: Solidity
@@ -48,7 +42,7 @@ A treasurer subscribes USD 50M USDC to a tokenized T-bill money market fund. Pos
 
 - Daily or intraday NAV computation with verifiable correctness (total shares outstanding stays public)
 - Aggregate figures are published at the fund's cadence, not per transaction, so totals don't reveal individual flows
-- SEC Rule 2a-7 (US) and ESMA MMFR (EU) compliance: gates (MMFR only; removed from Rule 2a-7 in 2023), liquidity fees, concentration limits. Private funds follow offering rules instead, such as eligibility and investor-count limits.
+- SEC Rule 2a-7 (US) and ESMA MMFR (EU) compliance: liquidity fees, concentration limits, and MMFR liquidity gates. Private funds instead follow offering requirements such as investor eligibility and investor-count limits.
 - Atomic subscription and redemption settlement (no partial fills: shares and cash move together or not at all). Where the cash leg settles off-chain, the transfer agent reconciles.
 - Yield attribution provably correct per investor without revealing positions
 - The transfer agent can rebuild the full register of record for any point in time (eligibility, holder counts, sanctions screening, tax) without holder cooperation
@@ -99,7 +93,7 @@ example_vendors: [paladin, railgun, privacypools]
 - Yield logic is complex enough that circuit complexity exceeds practical bounds
 - The confidential set is small and concentrated, so unlinkability gains are limited
 
-**Implementation notes:** PoC uses Railgun-class shielded pool primitives, as in EthSystems' [shielded-pool-compliance](https://github.com/ethsystems/pocs/tree/master/pocs/private-payment/shielded-pool-compliance) PoC: a KYC-gated pool with attestation expiry, a compliance policy enforced inside the value-conserving circuits, and an encrypted audit channel to a threshold committee. An MMF variant adds issuance into investor positions, yield distribution and investor counters. Compliance gates encoded as ZK public outputs (e.g., eligibility and jurisdiction caps; portfolio rules such as post-redemption weekly liquid assets ≥ 50%, the SEC Rule 2a-7 minimum since the 2023 amendments, are measured on the fund's assets, outside the pool); regulator scope via per-position view keys logged through EAS. Yield attribution uses pro-rata share-of-total computation: each redeemer proves `my_shares / total_shares * total_yield = entitled_amount`. This fits a floating-NAV fund, and only with entry NAV tracked per position; in a stable-NAV fund, yield reaches positions as new shares, through a periodic mint into each position or a public multiplier over share-denominated positions.
+**Implementation notes:** The PoC uses the shielded pool in [2/SHIELDED-POOL](https://specs.ethsystems.org/2/) with attestation-gated entry ([3/ATTESTED-POOL](https://specs.ethsystems.org/3/)), as implemented in EthSystems' [shielded-pool-compliance](https://github.com/ethsystems/pocs/tree/master/pocs/private-payment/shielded-pool-compliance): KYC-gated entry, attestation expiry, circuit-level compliance checks, and an encrypted audit channel. The MMF variant adds investor positions, yield distribution, investor counters, ZK compliance outputs, per-position regulator view keys, and yield as new shares (a periodic mint or a multiplier; pro-rata attribution applies only to floating-NAV funds), with fund-level portfolio rules measured outside the pool.
 
 ### FHE Encrypted Balances
 
