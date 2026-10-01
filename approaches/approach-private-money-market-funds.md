@@ -71,29 +71,29 @@ uses_patterns: [pattern-shielding, pattern-regulatory-disclosure-keys-proofs, pa
 example_vendors: [paladin, railgun, privacypools]
 ```
 
-**Summary:** Share positions are shielded UTXO commitments; a running `total_shares` commitment is updated per transaction; NAV opens via threshold key holders independent of the operator.
+**Summary:** Share positions are shielded UTXO commitments; a running `total_shares` commitment is updated per transaction; the running total is opened at the fund's publication cadence by the transfer agent, and anyone can check the opening against the on-chain commitment.
 
-**How it works:** Each position is a commitment to (attestation hash, share count, entry NAV). Subscription mints a position commitment and increments a running Pedersen commitment to `total_shares`; redemption nullifies the position and decrements the running total. ZK circuits enforce conservation, gate logic (Rule 2a-7 liquidity ratio, concentration), and yield-attribution constraints. NAV is computed by any t-of-n threshold key holders opening `total_shares` and multiplying by an oracle price-per-share; a periodic full-audit checkpoint verifies the running total against all active positions, off the redemption critical path.
+**How it works:** Each position is a commitment to (attestation hash, share count, and entry NAV for floating-NAV funds). Subscription mints a position commitment and increments a running Pedersen commitment to `total_shares`; redemption nullifies the position and decrements the running total. ZK circuits enforce conservation, gate logic (Rule 2a-7 liquidity ratio, concentration), and yield-attribution constraints. At the fund's publication cadence, the transfer agent, which receives each transaction's opening through the register feed, opens `total_shares` and publishes the total, which anyone can check against the on-chain commitment; the fund publishes NAV per share; a periodic full-audit checkpoint verifies the running total against all active positions, off the redemption critical path.
 
 **Trust assumptions:**
 - L1 / L2 consensus and verifier contract correctness
-- Threshold custodian / auditor set (t-of-n) for NAV opening; operator does not participate in the threshold
-- Oracle integrity for per-share price (single oracle or quorum)
+- Transfer agent for opening and publishing the running total (it already holds the full register); the register key can be threshold-held with independent co-holders
+- Oracle integrity for per-share price (floating-NAV funds; single oracle or quorum)
 
 **Threat model:**
 - Adversary observes L1 / L2; cannot break ZK soundness
-- Threshold compromise (t collusions) reveals NAV but not individual positions
-- Oracle compromise distorts NAV; mitigated by quorum
+- Register-key compromise reveals positions to the attacker; the published total reveals only aggregates at the fund's cadence
+- Oracle compromise distorts NAV (floating-NAV funds); mitigated by quorum
 - Periodic full-audit catches running-total drift from circuit bugs
 
 **Works best when:**
-- Operator independence is a hard requirement (regulator, donor policy, internal governance)
+- Investor positions must be hidden from the public while the transfer agent keeps the full register
 - Daily or intraday NAV cadence matches the proving budget
-- Threshold custodian / auditor administration is feasible
+- Disclosure-key custody (register key, regulator viewing keys) is administratively feasible
 
 **Avoid when:**
 - Yield logic is complex enough that circuit complexity exceeds practical bounds
-- Threshold administration overhead (key rotation, custodian onboarding) is unacceptable
+- The confidential set is small and concentrated, so unlinkability gains are limited
 
 **Implementation notes:** PoC uses Railgun-class shielded pool primitives, as in EthSystems' [shielded-pool-compliance](https://github.com/ethsystems/pocs/tree/master/pocs/private-payment/shielded-pool-compliance) PoC: a KYC-gated pool with attestation expiry, a compliance policy enforced inside the value-conserving circuits, and an encrypted audit channel to a threshold committee. An MMF variant adds issuance into investor positions, yield distribution and investor counters. Compliance gates encoded as ZK public outputs (e.g., eligibility and jurisdiction caps; portfolio rules such as post-redemption weekly liquid assets ≥ 50%, the SEC Rule 2a-7 minimum since the 2023 amendments, are measured on the fund's assets, outside the pool); regulator scope via per-position view keys logged through EAS. Yield attribution uses pro-rata share-of-total computation: each redeemer proves `my_shares / total_shares * total_yield = entitled_amount`. This fits a floating-NAV fund, and only with entry NAV tracked per position; in a stable-NAV fund, yield reaches positions as new shares, through a periodic mint into each position or a public multiplier over share-denominated positions.
 
@@ -170,7 +170,7 @@ example_vendors: [inco, iexec]
 | **Maturity** | documented | documented | documented |
 | **Context** | i2i | i2i | i2i |
 | **CROPS** | CR:hi O:y P:full S:hi | CR:med O:part P:part S:med | CR:med O:no P:full S:lo |
-| **Trust model** | Math + threshold (t-of-n) for NAV opening | Threshold (t-of-n) decryption | Hardware vendor + supply chain |
+| **Trust model** | Math + transfer agent for publishing aggregates | Threshold (t-of-n) decryption | Hardware vendor + supply chain |
 | **Privacy scope** | Amounts + addresses (bounded by anonymity set) | Amounts only; addresses public | Amounts + addresses (inside enclave) |
 | **Performance** | Constant per tx; periodic full-audit scales with positions | Heaviest compute; shared throughput | Cheapest; near-instant |
 | **Operator req.** | None beyond the transfer agent (relayer optional) | Yes, beyond the transfer agent (threshold network) | Yes, beyond the transfer agent (enclave host) |
@@ -178,7 +178,7 @@ example_vendors: [inco, iexec]
 | **Cost class** | Medium-high | Medium | Low |
 | **Yield distribution cost** | Per position per period (mint), or one update (multiplier) | Per balance per period (homomorphic add), or multiplier | Low: computed inside the enclave |
 | **Regulatory fit** | Strong (per-position view keys, EAS-logged) | Strong (per-balance ACL, no revocation) | Conditional (vendor attestation) |
-| **Failure modes** | Threshold compromise; circuit bugs; oracle compromise | Threshold compromise; no revocation; throughput | Side-channel; vendor compromise; enclave outage |
+| **Failure modes** | Register-key compromise; circuit bugs; oracle compromise (floating-NAV funds) | Threshold compromise; no revocation; throughput | Side-channel; vendor compromise; enclave outage |
 
 ## Persona perspectives
 
