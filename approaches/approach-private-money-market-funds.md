@@ -4,7 +4,7 @@ status: ready
 last_reviewed: 2026-09-30
 
 use_case: private-money-market-funds
-related_use_cases: [private-stablecoins, private-treasuries, private-rwa-tokenization]
+related_use_cases: [private-stablecoins, private-treasuries, private-rwa-tokenization, private-repo]
 
 primary_patterns:
   - pattern-shielding
@@ -51,12 +51,16 @@ A treasurer subscribes USD 50M USDC to a tokenized T-bill money market fund. Pos
 - SEC Rule 2a-7 (US) and ESMA MMFR (EU) compliance: gates (MMFR only; removed from Rule 2a-7 in 2023), liquidity fees, concentration limits. Private funds follow offering rules instead, such as eligibility and investor-count limits.
 - Atomic subscription and redemption settlement (no partial fills: shares and cash move together or not at all). Where the cash leg settles off-chain, the transfer agent reconciles.
 - Yield attribution provably correct per investor without revealing positions
+- The transfer agent can rebuild the full register of record for any point in time (eligibility, holder counts, sanctions screening, tax) without holder cooperation
+- Per-holder choice: confidential by default, with opt-out for holders that must stay public
+- Eligibility (KYC, accreditation, jurisdiction) is proven without a public wallet-to-investor mapping
 
 ### Constraints
 
 - Custody of disclosure keys must be administratively feasible for the transfer agent and regulators
 - Periodic full-audit checkpoints must run off the critical path of subscription/redemption
 - Fund-circuit hash registered immutably at deployment; circuit upgrades imply migration
+- No personal data on-chain, even encrypted, because data-protection rules such as GDPR conflict with an immutable ledger: the register feed carries pseudonymous investor IDs, and personal data stays off-chain with the transfer agent
 - Compliance gates (Rule 2a-7 liquidity ratio, concentration limits) must be enforceable without revealing individual positions. These portfolio rules apply to the fund's assets, so investor privacy doesn't affect them; investor-side rules such as liquidity fees depend only on aggregate flows.
 
 ## Approaches
@@ -73,7 +77,7 @@ example_vendors: [paladin, railgun, privacypools]
 
 **Summary:** Share positions are shielded UTXO commitments; a running `total_shares` commitment is updated per transaction; the running total is opened at the fund's publication cadence by the transfer agent, and anyone can check the opening against the on-chain commitment.
 
-**How it works:** Each position is a commitment to (attestation hash, share count, and entry NAV for floating-NAV funds). Subscription mints a position commitment and increments a running Pedersen commitment to `total_shares`; redemption nullifies the position and decrements the running total. ZK circuits enforce conservation, gate logic (Rule 2a-7 liquidity ratio, concentration), and yield-attribution constraints. At the fund's publication cadence, the transfer agent, which receives each transaction's opening through the register feed, opens `total_shares` and publishes the total, which anyone can check against the on-chain commitment; the fund publishes NAV per share; a periodic full-audit checkpoint verifies the running total against all active positions, off the redemption critical path.
+**How it works:** Each position is a commitment to (attestation hash, share count, and entry NAV for floating-NAV funds). Subscription mints a position commitment and increments a running Pedersen commitment to `total_shares`; redemption nullifies the position and decrements the running total. ZK circuits enforce conservation, gate logic (investor-side: eligibility, jurisdiction caps, investor counters; the Rule 2a-7 liquidity ratio and concentration limits are portfolio rules, enforced outside the pool), and yield-attribution constraints. At the fund's publication cadence, the transfer agent, which receives each transaction's opening through the register feed, opens `total_shares` and publishes the total, which anyone can check against the on-chain commitment; the fund publishes NAV per share; a periodic full-audit checkpoint verifies the running total against all active positions, off the redemption critical path.
 
 **Trust assumptions:**
 - L1 / L2 consensus and verifier contract correctness
@@ -107,7 +111,7 @@ uses_patterns: [pattern-private-shared-state-fhe, pattern-compliance-monitoring,
 example_vendors: [zama, fhenix, orion-finance]
 ```
 
-**Summary:** Balances are FHE ciphertexts on an FHE-enabled L2; NAV is computed homomorphically; threshold key holders decrypt for publication.
+**Summary:** Balances are FHE ciphertexts handled by an FHE network over the host chain (for example, Zama on Ethereum mainnet); NAV is computed homomorphically; threshold key holders decrypt for publication.
 
 **How it works:** Subscriptions encrypt the share count under the FHE network's keys; balances are stored as ciphertexts with ACL-based read access. NAV is computed under encryption (sum of ciphertexts × per-share price); a t-of-n threshold network decrypts the result for posting on chain. Yield attribution runs as homomorphic arithmetic; gate logic uses encrypted comparisons.
 
@@ -122,6 +126,7 @@ example_vendors: [zama, fhenix, orion-finance]
 - Shared throughput across all FHE applications on the network is a bottleneck
 
 **Works best when:**
+- Existing integrators and contract holders must keep operating on balances (account model), and amount-only confidentiality is acceptable
 - Yield logic is complex (path-dependent strategies) and benefits from homomorphic arithmetic
 - Per-balance ACL granularity matches the disclosure model
 - Threshold-network trust is acceptable to all custodians
