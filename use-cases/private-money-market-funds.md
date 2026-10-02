@@ -11,6 +11,11 @@ Tokenized money market funds providing yield-bearing treasury management for ins
 
 ## 2) Additional Context
 
+- **Holders differ in what they want disclosed.** Reserve holders (for example, stablecoin issuers backing their token) publish positions on purpose; trading firms want the opposite. Confidentiality needs a per-holder choice.
+- **The transfer agent keeps the register of record** and must be able to rebuild it in full: eligibility, holder counts, sanctions screening, tax.
+- **Most tokenized MMFs on Ethereum today keep a stable USD 1 NAV** and pay yield as new shares; floating-NAV funds pay it through the share price.
+- **Collateral use is the likely next step.** Tokenized MMF shares already serve as collateral and as stablecoin reserves in the clear. Using them as collateral confidentially is a future extension (see [Private Repo](private-repo.md) and the approach card's open question 13).
+
 ## 3) Actors
 
 Asset Managers · Institutional Investors · Banks · Custodians · Regulators · NAV Calculation Agents
@@ -30,7 +35,7 @@ Large MMF positions reveal treasury management strategies and cash reserves. Com
 **Constraints:**
 
 - Daily NAV calculations
-- SEC Rule 2a-7 compliance (for US funds)
+- SEC Rule 2a-7 compliance (for registered US funds); offering rules such as eligibility and investor-count limits for private funds
 - Liquidity requirements for redemptions
 
 ### Problem 2: Redemption Pattern Privacy
@@ -46,7 +51,7 @@ Redemption patterns signal liquidity needs or market views. Large redemptions ca
 **Constraints:**
 
 - Same-day or T+1 redemption requirements
-- Gate and fee provisions
+- Fee provisions, and gates where the regime has them (ESMA MMFR; removed from Rule 2a-7 in 2023)
 - Systemic risk monitoring obligations
 
 ## 5) Recommended Approaches
@@ -59,9 +64,9 @@ See detailed solution architecture and trade-offs in [**Approach: Private Money 
 
 ## 6) Open Questions
 
-- How does yield attribution work with position privacy?
-- What's the relationship to stablecoin privacy patterns?
-- How to handle fund gates/fees with position privacy?
+- How is yield attributed across entry-NAV cohorts in floating-NAV funds without revealing positions?
+- Can the confidential set be shared with stablecoins used as the cash leg, and how are per-asset rules enforced then?
+- What does each crossing between public and confidential holdings leak, and how large must the confidential set be?
 
 ## 7) Notes And Links
 

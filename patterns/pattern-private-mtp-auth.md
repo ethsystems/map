@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-30
 
 works-best-when:
   - Institutions must comply with KYC/AML but want to protect client privacy on-chain.

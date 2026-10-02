@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-09-30
 
 works-best-when:
   - Institution must monitor transactions for AML or sanctions compliance.
