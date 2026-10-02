@@ -10,7 +10,6 @@ description: "Execute and settle without leaking intent, size, or counterparties
 - Cross-domain atomicity (DvP/PvP) without HTLCs; optional zk-SPV for strong atomicity.
 
 ## Primary use cases
-- Private DvP (link missing)
 
 ## Related use cases (secondary)
 - [Private Bonds](../use-cases/private-bonds.md)
