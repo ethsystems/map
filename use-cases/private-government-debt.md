@@ -87,5 +87,5 @@ See [approach-private-bonds.md](../approaches/approach-private-bonds.md) for gen
 
 - Related: [private-bonds.md](private-bonds.md) (general bond pattern)
 - Related: [private-corporate-bonds.md](private-corporate-bonds.md) (higher privacy requirements)
-- Emerging market: Municipal debt tokenization gaining traction in Asia
+- Asia: the Hong Kong SAR Government issued digital green bonds in 2023, 2024 and November 2025 (HK$10 billion third offering on HSBC Orion, optional e-HKD/e-CNY settlement) ([HKSAR Government](https://www.info.gov.hk/gia/general/202511/11/P2025111100724.htm)); Japan amended the Local Finance Act in 2026 so local governments can issue municipal bonds as blockchain-based digital securities from 1 April 2027, giving issuers real-time holder information ([Cabinet Office summary](https://www.cao.go.jp/bunken-suishin/doc/r07/16ikkatuho_gaiyou.pdf))
 - See also: [EPIC map](https://epic-webapp.vercel.app/) (GovTech & EPIC team): treasury transparency, audit trails

@@ -27,7 +27,7 @@ Business-to-business payment patterns reveal supplier relationships, pricing, an
 
 - **Must hide:** Amounts, counterparty identities, payment purpose/memo, timing patterns
 - **Public OK:** Payment system availability, general network statistics
-- **Regulator access:** AML/CFT monitoring, tax reporting, sanctions screening
+- **Regulator access:** AML/CFT monitoring, Travel Rule originator and beneficiary information ([FATF R.16, revised June 2025](https://www.fatf-gafi.org/en/publications/Fatfrecommendations/update-Recommendation-16-payment-transparency-june-2025.html)), tax reporting, sanctions screening
 
 **Constraints:**
 
@@ -69,7 +69,7 @@ Institutions disbursing grants or payments on the ground (government-to-person t
 
 ## 5) Recommended Approaches
 
-See [Approach: Private Payments](../approaches/approach-private-payments.md) for detailed solution architecture covering L1 shielded pools, Plasma/Intmax2 stateless rollups, privacy L2s, TEE, and MPC approaches with quantitative comparison from PoC validation.
+See [Approach: Private Payments](../approaches/approach-private-payments.md) for detailed solution architecture covering L1 shielded pools, Plasma/Intmax2 stateless rollups, privacy L2s, TEE, MPC, and Resilient Disbursement Rails, with PoC benchmarks for the L1 shielded pool and stateless Plasma.
 
 See also [private-stablecoins.md](private-stablecoins.md) for stablecoin-specific privacy patterns. Additional considerations:
 
@@ -91,7 +91,8 @@ See also [private-stablecoins.md](private-stablecoins.md) for stablecoin-specifi
 - Related: [private-stablecoins.md](private-stablecoins.md) (stablecoin-specific privacy)
 - Related: [private-fx.md](private-fx.md) (cross-currency payments)
 - Related: [private-treasuries.md](private-treasuries.md) (corporate payment context)
+- Related: [resilient-disbursement-rails.md](resilient-disbursement-rails.md) (humanitarian disbursement in adversarial jurisdictions)
 - Reference: [Private Payment PoC](https://github.com/ethsystems/pocs/tree/master/pocs/private-payment)
-- Market context: Governments building digital currency infrastructure; cross-border payment networks exploring blockchain alternatives to SWIFT
+- Market context: Governments building digital currency infrastructure; cross-border payment networks exploring blockchain settlement, including Swift's own shared-ledger plan ([announced September 2025](https://consensys.io/blog/consensys-scaling-decentralized-finance), prototype by Consensys)
 - Note: Transaction patterns are highly revealing of business and personal activity
 - See also: [EPIC map](https://epic-webapp.vercel.app/) (GovTech & EPIC team): G2P payments, aid disbursement

@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Payments"
 status: ready
-last_reviewed: 2026-09-29
+last_reviewed: 2026-10-05
 
 use_case: private-stablecoins
 related_use_cases: [resilient-disbursement-rails, private-treasuries]
@@ -136,7 +136,7 @@ example_vendors: [railgun]
 
 | Operation          | Value                      |
 | ------------------ | -------------------------- |
-| Gas: deposit       | ~155K                      |
+| Gas: deposit       | ~155K + ~2.6M verification |
 | Gas: transfer      | ~181K + ~2.6M verification |
 | Gas: withdraw      | ~47K + ~2.6M verification  |
 | Proof gen (client) | 410-991ms                  |
@@ -197,7 +197,7 @@ poc_spec: pocs/private-payment/plasma/SPEC.md
 
 **Summary:** Operator-coordinated rollup posts only Merkle roots on L1; users custody their transaction history client-side.
 
-**How it works:** Users build proofs of inclusion against operator-published roots. Operators batch transfers, generate aggregated SNARKs (Plonky2-style recursion), and post anchor data to L1. Withdrawals exit through an L1 anchor contract via an exit game; users prove sufficient balance to escape an offline operator.
+**How it works:** Users build proofs of inclusion against operator-published roots. Operators batch transfers, generate aggregated SNARKs (Plonky2-style recursion), and post anchor data to L1. Withdrawals are claimed against the anchor contract with a zero-knowledge balance proof; users can submit balance proofs directly to exit when the operator is offline.
 
 **Trust assumptions:**
 
@@ -207,7 +207,7 @@ poc_spec: pocs/private-payment/plasma/SPEC.md
 
 **Threat model:**
 
-- Operator offline or censoring forces escape-game exits with weaker privacy
+- Operator offline or censoring forces proof-based direct exits with weaker privacy
 - User data loss collapses to lost funds; backup architecture is load-bearing
 - Operator equivocation needs fraud-proof or multi-operator dispute
 
@@ -216,14 +216,14 @@ poc_spec: pocs/private-payment/plasma/SPEC.md
 - Volume is high and minimal L1 footprint matters
 - Institution can run or contract user-side state custody
 - Forced withdrawal as a recovery path is acceptable
-- End users custody their own state by design; operator cannot censor without triggering the exit game, making the I2U privacy property structural rather than contingent
+- End users custody their own state by design; operator cannot censor without users falling back to proof-based direct exits, making the I2U privacy property structural rather than contingent
 
 **Avoid when:**
 
 - User-side state custody is operationally infeasible
 - Exit-delay risk is not tolerable for the asset class
 
-**Implementation notes:** PoC uses Plonky2 with operator-side recursive aggregation; client proofs run in 5.9-9.8s, operator proofs in 38-49s. PlasmaBlind (folding-scheme aggregation) is a tracked alternative.
+**Implementation notes:** PoC uses Plonky2 with operator-side recursive aggregation; user proofs (run by the balance-prover service, not on device) take 5.9-9.8s and operator proofs 38-49s. PlasmaBlind (folding-scheme aggregation) is a tracked alternative.
 
 #### Benchmarks
 
@@ -233,7 +233,7 @@ poc_spec: pocs/private-payment/plasma/SPEC.md
 | Gas: transfer        | Off-chain (operator-set fee) |
 | Gas: withdraw        | ~343K (operator, amortized)  |
 | Gas: batch           | ~255K (operator, amortized)  |
-| Proof gen (client)   | 5.9-9.8s                     |
+| Proof gen (user)     | 5.9-9.8s                     |
 | Proof gen (operator) | 38-49s                       |
 
 ### TEE-Based Privacy
@@ -285,7 +285,7 @@ example_vendors: [taceo-merces]
 
 **Summary:** MPC nodes jointly compute transfers under secret-shared balances; co-SNARKs commit a verifiable summary on chain.
 
-**How it works:** Bilateral counterparties send secret-shared inputs to an MPC committee that runs the transfer logic and produces a collaborative SNARK. The chain verifies the SNARK; counterparty addresses are public, but amounts and balance state are hidden under sharing.
+**How it works:** Bilateral counterparties send secret-shared inputs to an MPC committee that runs the transfer logic and produces a collaborative SNARK. The chain verifies the SNARK; amounts and balances stay hidden, and addresses can be hidden too depending on configuration.
 
 **Trust assumptions:**
 
@@ -296,7 +296,7 @@ example_vendors: [taceo-merces]
 **Threat model:**
 
 - Collusion above the threshold reveals all state
-- Counterparty addresses leak; only amount confidentiality is provided
+- Counterparty addresses leak unless the configuration hides them
 - MPC committee liveness is an availability boundary
 
 **Works best when:**
@@ -340,7 +340,7 @@ example_vendors: []
 **Trust assumptions:**
 
 - IResilientIdentity operator and implementing partner are distinct legal entities, jurisdictions, and personnel
-- Relay set meets size and jurisdictional-diversity floors (pilot N≥8 / ≥2 operators / ≥2 jurisdictions; production N≥16 / ≥4 operators / ≥3 jurisdictions)
+- Relay set meets size and jurisdictional-diversity floors (pilot ≥8 independent operators, production ≥16, with jurisdictional diversity)
 - Smartcard secure-element vendor and applet supply chain
 - Mesh transport availability for last-mile
 
@@ -391,7 +391,7 @@ Engineering capacity dictates a lot. L1 Shielded Payments is the lightest integr
 
 ### Legal & risk perspective
 
-This is a perspective for legal review by the deploying institution, not legal advice. L1 Shielded Payments and Privacy L2, paired with viewing-key disclosure, expose per-jurisdiction view keys and attestation logs (EAS, ONCHAINID) as the disclosure interface; whether that interface satisfies MiCA, GENIUS Act, or another regime is a question for jurisdictional review. Stateless Plasma adds operator records as an additional disclosure surface that legal review would scope. TEE attestations are typically accepted by auditors who already accept HSM-rooted custody, but acceptance varies by regulator. MPC exposes per-counterparty audit; address-level visibility may limit use to known-counterparty contexts depending on the regulator's view. Resilient Disbursement Rails inverts the disclosure model by minimizing what each party holds; whether a humanitarian regime accepts that posture depends on the donor policy and the destination-country regulator, and legal sign-off would document the minimization and the multi-jurisdiction relay roster.
+This is a perspective for legal review by the deploying institution, not legal advice. L1 Shielded Payments and Privacy L2, paired with viewing-key disclosure, expose per-jurisdiction view keys and attestation logs (EAS, ONCHAINID) as the disclosure interface; whether that interface satisfies MiCA, GENIUS Act, or another regime is a question for jurisdictional review. Stateless Plasma adds operator records as an additional disclosure surface that legal review would scope. TEE attestations are typically accepted by auditors who already accept HSM-rooted custody, but acceptance varies by regulator. MPC exposes per-counterparty audit; address-level visibility, where configured, may limit use to known-counterparty contexts depending on the regulator's view. Resilient Disbursement Rails inverts the disclosure model by minimizing what each party holds; whether a humanitarian regime accepts that posture depends on the donor policy and the destination-country regulator, and legal sign-off would document the minimization and the multi-jurisdiction relay roster.
 
 ## Recommendation
 
