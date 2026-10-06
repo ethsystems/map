@@ -73,4 +73,4 @@ See detailed solution architecture and trade-offs in [**Approach: Private Money 
 - Related: [private-stablecoins.md](private-stablecoins.md) (non-yield alternative; settlement cash)
 - Related: [private-treasuries.md](private-treasuries.md) (corporate treasury use of MMFs)
 - Differentiation: Unlike stablecoins, money market funds earn yield. Institutions prefer MMFs over non-yield stablecoins for treasury management.
-- Market context: Tokenized treasuries/MMFs are among the largest RWA categories outside stablecoins
+- Market context: Tokenized U.S. Treasury funds, including Treasury MMFs, are the largest distributed RWA category outside stablecoins: USD 14.8B of USD 38.8B per [rwa.xyz](https://app.rwa.xyz/treasuries) (2026-10-05)

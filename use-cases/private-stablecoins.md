@@ -32,7 +32,7 @@ Institutions need practical paths to onboard their users (corporates, funds, cou
 - **Must hide:** transfer **amounts**, **payer/payee identities to non-participants**, and **memos/workflow metadata**; optionally timing/ordering leakage minimised
 - **Public OK:** existence of a transaction/anchor; contract code; allow-list membership proofs (no PII); attestation schemas
 - **Regulator access:** **scoped viewing keys** and/or **[attestations](../patterns/pattern-verifiable-attestation.md)** with **access logging**; revocation & rotation policies
-- **Settlement:** **Atomic DvP/PvP** across cash↔asset or cash↔cash using [ERC‑7573](https://ercs.ethereum.org/ERCS/erc-7573) semantics; minutes‑level finality OK for pilot
+- **Settlement:** **Atomic DvP/PvP** across cash↔asset or cash↔cash using [ERC‑7573](https://ercs.ethereum.org/ERCS/erc-7573) conditional settlement (Draft; atomicity rests on the decryption oracle, and ERC-7573 itself hides no amounts or counterparties); minutes‑level finality OK for pilot
 - **Ops:** predictable L2 costs; encrypted audit log with L1 anchors; issuer controls (freeze/blacklist) where mandated; KYC holder gating (e.g., [ERC‑3643](https://eips.ethereum.org/EIPS/eip-3643))
 
 **Constraints:**
@@ -48,7 +48,7 @@ See detailed solution architecture and trade-offs in [**Approach: Private Paymen
 **Jurisdiction-Specific Implementations:**
 
 - **China:** Stablecoins are out of scope; the state-sanctioned analogue is e-CNY, a centrally operated PBoC system distributed through licensed operator banks rather than a public ledger. Permissioned enterprise chains (BSN) are a separate programme and are not an access channel to e-CNY, so these patterns apply only where an approved operator admits them
-- **EU/US:** Licensed stablecoins under MiCA/GENIUS frameworks
+- **EU/US:** Licensed stablecoins under MiCA (stablecoin titles apply since 30 June 2024) and the US GENIUS Act (enacted 18 July 2025; takes effect by 18 January 2027 at the latest, implementing rules still in progress)
 - **Hong Kong:** HKMA-licensed issuers of fiat-referenced stablecoins under the [Stablecoins Ordinance (Cap. 656)](../jurisdictions/hk-crypto-licensing.md); SFC-licensed virtual asset trading platforms for the trading leg
 
 ### Non‑Solutions
@@ -68,7 +68,7 @@ See detailed solution architecture and trade-offs in [**Approach: Private Paymen
 
 ## 7) Notes And Links
 
-- **Standards & Infrastructure:** [ERC‑7573](https://ercs.ethereum.org/ERCS/erc-7573) · [ERC‑3643](https://eips.ethereum.org/EIPS/eip-3643) · [ERC‑5564 Stealth Addresses](https://eips.ethereum.org/EIPS/eip-5564) · [Aztec](https://docs.aztec.network/) · [Zama fhEVM](https://www.zama.ai/post/confidential-erc-20-tokens-using-homomorphic-encryption) · [Fhenix](https://www.fhenix.io/)
+- **Standards & Infrastructure:** [ERC‑7573](https://ercs.ethereum.org/ERCS/erc-7573) · [ERC‑3643](https://eips.ethereum.org/EIPS/eip-3643) · [ERC‑5564 Stealth Addresses](https://eips.ethereum.org/EIPS/eip-5564) · [Aztec](https://docs.aztec.network/) · [Zama fhEVM](https://www.zama.org/post/confidential-erc-20-tokens-using-homomorphic-encryption) · [Fhenix](https://www.fhenix.io/)
 - **Regulatory Frameworks (jurisdiction-specific):** see [jurisdiction](../jurisdictions/)
 - **Technical Note on Privacy:** FHE implementations (Fhenix, Zama fhEVM) encrypt data-in-use providing **confidentiality** but **not unlinkability**. To hide address linkage and prevent transaction graph analysis, combine with **[ERC-5564 Stealth Addresses](https://eips.ethereum.org/EIPS/eip-5564)** or equivalent unlinkability mechanisms.
 

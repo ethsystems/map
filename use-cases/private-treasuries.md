@@ -13,6 +13,10 @@ Note: This is corporate treasury management, NOT government securities (treasuri
 
 ## 2) Additional Context
 
+- **Group treasuries centralize cash through cash pools and in-house banks.** A physical pool sweeps member balances into a pool leader's account; a notional pool leaves balances in place and the bank aggregates them for interest, with no transfer of funds ([OECD Transfer Pricing Guidance on Financial Transactions](https://www.oecd.org/content/dam/oecd/en/publications/reports/2020/02/transfer-pricing-guidance-on-financial-transactions-inclusive-framework-on-beps-actions-4-8-10_278e0cb3/794bcddd-en.pdf), paras 10.111-10.114).
+- **Tax authorities already see the financing structure.** Intra-group loans and cash pooling are priced under the arm's-length principle (OECD Transfer Pricing Guidelines, Chapter X, added 2020). The BEPS Action 13 master file describes how the group is financed and names the entities that provide a central financing function; country-by-country reporting applies to groups with consolidated revenue of EUR 750M or more ([Action 13 final report](https://www.oecd.org/content/dam/oecd/en/publications/reports/2015/10/transfer-pricing-documentation-and-country-by-country-reporting-action-13-2015-final-report_g1g58cf0/9789264241480-en.pdf)).
+- **Intragroup cash already moves on bank-operated ledgers.** Mitsubishi Corporation uses J.P. Morgan's permissioned Kinexys Digital Payments for intragroup USD cash management across Singapore, London and New York ([March 2026](https://www.jpmorgan.com/payments/newsroom/mitsubishi-cash-management-kinexys)); the same release reports Kinexys average daily volume above USD 5B across all clients (vendor-reported). J.P. Morgan's JPMD deposit token runs on Base, a public Ethereum L2 ([November 2025](https://www.jpmorgan.com/payments/newsroom/jpm-coin-usd-deposit-token-institutional-clients)), where unshielded transfers are visible to any observer.
+
 ## 3) Actors
 
 Corporate Treasury · Subsidiaries · Banks · Auditors · Regulators · Tax Authorities
@@ -44,11 +48,11 @@ Aggregate cash positions and treasury investment strategies are competitively se
 
 - **Must hide:** Cash balances by entity, investment allocations, yield optimization strategies
 - **Public OK:** Audited financial statements (periodic, aggregated)
-- **Regulator access:** Regulatory capital calculations, liquidity reporting
+- **Regulator access:** Auditor and tax-authority access to entity-level balances; regulatory capital and liquidity reporting apply only where a group entity is itself a regulated bank or insurer
 
 **Constraints:**
 
-- SEC reporting requirements (for public companies)
+- SEC periodic reporting for US public companies (10-K/10-Q, including the liquidity and capital resources discussion in MD&A under Regulation S-K Item 303)
 - Investment policy constraints
 - Counterparty credit limits
 
@@ -56,7 +60,7 @@ Aggregate cash positions and treasury investment strategies are competitively se
 
 See [approach-private-payments.md](../approaches/approach-private-payments.md) for general payment architecture. Treasury-specific considerations:
 - Privacy-preserving cash pooling mechanisms
-- Integration with [private-money-market-funds.md](private-money-market-funds.md) for yield
+- Integration with [private-money-market-funds.md](private-money-market-funds.md) for yield (see [Approach: Private Money Market Funds](../approaches/approach-private-money-market-funds.md))
 - Multi-entity identity management with selective disclosure
 
 ## 6) Open Questions
