@@ -40,6 +40,9 @@ open_source_implementations:
   - url: https://github.com/tlsnotary
     description: "TLSNotary (zk-TLS transcript proofs)"
     language: Rust
+  - url: https://github.com/zkproofport/proofport-app
+    description: "ZKProofport (mobile/on-device ZK predicates over signed attestation credentials using Noir, UltraHonk, and mopro, with EVM verification)"
+    language: TypeScript / Noir
 
 pocs:
   folder: pocs/private-identity
