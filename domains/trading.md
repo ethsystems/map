@@ -10,10 +10,16 @@ description: "Execute and settle without leaking intent, size, or counterparties
 - Cross-domain atomicity (DvP/PvP) without HTLCs; optional zk-SPV for strong atomicity.
 
 ## Primary use cases
-- Private DvP (link missing)
+- [Private Repo](../use-cases/private-repo.md)
+- [Private Stocks](../use-cases/private-stocks.md)
+- [Private Commodities](../use-cases/private-commodities.md)
 
 ## Related use cases (secondary)
 - [Private Bonds](../use-cases/private-bonds.md)
+
+## Approaches
+- [Approach: Atomic DvP Settlement](../approaches/approach-dvp-atomic-settlement.md)
+- [Approach: Private Trade Settlement](../approaches/approach-private-trade-settlement.md)
 
 ## Shortest-path patterns
 - [Pre-trade privacy (Shutter/SUAVE)](../patterns/pattern-pretrade-privacy-encryption.md)
