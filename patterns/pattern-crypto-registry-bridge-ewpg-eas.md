@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-04-22
+last_reviewed: 2026-10-13
 
 works-best-when:
   - Germany or eWpG applies and a licensed crypto-register is required.
@@ -45,7 +45,7 @@ Operate with a licensed crypto-register today while mirroring key legal facts (i
 
 ## Components
 
-- Licensed crypto-register under eWpG holds the legal records, PII, and signed notarial documents off-chain. It is the sole source of legal truth.
+- Licensed crypto-securities registrar under eWpG keeps the register on a decentralised, tamper-protected recording system (eWpG §4(11), §16) and holds holder PII, the deposited issuance terms (§5), and signed records off-chain. The register is the sole source of legal truth.
 - Registrar API integration layer exposes signed records for each legal event (issuance, transfer, lien) to downstream systems.
 - On-chain attestation schema defines the structure of mirrored facts: event type, record hash, registrar identifier, timestamp. PII never appears on-chain.
 - Middleware attester reads the registrar's signed records, computes the hash, and posts an attestation on-chain under the schema.
@@ -65,7 +65,7 @@ Guarantees:
 
 - Legal compliance with eWpG is preserved; the licensed registrar remains the authoritative record keeper.
 - On-chain anchor provides tamper-evident linkage between the registrar's private ledger and a public timestamp.
-- Mirrored facts are cryptographically verifiable without requiring regulator access to the plaintext.
+- Anyone can verify that an attestation exists, who signed it, and when, without the plaintext; matching it to a record needs the plaintext.
 
 Threat model:
 
@@ -79,7 +79,7 @@ Threat model:
 - Two sources of truth require ongoing reconciliation. Drift between the registrar and the on-chain anchor must be detected and resolved operationally.
 - Strong incident and runbook discipline is required. A mismatch is not self-resolving; it triggers a manual investigation.
 - Registrar dependency limits availability. Downtime at the registrar halts new anchors even if the on-chain side is healthy.
-- The pattern is explicitly transitional: it assumes a future regulatory regime where the register itself can move on-chain and automation can replace the middleware.
+- The pattern is explicitly transitional. eWpG already requires the crypto-securities register to run on a decentralised recording system, but under a licensed registrar; the pattern assumes a later setup where register entries live directly on the public chain and automation can replace the middleware.
 
 ## Example
 
@@ -90,6 +90,7 @@ Threat model:
 
 ## See also
 
-- [BaFin on eWpG](https://www.bafin.de/EN/PublikationenDaten/Fachartikel/2021/fa_bj_2107_eWpG_en_en.html)
-- [BaFin crypto-securities register](https://www.bafin.de/EN/Aufsicht/FinTech/Geschaeftsmodelle/DLT_Blockchain_Krypto/Kryptowertpapierregisterfuehrung/Wertapierregister_node_en.html)
-- [EAS documentation](https://easscan.org/docs)
+- [eWpG statute text (German)](https://www.gesetze-im-internet.de/ewpg/)
+- [BaFin crypto-securities registration](https://www.bafin.de/EN/unternehmen-maerkte/erlaubnis-registrierung/geschaefte-krypto/kryptowertpapierregisterfuehrung/kryptowertpapierregisterfuehrung_node_en.html)
+- [EAS documentation](https://docs.attest.org/)
+- [Use case: Private Bonds](../use-cases/private-bonds.md) · [Approach: Private Bonds](../approaches/approach-private-bonds.md) · [Jurisdiction: DE eWpG](../jurisdictions/de-eWpG.md)

@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Bond Issuance & Trading"
 status: ready
-last_reviewed: 2026-09-29
+last_reviewed: 2026-10-13
 
 use_case: private-bonds
 related_use_cases: [private-corporate-bonds, private-government-debt]
@@ -54,7 +54,7 @@ open_source_implementations:
 
 ### Scenario
 
-A bank issues a EUR 100M corporate bond series with private allocation amounts to 50 institutional investors and operates an active secondary market with RFQ-based price discovery. The bank needs hidden positions and trade sizes, atomic same-chain DvP against EURC, jurisdiction-specific selective disclosure (eWpG for the bond; MiCA for the EURC leg, since bonds that are MiFID II financial instruments fall outside MiCA), and an automated 24/7 market with daily settlement.
+A bank issues a EUR 100M corporate bond series with private allocation amounts to 50 institutional investors and operates an active secondary market with RFQ-based price discovery. The bank needs hidden positions and trade sizes, atomic same-chain DvP against EURC, jurisdiction-specific selective disclosure ([eWpG](../jurisdictions/de-eWpG.md) for the bond; [MiCA](../jurisdictions/eu-MiCA.md) for the EURC leg, since bonds that are MiFID II financial instruments fall outside MiCA), and an automated 24/7 market with daily settlement.
 
 ### Requirements
 
@@ -68,7 +68,7 @@ A bank issues a EUR 100M corporate bond series with private allocation amounts t
 
 - Production timeline of 1-2 years with proven infrastructure
 - Cross-chain DvP requires trusted relayer or bridge; out of scope for primary path
-- Must compose with existing crypto-registries and custodial infrastructure
+- Must compose with existing crypto-registries ([Crypto-registry bridge](../patterns/pattern-crypto-registry-bridge-ewpg-eas.md)) and custodial infrastructure
 - Deployment must satisfy ICMA BDT data-model expectations for bond identifiers
 
 ## Approaches
@@ -108,7 +108,7 @@ example_vendors: [paladin, railgun]
 - ZK toolchain is unavailable to the issuer
 - Coupon logic requires complex computation that does not map cleanly to circuits
 
-**Implementation notes:** PoC implements UTXO with Noir / UltraHonk; multi-token transfers require same-token circuit constraints, so per-pool deployments are the working assumption. Compliance hooks via attestation-gated entry (zero-knowledge proof of KYC Merkle inclusion) and per-note viewing keys.
+**Implementation notes:** PoC implements UTXO with Noir / UltraHonk; multi-token transfers require same-token circuit constraints, so per-pool deployments are the working assumption. PoC compliance hooks are an issuer-managed on-chain address whitelist and per-note viewing keys; attestation-gated entry (zero-knowledge proof of KYC Merkle inclusion) is a production alternative to the plaintext whitelist.
 
 ### Privacy L2
 
@@ -128,7 +128,7 @@ example_vendors: [aztec, miden]
 **Trust assumptions:**
 - Sequencer set for ordering (Aztec Alpha mainnet uses a staked, decentralized sequencer set; Alpha is early-stage and Aztec advises limiting deposits)
 - Bridge contract for L1 settlement
-- Aztec proving system soundness (a critical soundness vulnerability in the Alpha V5 proving system was disclosed on 2026-07-27)
+- Aztec proving system soundness (a critical soundness vulnerability in the Alpha V5 proving system, identified on 2026-07-27 per Aztec's [2026-08-07 post](https://aztec.network/blog/alpha-v5-proving-system-vulnerability), which plans the fix for V6)
 
 **Threat model:**
 - Sequencer outage or censorship; rollup escape paths leak linkage during forced exit
@@ -220,7 +220,7 @@ example_vendors: [zama, fhenix]
 | **CROPS** | CR:hi O:y P:full S:hi | CR:med O:part P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:part S:med |
 | **Trust model** | Self-custody (L1 + ZK) | Sequencer + bridge | Honest-majority 3-party MPC | t-of-n threshold network |
 | **Privacy scope** | Amounts + addresses (via gas relayer) | Amounts + addresses (account level) | Amounts only; addresses public | Amounts only; addresses public |
-| **Performance** | High gas, chain-dependent throughput | L2-internal fees, unknown TPS | ~0.9M gas per transfer intent plus ~3.8M per 50-tx batch, ~200-300 TPS (vendor) | ~300K gas/tx, 20+ TPS shared, 500-1000 projected (vendor) |
+| **Performance** | High gas, chain-dependent throughput | L2-internal fees, unknown TPS | ~0.9M gas per transfer intent plus ~3.8M per 50-tx batch, ~200-300 TPS (vendor) | ~330K gas/transfer (PoC, Sepolia), 20+ TPS shared, 500-1000 projected (vendor) |
 | **Operator req.** | No (gas relayer optional) | Yes (sequencer) | Yes (MPC committee) | Yes (threshold network) |
 | **Cost class** | High (L1 verify) | Low (L2-internal) | Low (batched) | Medium |
 | **Regulatory fit** | Strong (per-note view keys) | Strong (IVKs, app-siloed nullifiers) | Strong for known counterparty | Strong (per-balance ACL) |
@@ -230,11 +230,11 @@ example_vendors: [zama, fhenix]
 
 ### Business perspective
 
-For institutional bond issuance and trading at scale, UTXO Shielded Notes is the default: production maturity (Railgun ~USD 5b lifetime shielded volume as of 2026), white-label vendor coverage (Paladin), privacy over amounts, counterparties, and addresses (addresses via gas relayer), and a disclosure story built on per-note viewing keys that can be assessed against eWpG (and MiCA for the EURC leg). Privacy L2 fits where bond logic is complex (coupons, structured lifecycle) because it removes circuit-engineering work, but the issuer must accept the rollup's decentralization timeline. co-SNARKs and FHE fit specific institutional contexts: bilateral or club-mode markets where address visibility is acceptable, or coupon-heavy products where homomorphic arithmetic is the natural model.
+For institutional bond issuance and trading at scale, UTXO Shielded Notes is the default: production maturity (Railgun ~USD 5.7b cumulative shielded volume as of October 2026 on its project-maintained [Dune dashboard](https://dune.com/railgun_project/railgun)), white-label vendor coverage (Paladin), privacy over amounts, counterparties, and addresses (addresses via gas relayer), and a disclosure story built on per-note viewing keys that can be assessed against eWpG (and MiCA for the EURC leg). Privacy L2 fits where bond logic is complex (coupons, structured lifecycle) because it removes circuit-engineering work, but the issuer must accept the rollup's decentralization timeline. co-SNARKs and FHE fit specific institutional contexts: bilateral or club-mode markets where address visibility is acceptable, or coupon-heavy products where homomorphic arithmetic is the natural model.
 
 ### Technical perspective
 
-Engineering effort scales by approach. UTXO Shielded Notes requires deploying a verifier and shipping a ZK toolchain, but mature vendor implementations remove the circuit-design burden. Privacy L2 trades sequencer dependency for native primitives, removing in-house circuit work but adding bridge integration. co-SNARKs requires running or contracting an MPC committee with operational discipline; throughput is bounded by batch cadence. FHE simplifies the programming model for complex bond logic but inherits shared throughput limits across all FHE applications on the network. PoC results across all three EthSystems implementations confirm that selective-disclosure semantics work in each model; the architectural choice is driven by trust topology and bond-logic complexity.
+Engineering effort scales by approach. UTXO Shielded Notes requires deploying a verifier and shipping a ZK toolchain, but mature vendor implementations remove the circuit-design burden. Privacy L2 trades sequencer dependency for native primitives, removing in-house circuit work but adding bridge integration. co-SNARKs requires running or contracting an MPC committee with operational discipline; throughput is bounded by batch cadence. FHE simplifies the programming model for complex bond logic but inherits shared throughput limits across all FHE applications on the network. The three EthSystems PoCs differ in how far disclosure is exercised: the FHE PoC tests regulator ACL grants, the Privacy L2 PoC documents regulator viewing-key sharing without testing it, and the UTXO PoC sends transaction details to the issuer-relayer over a private channel. None implements the stablecoin leg of DvP. The architectural choice is driven by trust topology and bond-logic complexity.
 
 ### Legal & risk perspective
 
@@ -260,10 +260,10 @@ Issuance can run through UTXO with a vendor-provided shielded pool; secondary tr
 
 1. **Multi-Asset Bond Support.** Tranches, multiple currencies, or collateral types within shielded note systems require either per-tranche pools or extended circuit constraints; unresolved.
 2. **Coupon Payment Mechanisms.** Patterns for automated, privacy-preserving coupon distribution to shielded bondholders are emergent; no canonical solution.
-3. **Cross-Chain Settlement.** Beyond same-chain atomic DvP, acceptable trust models for cross-chain bond settlement (relayers, bridges, messaging) are unsettled.
+3. **Cross-Chain Settlement.** Beyond same-chain atomic DvP, acceptable trust models for cross-chain bond settlement (relayers, bridges, messaging, or the oracle-released key of [ERC-7573](../patterns/pattern-dvp-erc7573.md)) are unsettled.
 4. **Secondary Market Structure.** Private RFQ systems with sufficient price discovery; unresolved at the standard level.
 5. **Pre-Trade Privacy.** The boundary between order-flow privacy and post-trade confidentiality differs by market; no standard answer.
 6. **Market Data & Analytics.** Bond pricing, yield curves, and analytics under transaction privacy require either trusted publishers or zk-statistics; unresolved.
 7. **Regulatory Standards.** Standardization of selective-disclosure formats for eWpG / MiCA across jurisdictions is incomplete.
-8. **Legacy Integration.** Bridges between on-chain privacy and traditional bond settlement (Euroclear, Clearstream, MarketAxess) are absent.
+8. **Legacy Integration.** Bridges between on-chain privacy and traditional bond settlement (Euroclear, Clearstream) and trading venues (MarketAxess) are absent.
 

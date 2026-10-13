@@ -1,13 +1,13 @@
 ---
-title: "Pattern: ICMA Bond Data Taxonomy (canonical terms/events)"
+title: "Pattern: ICMA Bond Data Taxonomy (canonical bond terms)"
 status: ready
 maturity: production
 type: standard
 layer: offchain
-last_reviewed: 2026-06-18
+last_reviewed: 2026-10-13
 
 works-best-when:
-  - You want machine-readable bond terms and lifecycle events across tools.
+  - You want machine-readable bond terms across tools.
   - Multiple issuance platforms need to interoperate without bespoke mappings.
 avoid-when:
   - A jurisdiction or domain mandates a different canonical schema.
@@ -22,7 +22,7 @@ crops_profile:
 
 crops_context:
   cr: "Schema governance sits with a single standards body (ICMA). Could reach `medium` if the schema is published as a permissionless open registry with attestation-anchored contributions and no approval gate."
-  o: "Open specification, publicly documented. Implementations can reuse the schema without licensing barriers, though schema evolution is gated by the standards body."
+  o: "Open specification, publicly documented. Implementations can reuse the schema under ICMA's royalty-free license, though ICMA retains the IP and schema evolution is gated by the standards body."
   p: "Schema itself contains no participant data; only field definitions. Raw bond data stays off-chain, with only hashes anchored on-chain, so the pattern does not expose confidential details."
   s: "Rides on the correctness of off-chain validators and the integrity of hash anchoring. Well-defined schemas reduce integration errors and make regulator reconciliation straightforward."
 
@@ -40,11 +40,11 @@ related_patterns:
 
 ## Intent
 
-Use the ICMA Bond Data Taxonomy as the canonical schema for bond terms and lifecycle events. A shared data model avoids fragmentation across issuance platforms, registrars, and regulators, and provides a stable foundation for attestations and zero-knowledge proofs over bond data.
+Use the ICMA Bond Data Taxonomy as the canonical schema for bond terms. A shared data model avoids fragmentation across issuance platforms, registrars, and regulators, and provides a stable foundation for attestations and zero-knowledge proofs over bond data.
 
 ## Components
 
-- Canonical schema defines bond terms (identifiers, parties, cash flows, covenants) and lifecycle events (issuance, coupons, redemption, restructuring).
+- Canonical schema (XML Schema, with a JSON format also available) defines the key terms of a bond term sheet: amounts, currency, dates, interest terms, parties, governing law, selling restrictions, and DLT platform fields. It does not define lifecycle event messages (coupon payments, redemptions); event records can reference BDT fields but need a separate schema.
 - Schema validator checks that bond records conform to the canonical definitions before they are signed, hashed, or anchored.
 - Compression layer converts verbose representations (for example XML) into binary or compact serialization for efficient on-chain anchoring.
 - Registrar integration maps internal registrar records to the canonical schema so existing systems can emit conformant data without rewriting their back office.
@@ -52,7 +52,7 @@ Use the ICMA Bond Data Taxonomy as the canonical schema for bond terms and lifec
 
 ## Protocol
 
-1. [operator] Author bond terms and lifecycle events in the canonical schema.
+1. [operator] Author bond terms in the canonical schema.
 2. [operator] Validate the record against the schema and compress for storage.
 3. [operator] Store the record (on-chain hash anchor, off-chain canonical payload).
 4. [auditor] Use the same schema when preparing selective-disclosure proofs or attestations.
@@ -85,4 +85,5 @@ An issuance platform publishes bond terms in the canonical schema. The registrar
 ## See also
 
 - [ICMA Bond Data Taxonomy overview](https://www.icmagroup.org/fintech-and-digitalisation/fintech-advisory-committee-and-related-groups/bond-data-taxonomy/)
-- [ICMA BDT Factsheet (PDF)](https://www.icmagroup.org/assets/documents/Regulatory/FinTech/Bond-data-taxonomy/ICMA-Bond-Data-Taxonomy-BDT-Factsheet-March-2023-140323.pdf)
+- [ICMA BDT FAQs, April 2026 (PDF)](https://www.icmagroup.org/assets/documents/Regulatory/FinTech/Bond-data-taxonomy/ICMA-Bond-Data-Taxonomy-FAQs-April-2026-280426.pdf)
+- [Use case: Private Bonds](../use-cases/private-bonds.md) · [Approach: Private Bonds](../approaches/approach-private-bonds.md)
