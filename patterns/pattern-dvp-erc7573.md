@@ -4,13 +4,13 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-18
+last_reviewed: 2026-10-13
 
 works-best-when:
   - Asset and cash legs live on different networks (L1 or L2).
 avoid-when:
   - Both legs already settle on the same network with simple on-chain transfers.
-  - You're searching for a production-ready solution (EIP not yet recommended).
+  - You're searching for a production-ready solution (ERC-7573 is in Draft status).
   - You're searching for a fully trustless solution.
 
 context: i2i
@@ -24,7 +24,7 @@ crops_profile:
 crops_context:
   cr: "Oracle governance is typically codified in bilateral or consortium agreements, so the practical censorship risk sits below the protocol-level score. Reaches `high` if threshold decryption oracles with k-of-n quorum replace single-operator oracles, removing any single exclusion point."
   o: "Oracle and contract implementations vary by deployment. Improves to `yes` by releasing oracle implementations and outcome key services under a copyleft license."
-  p: "Standard ERC-7573 provides atomic settlement but no privacy: trade identifier, amounts, and counterparties may be observable on-chain. Reaches `partial` or `full` by layering threshold-encrypted mempools, minimal on-chain trade data, and private or proof-based payment layers."
+  p: "Standard ERC-7573 provides atomic settlement but no privacy: trade identifier, amounts, and counterparties are observable in calls and events. Reaches `partial` or `full` by layering threshold-encrypted mempools, minimal on-chain trade data, and private or proof-based payment layers."
   s: "Rides on the decryption oracle operator's honesty for liveness. Improves to `high` by replacing operational trust with verifiable proofs of outcome key validity and threshold quorum."
 
 post_quantum:
@@ -117,3 +117,4 @@ These extensions do not change how the contracts decide outcomes: the asset cont
 
 - [ERC-7573 specification](https://ercs.ethereum.org/ERCS/erc-7573)
 - [Private Trade Settlement approach](../approaches/approach-private-trade-settlement.md)
+- [Private Bonds approach](../approaches/approach-private-bonds.md) (cross-chain settlement open question)

@@ -2,7 +2,7 @@
 title: Private Bonds
 status: ready
 primary_domain: Funds & Assets
-secondary_domain:
+secondary_domain: Trading
 ---
 
 ## 1) Use Case
@@ -40,14 +40,16 @@ Public chains expose volumes, prices, and positions by default, enabling front-r
 
 See detailed solution architecture and trade-offs in [**Approach: Private Bonds**](../approaches/approach-private-bonds.md).
 
-**PoC Implementation:** [Private Bond PoC](https://github.com/ethsystems/pocs/tree/master/pocs/private-bond); two approaches: Custom UTXO (EVM) and Privacy L2 (Aztec).
+See [Approach: Atomic DvP Settlement](../approaches/approach-dvp-atomic-settlement.md) for the settlement leg, including cross-network DvP via ERC-7573.
+
+**PoC Implementation:** [Private Bond PoC](https://github.com/ethsystems/pocs/tree/master/pocs/private-bond); three approaches: Custom UTXO (EVM), Privacy L2 (Aztec), and FHE (Zama fhEVM).
 
 ## 6) Open Questions
 
 _Notes below reference the PoC implementation._
 
 - Secondary market: RFQ model + pre-trade privacy requirements (what must be hidden?)
-  - _PoC approach:_ Issuer acts as relayer and can serve as market matcher; peer-to-peer RFQ not in scope
+  - _PoC approach:_ Negotiation and RFQ run off-chain with on-chain settlement; in Custom UTXO the issuer relays and can act as matcher, in Privacy L2 either party or a relayer submits the swap
 - Minimum viable privacy: amounts/positions only vs parts of the term sheet?
   - _PoC approach:_ Amounts and positions hidden; legal entity identities can remain public (dual identity model)
 - ISO 20022 relevance for bond workflows vs ICMA BDT usage
@@ -55,5 +57,10 @@ _Notes below reference the PoC implementation._
 ## 7) Notes And Links
 
 - **Tracking:** Public workstream in [ethsystems/pocs / private-bond](https://github.com/ethsystems/pocs/tree/master/pocs/private-bond)
-- **Standards:** ERC-6123 (derivative/bond lifecycle), ERC-7573 (atomic cross-domain DvP), ICMA Bond Data Taxonomy (BDT)
-- **Current standards:** ERC-20 tokens; HTLC sequences for DvP (to be replaced by ERC-7573)
+- **Standards:** [ERC-6123](https://ercs.ethereum.org/ERCS/erc-6123) (Draft; derivative/bond lifecycle), [ERC-7573](https://ercs.ethereum.org/ERCS/erc-7573) (Draft; conditional cross-chain DvP, atomicity rests on the decryption oracle, hides no amounts or counterparties), [ICMA Bond Data Taxonomy (BDT)](../patterns/pattern-icma-bdt-data-model.md)
+- **Current standards:** ERC-20 tokens; HTLC sequences for cross-chain DvP (ERC-7573 is a proposed alternative); the approach targets same-chain atomic DvP, but no PoC implements the stablecoin leg: the Custom UTXO PoC's issuer-submitted `atomicSwap` is single-asset and the Privacy L2 PoC settles payment off-chain
+- **Patterns:** [Atomic DvP via ERC-7573](../patterns/pattern-dvp-erc7573.md) · [Crypto-registry bridge (eWpG) with EAS mirroring](../patterns/pattern-crypto-registry-bridge-ewpg-eas.md)
+- **Jurisdiction:** [DE / eWpG](../jurisdictions/de-eWpG.md) (crypto-securities register)
+- **Domains:** [Funds & Assets](../domains/funds-assets.md) · [Trading](../domains/trading.md)
+- Related: [private-corporate-bonds.md](private-corporate-bonds.md) (hiding funding signals from competitors)
+- Related: [private-government-debt.md](private-government-debt.md) (auction integrity and holder privacy)

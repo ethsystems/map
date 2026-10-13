@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-29
+last_reviewed: 2026-10-13
 
 works-best-when:
   - Smart-contract logic must gate on off-chain attested facts (KYC status, accreditation, membership).
@@ -27,14 +27,14 @@ crops_profile:
 
 crops_context:
   cr: "The user depends on the issuer to produce or refresh attestations. CR lifts to `medium` when credentials are portable across competing issuers under a shared schema."
-  o: "EAS and W3C Verifiable Credentials are open standards with multiple implementations; ONCHAINID implements ERC-734/735, which remain unmerged draft proposals. Users can run their own verifier and swap issuers."
+  o: "EAS and W3C Verifiable Credentials are open standards with multiple implementations; ONCHAINID implements ERC-734/735, which remain unmerged draft proposals. EAS contracts are MIT-licensed; ONCHAINID contracts are GPL-3.0. Users can run their own verifier and swap issuers."
   p: "On-chain verification reveals that the user holds an attestation of a given type at a given time. Wrapping the attestation in a zero-knowledge proof lets the user disclose only the predicate (over 18, accredited) without revealing the raw claim."
-  s: "Rides on issuer key custody, a sound signature scheme (ECDSA, typically over an EIP-712 typed-data digest), and the revocation registry being queryable on-chain."
+  s: "Rides on issuer key custody, a sound signature scheme (ECDSA over an EIP-712 typed-data digest for EAS delegated and off-chain attestations, or over an EIP-191 prefixed hash for ONCHAINID claims; direct EAS on-chain attestations rely on the attester's transaction signature), and the revocation registry being queryable on-chain."
 
 post_quantum:
   risk: high
   vector: "ECDSA signatures on attestations are broken by a CRQC. An attacker could forge attestations once issuer public keys are exposed. HNDL does not apply to signatures themselves, but long-lived attestations exposed on-chain may need re-issuance before a CRQC arrives."
-  mitigation: "Migrate issuer signing to a post-quantum scheme once standardized, for example ML-DSA. Rotate issuer keys on a defined schedule. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  mitigation: "Migrate issuer signing to a post-quantum signature scheme such as ML-DSA (FIPS 204); on-chain verification needs a verifier contract or a precompile such as [EIP-8051](https://eips.ethereum.org/EIPS/eip-8051) (Draft). Rotate issuer keys on a defined schedule. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [EAS, ERC-734, ERC-735, EIP-712, W3C-VC]
 
@@ -44,10 +44,10 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/ethereum-attestation-service/eas-contracts
-    description: "Ethereum Attestation Service contracts (production)"
+    description: "Ethereum Attestation Service contracts (production, MIT)"
     language: "Solidity"
   - url: https://github.com/onchain-id/solidity
-    description: "ONCHAINID reference implementation of ERC-734/735 (production)"
+    description: "ONCHAINID implementation of ERC-734/735 (production, GPL-3.0)"
     language: "Solidity"
 ---
 
@@ -87,7 +87,7 @@ Threat model:
 
 - Issuer honesty and key custody. A compromised issuer key can produce forged attestations until the key is revoked.
 - Availability of the revocation registry at verification time. A stale read defeats revocation.
-- Signature-scheme soundness. ECDSA, whether over a raw hash or an EIP-712 typed-data digest, is classically secure and PQ-vulnerable.
+- Signature-scheme soundness. ECDSA, whether over an EIP-191 prefixed hash or an EIP-712 typed-data digest, is classically secure and PQ-vulnerable.
 - On-chain visibility of the verification event reveals which contract the user interacted with and when. Network-layer privacy and zero-knowledge wrappers are out of scope for this pattern.
 
 ## Trade-offs
@@ -104,10 +104,10 @@ A buyer on a tokenized bond platform holds an accredited-investor attestation is
 ## See also
 
 - [EAS (Ethereum Attestation Service)](https://attest.org/)
-- [W3C Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/)
+- [W3C Verifiable Credentials Data Model 2.0](https://www.w3.org/TR/vc-data-model-2.0/) (W3C Recommendation, 15 May 2025)
 - [ERC-734 (draft, unmerged)](https://github.com/ethereum/EIPs/issues/734)
 - [ERC-735 (draft, unmerged)](https://github.com/ethereum/EIPs/issues/735)
-- [ONCHAINID reference implementation of ERC-734/735](https://github.com/onchain-id/solidity)
+- [ONCHAINID implementation of ERC-734/735](https://github.com/onchain-id/solidity)
 - [EIP-712](https://eips.ethereum.org/EIPS/eip-712)
 - [Approach: Private Bonds](../approaches/approach-private-bonds.md)
 - [Domain: Identity and Compliance](../domains/identity-compliance.md)

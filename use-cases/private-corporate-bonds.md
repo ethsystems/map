@@ -68,4 +68,4 @@ See [approach-private-bonds.md](../approaches/approach-private-bonds.md) for gen
 
 - Related: [private-bonds.md](private-bonds.md) (general bond pattern)
 - Related: [private-government-debt.md](private-government-debt.md) (different privacy model - less critical)
-- Standards: ERC-6123 (bond lifecycle), ERC-7573 (atomic DvP)
+- Standards: [ERC-6123](https://ercs.ethereum.org/ERCS/erc-6123) (Draft; derivative/bond lifecycle), [ERC-7573](https://ercs.ethereum.org/ERCS/erc-7573) (Draft; conditional cross-chain DvP, atomicity rests on the decryption oracle, hides no amounts or counterparties; see [pattern](../patterns/pattern-dvp-erc7573.md))

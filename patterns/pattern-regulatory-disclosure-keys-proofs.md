@@ -120,5 +120,5 @@ The transfer agent of a tokenized security holds the register key. Each issuance
 
 ## See also
 
-- [EAS documentation](https://easscan.org/docs)
+- [EAS documentation](https://docs.attest.org/)
 - [Aztec](../vendors/aztec.md)
