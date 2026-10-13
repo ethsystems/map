@@ -55,6 +55,9 @@ open_source_implementations:
   - url: https://prove.email/
     description: "zkEmail: DKIM signature proofs"
     language: "Circom, Noir, SP1"
+  - url: https://github.com/zkproofport/proofport-app
+    description: "ZKProofport: mobile/on-device ZK predicates over signed attestation credentials using Noir, UltraHonk, and mopro for iOS/Android proving, with EVM verification"
+    language: "TypeScript, Rust, Noir, Solidity"
 ---
 
 ## Intent
