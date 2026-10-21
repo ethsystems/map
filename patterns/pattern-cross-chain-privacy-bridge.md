@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-10-21
 
 works-best-when:
   - Moving assets between domains while minimizing linkability.
@@ -35,8 +35,8 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "ZK verification of source consensus inherits the underlying SNARK's PQ exposure. Shielded pool commitments and note encryption on the destination carry HNDL risk."
-  mitigation: "STARK-based bridge proofs and hash-commitment shielded pools. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "A CRQC can forge pairing-based SNARK proofs of source consensus and the ECDSA, BLS, or threshold signatures used as finality evidence, which lets an attacker mint unbacked notes. Note encryption on the destination carries HNDL risk."
+  mitigation: "STARK-based bridge proofs, post-quantum signatures for signature-based finality evidence, and hash-commitment shielded pools with post-quantum note encryption. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [ERC-20]
 
@@ -110,5 +110,3 @@ Threat model:
 - On redemption, the holder burns the shielded note on the L2, proves the burn to L1, and unlocks the escrow.
 
 ## See also
-
-- [ERC-7281: Sovereign Bridged Tokens (xERC20)](https://ethereum-magicians.org/t/erc-7281-sovereign-bridged-tokens/14979)

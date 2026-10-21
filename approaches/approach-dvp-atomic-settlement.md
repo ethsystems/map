@@ -1,10 +1,10 @@
 ---
 title: "Approach: Atomic DvP Settlement"
 status: ready
-last_reviewed: 2026-06-24
+last_reviewed: 2026-10-21
 
 use_case: private-bonds
-related_use_cases: [private-derivatives, private-corporate-bonds, private-government-debt, private-rwa-tokenization]
+related_use_cases: [private-derivatives, private-corporate-bonds, private-government-debt, private-rwa-tokenization, private-repo]
 
 primary_patterns:
   - pattern-dvp-erc7573
