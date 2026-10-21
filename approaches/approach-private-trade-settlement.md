@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Trade Settlement"
 status: ready
-last_reviewed: 2026-08-11
+last_reviewed: 2026-10-21
 
 use_case: private-bonds
 related_use_cases: [private-derivatives, private-rwa-tokenization, private-corporate-bonds, private-government-debt, private-stocks, private-commodities, private-fx, private-repo]
@@ -15,6 +15,7 @@ supporting_patterns:
   - pattern-dvp-erc7573
   - pattern-regulatory-disclosure-keys-proofs
   - pattern-private-pvp-stablecoins-erc7573
+  - pattern-oif
 
 pocs:
   folder: pocs/private-trade-settlement
@@ -33,7 +34,7 @@ open_source_implementations:
     description: "Aztec privacy-native L2"
     language: TypeScript / Noir
   - url: https://github.com/across-protocol/contracts
-    description: "Across (ERC-7683 intents-based cross-chain settlement)"
+    description: "Across (intents-based cross-chain settlement"
     language: Solidity
 ---
 
@@ -67,15 +68,16 @@ maturity: production
 context: i2i
 crops: { cr: high, o: yes, p: full, s: high }
 uses_patterns: [pattern-shielding, pattern-regulatory-disclosure-keys-proofs]
-example_vendors: [railgun, paladin, privacypools]
+example_vendors: [railgun, paladin]
 ```
 
 **Summary:** Both counterparties hold assets in a shielded pool; settlement runs as a coordinated JoinSplit that consumes input notes and produces output notes in a single atomic transaction.
 
-**How it works:** Each party deposits to the shielded pool; trade execution is a multi-input, multi-output JoinSplit proven in zero knowledge: bond notes and cash notes are consumed, new owner-rotated notes are created. The verifier contract checks Merkle membership, nullifier uniqueness, and conservation of value across asset classes. Per-note viewing keys enable selective disclosure to regulators.
+**How it works:** Each party deposits to the shielded pool; trade execution is one JoinSplit proof per asset, submitted together so both legs settle in one transaction: bond notes and cash notes are consumed, new owner-rotated notes are created. The verifier contract checks Merkle membership, nullifier uniqueness, and conservation of value within each asset. Per-note viewing keys enable selective disclosure to regulators.
 
 **Trust assumptions:**
 - L1 consensus and verifier contract correctness
+- If Groth16 is the proof system, per-circuit trusted setup (Railgun, Paladin Zeto)
 - Gas relayer for liveness on private withdrawals
 - Per-pool issuer (if KYC-gated entry is enforced)
 
@@ -108,12 +110,12 @@ example_vendors: [aztec, miden]
 **How it works:** Bond notes and cash notes are native private notes in the rollup's execution model. A private DvP contract call consumes both and produces new notes for each party. Validity proofs settle on L1; Incoming Viewing Keys (IVKs) provide account-level disclosure.
 
 **Trust assumptions:**
-- Sequencer for ordering (currently centralized in early deployments)
+- Sequencer for ordering
 - Bridge contracts for L1 settlement
 - Rollup proving system soundness
 
 **Threat model:**
-- Sequencer outage forces escape-game exits with weakened privacy
+- Sequencer outage or censorship leaves users relying on the escape hatch, with weakened privacy
 - Bridge boundary exposes deposit/withdraw amounts
 - IVK compromise reveals account-level flows
 
@@ -132,19 +134,19 @@ example_vendors: [aztec, miden]
 maturity: prototyped
 context: i2i
 crops: { cr: medium, o: partial, p: full, s: medium }
-uses_patterns: [pattern-tee-zk-settlement, pattern-cross-chain-privacy-bridge]
+uses_patterns: [pattern-tee-zk-settlement]
 poc_spec: pocs/private-trade-settlement/tee_swap/SPEC.md
 example_vendors: []
 ```
 
-**Summary:** A TEE coordinator matches orders privately, generates zero-knowledge proofs of correct execution, and coordinates cross-chain settlement using stealth addresses with timeout-based refunds.
+**Summary:** A TEE coordinator matches orders privately and coordinates settlement on one or more chains by releasing stealth-address keys, with timeout-based refunds.
 
-**How it works:** Counterparties submit encrypted orders to an attested TEE. The TEE matches, validates funds (via cross-chain proofs), and locks notes to stealth addresses on each chain with dual conditions (TEE-revealed key OR timeout refund). On success, the TEE generates a SNARK of correct execution and reveals stealth keys; on failure, both sides reclaim after timeout. EIP-5564 stealth addresses anchor the destination side.
+**How it works:** Counterparties submit encrypted orders to an attested TEE, and each locks its note to a stealth address on its own chain with dual spending conditions (stealth-derived key, or owner refund after timeout). The TEE matches the orders and checks that the locked notes fit the agreed terms; the pattern has the TEE prove correct matching in zero knowledge, while the PoC verifies each party's lock proof on-chain and reads both chains over RPC. On success, the TEE publishes the ephemeral keys to an announcement contract and each recipient derives its stealth spending key; on failure, both sides reclaim after timeout. Stealth addresses follow the [EIP-5564](https://eips.ethereum.org/EIPS/eip-5564) construction (the PoC uses a Grumpkin-curve variant).
 
 **Trust assumptions:**
 - TEE vendor and remote-attestation chain
 - Stealth-address key generation soundness
-- Bridge contracts on each chain
+- Shielded-pool and verifier contracts on each chain, and the RPC endpoint the TEE reads them through (a light client inside the TEE removes this)
 
 **Threat model:**
 - Hardware vendor can observe plaintext during execution
@@ -199,17 +201,17 @@ example_vendors: []
 maturity: prototyped
 context: i2i
 crops: { cr: medium, o: yes, p: partial, s: medium }
-uses_patterns: [pattern-cross-chain-privacy-bridge]
+uses_patterns: [pattern-oif]
 example_vendors: []
 ```
 
 **Summary:** Counterparties express settlement intents; competitive solvers fill orders using their own capital across chains, bearing execution risk.
 
-**How it works:** A user publishes an ERC-7683 intent (asset, amount, acceptable rate). Solvers compete to fill the destination leg from their own inventory; the protocol reimburses the winning solver from the source leg after fill. Solver collateral and reputation gate participation. Settlement on the destination chain is fast; source-side reimbursement runs over a slower verification path.
+**How it works:** A user opens an intent (asset, amount, acceptable rate) with an intent protocol; [ERC-7683](https://eips.ethereum.org/EIPS/eip-7683) (Draft) standardizes how solvers read such orders, not how they settle. Solvers compete to fill the destination leg from their own inventory; the protocol reimburses the winning solver from the source leg after fill. Any solver collateral, reputation, or slashing rules are protocol-specific. Settlement on the destination chain is fast; source-side reimbursement runs over a slower verification path.
 
 **Trust assumptions:**
 - Solver collateral is adequate for the trade size
-- Reputation systems and slashing capture misbehavior
+- The intent protocol's settlement and dispute rules capture misbehavior
 - Source-side proof of fill is verifiable
 
 **Threat model:**
@@ -233,7 +235,7 @@ example_vendors: []
 | **Maturity** | production | documented | prototyped | documented | prototyped |
 | **Context** | i2i | i2i | i2i | i2i | i2i |
 | **CROPS** | CR:hi O:y P:full S:hi | CR:med O:part P:full S:med | CR:med O:part P:full S:med | CR:med O:part P:part S:med | CR:med O:y P:part S:med |
-| **Trust model** | Cryptographic only | Sequencer + bridge | Hardware vendor | Honest-majority MPC | Solver collateral + reputation |
+| **Trust model** | Cryptographic | Sequencer + bridge | Hardware vendor | Honest-majority MPC | Solver collateral + reputation |
 | **Privacy scope** | Amounts + counterparties + addresses | Full state on L2 | Encrypted coordination, stealth destinations | Strong (MPC) | Intents visible to solvers |
 | **Performance** | L1 gas; verification cost | L2-internal fees | Enclave speed | MPC rounds | Variable (solver competition) |
 | **Operator req.** | None (gas relayer optional) | Yes (sequencer) | Yes (TEE coordinator) | Yes (MPC committee) | Yes (solver network) |
@@ -245,11 +247,11 @@ example_vendors: []
 
 ### Business perspective
 
-For institutional same-network settlement among known counterparties, UTXO Shielded Pool DvP is the default: production maturity, vendor coverage, and a disclosure interface that maps onto eWpG / MiCA. Privacy L2 Native DvP fits where bond logic is complex and the rollup's decentralization timeline is acceptable. Cross-network settlement carries unavoidable trust: TEE+ZK suits institutions with hardware trust already in scope; MPC/Threshold fits decentralized coordination without hardware vendors; Intent-Based is the suitable choice for asynchronous flows where competitive execution matters more than order privacy. The default is to keep both legs on one network whenever possible; only resort to cross-network when liquidity or regulation forces it.
+For institutional same-network settlement among known counterparties, UTXO Shielded Pool DvP is the default: production maturity, vendor coverage, and a disclosure interface to review against eWpG for the bond leg and MiCA for the EURC leg (tokenized bonds that are MiFID II financial instruments fall outside MiCA under Art. 2(4)). Privacy L2 Native DvP fits where bond logic is complex and the rollup's decentralization timeline is acceptable. Cross-network settlement carries unavoidable trust: TEE+ZK suits institutions with hardware trust already in scope; MPC/Threshold fits decentralized coordination without hardware vendors; Intent-Based is the suitable choice for asynchronous flows where competitive execution matters more than order privacy. The default is to keep both legs on one network whenever possible; only resort to cross-network when liquidity or regulation forces it.
 
 ### Technical perspective
 
-Same-network settlement is the simpler engineering surface: deploy a verifier and a relayer (UTXO) or rely on rollup primitives (Privacy L2). Cross-network settlement multiplies the surface, TEE attestation chains, MPC committee operations, or solver network integration each carry their own reliability and audit burden. None of the cross-network options offers true atomic settlement; each replaces cryptographic atomicity with a different recovery path: timeout (TEE), slashing (MPC), or solver risk (intent). Realtime proving and based sequencing are the research frontiers that may eventually deliver trustless cross-rollup atomicity but are not production-ready.
+Same-network settlement is the simpler engineering surface: deploy a verifier and a relayer (UTXO) or rely on rollup primitives (Privacy L2). Cross-network settlement multiplies the surface, TEE attestation chains, MPC committee operations, or solver network integration each carry their own reliability and audit burden. None of the cross-network options offers true atomic settlement; each replaces cryptographic atomicity with a different recovery path: timeout (TEE), slashing (MPC), or solver risk (intent). ERC-7573 ([DvP](../patterns/pattern-dvp-erc7573.md), [cash-to-cash PvP](../patterns/pattern-private-pvp-stablecoins-erc7573.md)) is a further cross-network option: the locked leg moves only on an oracle-released outcome key, the standard defines no timeout, and its calls and events carry `amount`, `from`, and `to` in the clear. Realtime proving and based sequencing are the research frontiers that may eventually deliver trustless cross-rollup atomicity but are not production-ready.
 
 ### Legal & risk perspective
 
@@ -259,7 +261,7 @@ This is a perspective for legal review by the deploying institution, not legal a
 
 ### Default
 
-For institutional trade settlement where both legs can coexist on a single network, default to UTXO Shielded Pool DvP on a production shielded pool ([Railgun](../vendors/railgun.md), [Paladin](../vendors/paladin.md), or [Privacy Pools](../vendors/privacypools.md)). Settlement runs as a coordinated JoinSplit; selective disclosure runs through per-note viewing keys; the dispute path is the standard institutional arbitration framework.
+For institutional trade settlement where both legs can coexist on a single network, default to UTXO Shielded Pool DvP on a production shielded pool ([Railgun](../vendors/railgun.md) or [Paladin](../vendors/paladin.md)). Settlement runs as a coordinated JoinSplit; selective disclosure runs through per-note viewing keys; the dispute path is the standard institutional arbitration framework.
 
 ### Decision factors
 
@@ -279,4 +281,3 @@ Run primary settlement on a shielded pool for liquidity-dense flow; pair with TE
 3. **Regulatory acceptance per trust model.** Which trust models (TEE, MPC, economic) satisfy regulatory requirements across jurisdictions?
 4. **Solver privacy.** Can intent-based architectures preserve order privacy while enabling competitive execution?
 5. **Realtime proving / based sequencing.** Whether synchronous cross-rollup composability can deliver trustless cross-network atomicity within block time.
-

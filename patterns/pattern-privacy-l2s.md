@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: L2
-last_reviewed: 2026-06-17
+last_reviewed: 2026-10-21
 
 works-best-when:
   - Strong privacy is required beyond value-hiding, including identity unlinkability and programmable access controls.
@@ -53,7 +53,7 @@ open_source_implementations:
   - url: https://github.com/AztecProtocol/aztec-packages
     description: "Aztec Network: privacy L2 with native shielding"
     language: "Noir, Rust, TypeScript"
-  - url: https://github.com/0xMiden/miden-node
+  - url: https://github.com/0xMiden/node
     description: "Miden zkVM client-side proving rollup"
     language: "Rust"
   - url: https://github.com/ethsystems/pocs/tree/master/pocs/private-bond/privacy-l2
