@@ -78,8 +78,8 @@ Institutions repeatedly collect the same credentials (KYC/KYB) from counterparti
 | --- | --- | --- |
 | Institutional KYC registry | Merkle tree membership proofs | ERC-3643 issuances, Semaphore |
 | Government ID (passport) | Document ZK proofs (NFC + Noir) | ZKPassport / Aztec token sale |
-| Government ID (national) | Document DKIM/signature + ZK | Anon Aadhaar / ETHIndia |
-| Email | DKIM signature proofs | zkEmail / Arbitrum wallets |
+| Government ID (national) | Document RSA signature + ZK | Anon Aadhaar / ETHIndia 2024 voting |
+| Email | DKIM signature proofs | zkEmail email wallet (Arbitrum trial, now Base Sepolia) |
 | Web2 data source | TLS transcript proofs | TLSNotary |
 | Biometric enrollment | Iris/face hash + membership proof | World ID |
 | Event/community | POD2 | [POD2](https://github.com/0xPARC/pod2) (0xPARC) |
@@ -103,9 +103,9 @@ See detailed architecture and trade-offs in [**Approach: Private Identity**](../
 
 ## 7) Notes And Links
 
-- **Standards:** [ERC-3643 ONCHAINID](https://www.erc3643.org/), [EAS](https://attest.org/), W3C Verifiable Credentials, [EIP-5564](https://eips.ethereum.org/EIPS/eip-5564)
+- **Standards:** [ERC-3643 ONCHAINID](https://www.erc3643.org/), [EAS](https://attest.org/), [W3C Verifiable Credentials 2.0](https://www.w3.org/TR/vc-data-model-2.0/), [EIP-5564](https://eips.ethereum.org/EIPS/eip-5564)
 - **ZK Frameworks:** [Semaphore](https://semaphore.pse.dev/), [Noir/Barretenberg](https://docs.aztec.network/), [Circom/Groth16](https://docs.circom.io/)
-- **Credential Systems:** [ZKPassport](https://zkpassport.id/), [Self](https://self.xyz/), [Rarimo](https://rarimo.com/), [Anon Aadhaar](https://github.com/anon-aadhaar), [zkEmail](https://prove.email/), [TLSNotary](https://tlsnotary.org/), [POD2](https://github.com/0xPARC/pod2), [OpenAC](https://eprint.iacr.org/2026/251)
+- **Credential Systems:** [ZKPassport](https://zkpassport.id/), [Self](https://self.xyz/), [Rarimo](https://rarimo.com/), [Anon Aadhaar](https://github.com/anon-aadhaar), [zkEmail](https://zk.email/), [TLSNotary](https://tlsnotary.org/), [POD2](https://github.com/0xPARC/pod2), [OpenAC](https://eprint.iacr.org/2026/251)
 - **Validated Deployments:** [WFP Building Blocks](https://www.wfp.org/building-blocks), [OpenCerts](https://www.opencerts.io/)
 - See also: [EPIC map](https://epic-webapp.vercel.app/) (GovTech & EPIC team, demo data): verifiable credentials, KYC/KYB, licensing, selective disclosure
 - **Related Patterns:** [Private MTP Auth](../patterns/pattern-private-mtp-auth.md), [zk-TLS](../patterns/pattern-zk-tls.md), [Verifiable Attestation](../patterns/pattern-verifiable-attestation.md), [vOPRF Nullifiers](../patterns/pattern-voprf-nullifiers.md), [Selective Disclosure](../patterns/pattern-regulatory-disclosure-keys-proofs.md), [co-SNARK](../patterns/pattern-co-snark.md)

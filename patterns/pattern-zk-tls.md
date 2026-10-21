@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: offchain
-last_reviewed: 2026-06-18
+last_reviewed: 2026-10-21
 
 works-best-when:
   - Data required on-chain only lives behind a TLS-protected website with no usable API.
@@ -33,8 +33,8 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "Current notarized-TLS constructions use elliptic-curve Diffie-Hellman for the TLS handshake inside an MPC or 2PC protocol. Both the handshake and the MPC channels are broken by a CRQC. HNDL risk applies to any recorded notarized session whose contents must remain confidential or verifiable post-CRQC."
-  mitigation: "PQ-safe TLS handshakes require ML-KEM inside the MPC layer, which is an unsolved problem in current notarized-TLS designs. Track the RFC-9497 and MPC-TLS working groups; plan for re-notarization of long-lived data. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "Current notarized-TLS constructions use elliptic-curve Diffie-Hellman for the TLS handshake inside an MPC or 2PC protocol, and notaries sign with ECDSA (secp256k1 or P-256 in TLSNotary). Both the handshake and the MPC channels are broken by a CRQC, so HNDL applies to any recorded session whose redacted contents must stay confidential. Notary signatures face forgery risk, so attestations stop being verifiable evidence once a CRQC exists."
+  mitigation: "PQ-safe TLS handshakes require ML-KEM inside the MPC layer, which is an unsolved problem in current notarized-TLS designs. The hybrid ML-KEM key agreement groups are defined only for TLS 1.3, which TLSNotary does not yet support; plan for re-notarization of long-lived data. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: []
 
@@ -44,7 +44,7 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/tlsnotary/tlsn
-    description: "TLSNotary reference implementation of notarized TLS with MPC prover (research)"
+    description: "TLSNotary Rust implementation: MPC-TLS and proxy mode, TLS 1.2 only; alpha, README says not for production; notary server removed in alpha.13"
     language: "Rust"
 ---
 
@@ -55,7 +55,7 @@ Export verifiable data or identity attributes from a TLS-protected website into 
 ## Components
 
 - Origin server hosts the TLS-protected website holding the data of interest (account balance, identity attribute, certification).
-- Notary participates in the TLS session alongside the user under an MPC or 2PC protocol, so that neither party alone can forge the transcript. The notary signs the transcript output.
+- Notary participates in the TLS session alongside the user under an MPC or 2PC protocol, so that neither party alone can forge the transcript. The notary signs commitments to the transcript and the server identity without seeing the plaintext.
 - User client drives the session, produces the zero-knowledge proof over the signed transcript, and redacts the fields that should not be disclosed.
 - Proof backend (a zero-knowledge proof system) compiles the transcript predicate into a circuit and produces a proof a verifier can check.
 - On-chain verifier contract or counterparty verifier checks the notary signature on the transcript and the zero-knowledge proof that the disclosed fields follow from the signed content.
@@ -63,9 +63,9 @@ Export verifiable data or identity attributes from a TLS-protected website into 
 ## Protocol
 
 1. [user] Initiate a TLS session to the origin server with the notary participating in the handshake under the MPC or 2PC protocol.
-2. [notary] Participate in the session so that the session key is shared; neither party learns the full plaintext alone.
+2. [notary] Participate in the session so that the session key is shared; neither party holds the full key, and only the user sees the plaintext.
 3. [user] Request the target data from the origin within the session; receive the encrypted response.
-4. [notary] Produce a signed transcript that binds the handshake and the response ciphertext to the notary identity.
+4. [notary] Sign an attestation over the user's commitments to the transcript and the server identity, bound to the notary key.
 5. [user] Generate a zero-knowledge proof that the disclosed fields (predicate over account balance, identity attribute) follow from the signed transcript, while redacting everything else.
 6. [verifier] Check the notary signature and the zero-knowledge proof against the public statement; accept or reject on that basis.
 
@@ -89,7 +89,7 @@ Threat model:
 - The notary is a trust and liveness dependency. Multi-notary or threshold-notary designs reduce collusion risk at the cost of protocol complexity.
 - MPC-TLS session bandwidth and latency are an order of magnitude above a direct TLS session; large transcripts require careful redaction to keep proof cost reasonable.
 - Origin-side changes (HTML structure, API response format) break the downstream parser; deployments need a versioning plan for predicates.
-- Current MPC-TLS stacks support only TLS 1.2 or a limited subset of TLS 1.3 ciphers; adoption is bounded by that compatibility.
+- TLSNotary supports only TLS 1.2, with TLS 1.3 on its roadmap; origins that accept only TLS 1.3 are out of reach, and adoption is bounded by that compatibility.
 
 ## Example
 
@@ -98,5 +98,5 @@ A custodian needs to verify that an investor holds a minimum balance at a regula
 ## See also
 
 - [TLSNotary documentation](https://tlsnotary.org/)
-- [Notary as a service, TLSNotary docs](https://docs.tlsnotary.org/)
-- [Notarizing TLS, IEEE 2023 paper](https://eprint.iacr.org/2023/964)
+- [Notarization, TLSNotary docs](https://tlsnotary.org/docs/protocol/notarization)
+- [Lightweight Authentication of Web Data via Garble-Then-Prove (Xie et al., USENIX Security 2024)](https://eprint.iacr.org/2023/964)
