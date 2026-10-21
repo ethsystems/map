@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-17
+last_reviewed: 2026-10-21
 
 works-best-when:
   - You need deterministic per-scope nullifiers or pseudonyms for credentials and signals without revealing the underlying identifier.
@@ -28,14 +28,14 @@ crops_profile:
 
 crops_context:
   cr: "Reaches `high` when the committee is permissionless and bond-backed with slashing. Drops to `low` when a single operator controls the evaluation pipeline or the rate-limit gate."
-  o: "The vOPRF construction itself is specified in open IETF standards; threshold implementations vary in licensing. Production deployments may bundle proprietary orchestration and rate-limit logic."
+  o: "The base vOPRF construction is specified openly in [RFC 9497](https://www.rfc-editor.org/info/rfc9497/); threshold variants are outside it, and implementations vary in licensing. Production deployments may bundle proprietary orchestration and rate-limit logic."
   p: "Input privacy holds against the committee in the vOPRF model. Metadata about when and how often a user requests an evaluation remains visible to the committee and can leak usage patterns."
   s: "Security rides on the OPRF scheme soundness, the threshold key-generation ceremony, and the honest-threshold assumption (fewer than t colluding nodes)."
 
 post_quantum:
   risk: high
-  vector: "Current OPRF constructions rely on the DDH assumption in a prime-order elliptic-curve group, which is broken by a CRQC. HNDL risk applies to any recorded blinded request, since a future adversary with quantum capability plus the committee key could de-blind and reconstruct nullifiers."
-  mitigation: "Post-quantum OPRF constructions (lattice-based, VDF-based) are in research. Migration requires re-keying the committee, versioning scopes with a key identifier, and accepting larger message sizes. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "[RFC 9497](https://www.rfc-editor.org/info/rfc9497/) OPRF and VOPRF security rests on the One-More Gap Computational Diffie-Hellman assumption in a prime-order elliptic-curve group, which a CRQC breaks. A quantum adversary can recover the committee key from its public key, evaluate the PRF offline to link nullifiers to known or enumerable identifiers, and forge VOPRF proofs. Blinding hides the client input even from an unbounded server, so recorded blinded requests carry no HNDL exposure."
+  mitigation: "Post-quantum OPRF constructions (lattice-based, isogeny-based, MPC- or garbled-circuit-based) are in research. Migration requires re-keying the committee, versioning scopes with a key identifier, and accepting larger message sizes. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [RFC-9497, RFC-9576]
 
@@ -45,8 +45,8 @@ related_patterns:
   see_also: [pattern-zk-promises, pattern-compliance-monitoring]
 
 open_source_implementations:
-  - url: https://core.taceo.io/articles/taceo-oprf/
-    description: "TACEO threshold vOPRF writeup with reference implementation (research)"
+  - url: https://github.com/TaceoLabs/oprf-service
+    description: "TACEO:OPRF threshold vOPRF service"
     language: "Rust"
 ---
 

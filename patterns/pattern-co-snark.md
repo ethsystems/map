@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-29
+last_reviewed: 2026-10-21
 
 works-best-when:
   - A user or institution lacks the compute, memory, or battery to generate a zero-knowledge proof client-side and wants to offload the work without disclosing the witness.
@@ -32,7 +32,7 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "Pairing-based SNARKs (Groth16, PLONK/KZG) broken by CRQC. MPC communication inherits the underlying key-exchange assumptions."
+  vector: "Pairing-based SNARKs (Groth16, PLONK/KZG, UltraHonk) broken by CRQC. MPC communication inherits the underlying key-exchange assumptions: secret sharing itself is information-theoretic, but recorded channel traffic carrying witness shares is exposed to HNDL."
   mitigation: "Collaborative versions of hash-based proof systems exist only as research (Ozdemir & Boneh adapt Fractal, at N-times proof size and verification cost). See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: []
