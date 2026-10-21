@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-29
+last_reviewed: 2026-10-21
 
 works-best-when:
   - A regulator needs targeted visibility into specific trades or accounts without blanket transparency.
@@ -34,8 +34,8 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "Viewing keys typically derive from EC-based key exchange and are stored as long-lived secrets; HNDL risk is high since ciphertexts and proofs can be archived now and broken later. Predicate circuits built on pairing-based proof systems are also affected."
-  mitigation: "Migrate key-encapsulation to post-quantum KEMs (for example, ML-KEM) and move predicate circuits to STARK-based systems with hash commitments. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "Viewing keys typically derive from EC-based key exchange and are stored as long-lived secrets; HNDL risk is high since ciphertexts encrypted under them, including the on-chain standing register feed, can be archived now and decrypted later. Predicate circuits built on pairing-based proof systems face forgery risk instead: a CRQC could produce a false compliance proof."
+  mitigation: "Migrate key-encapsulation to post-quantum KEMs (for example, ML-KEM, FIPS 203) before ciphertexts are published, since migration does not protect ciphertexts harvested earlier, and move predicate circuits to STARK-based systems with hash commitments. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: []
 
@@ -89,14 +89,14 @@ Standing register disclosure:
 
 Guarantees:
 
-- Least-privilege, revocable access: viewing keys are time-boxed; predicate proofs leak no raw data.
+- Least-privilege access: viewing keys are scoped to a time window; predicate proofs leak no raw data. A disclosed key cannot be withdrawn, so revocation stops further grants but not the regulator's access to data already in scope.
 - Full audit trail: every grant is recorded, signed, and anchored.
 - Predicate proofs can answer common compliance questions without exposing transaction content.
 - Standing register disclosure: the register of record can rebuild beneficial ownership for any point in time without holder cooperation, provided the circuit constrains the ciphertext.
 
 Threat model:
 
-- Threshold key custody integrity. A coalition of operators above the threshold can forge responses or leak keys.
+- Threshold key custody integrity. A coalition of operators that meet the threshold can forge responses or leak keys.
 - Mandate parsing correctness. A bug in the policy engine can widen scope beyond what the mandate authorises.
 - Attestation log availability. If the log is rewritable or unobserved, disclosures can be retroactively denied.
 - Predicate circuit soundness and input binding. A misbound predicate may answer a different question than the one logged.
@@ -114,7 +114,7 @@ Threat model:
 
 ## Example
 
-A supervisory authority asks for trades on a given date in a specific instrument. The policy engine matches the request against the institution's active mandate, an approval record is logged, and a 24-hour viewing key reconstituted from threshold shares is issued. The regulator reviews the trades during the window; at expiry the key is revoked automatically, and the attestation log retains a hashed record for future audit.
+A supervisory authority asks for trades on a given date in a specific instrument. The policy engine matches the request against the institution's active mandate, an approval record is logged, and a 24-hour viewing key reconstituted from threshold shares is issued. The key decrypts only that day's trades, so nothing outside the window is exposed, but the regulator keeps access to those trades after the review ends; the attestation log retains a hashed record for future audit.
 
 The transfer agent of a tokenized security holds the register key. Each issuance, transfer and redemption publishes position data encrypted to that key, bound to the proof by the circuit, so the register can reproduce holder records, eligibility status and tax reports for any date without asking holders.
 

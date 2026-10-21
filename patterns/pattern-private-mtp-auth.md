@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: hybrid
-last_reviewed: 2026-09-30
+last_reviewed: 2026-10-21
 
 works-best-when:
   - Institutions must comply with KYC/AML but want to protect client privacy on-chain.
@@ -33,8 +33,8 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "Pairing-based and elliptic-curve proof systems (Groth16, PLONK/KZG) are broken by a CRQC, letting an attacker forge membership proofs. HNDL risk is bounded because the Merkle tree itself uses hash-based commitments."
-  mitigation: "Migrate to STARK-based membership circuits with hash-based commitments. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "Pairing-based and elliptic-curve proof systems (Groth16, PLONK/KZG) are broken by a CRQC, letting an attacker forge membership proofs. An ECDSA key-control check is also forgeable once the EOA public key is exposed. HNDL does not apply: nothing is encrypted, the zero-knowledge property does not rest on the broken assumptions, and the Merkle tree and nullifiers are hash-based."
+  mitigation: "Migrate to STARK-based membership circuits with hash-based commitments and a post-quantum signature for the key-control step. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [ERC-3643, ERC-735]
 
@@ -45,8 +45,8 @@ related_patterns:
 open_source_implementations:
   - url: https://github.com/semaphore-protocol/semaphore
     description: "Semaphore: zero-knowledge signaling with Merkle membership and nullifiers"
-    language: "Circom, Solidity"
-  - url: https://github.com/privacy-scaling-explorations/zk-kit
+    language: "Circom, Solidity, TypeScript"
+  - url: https://github.com/zk-kit/zk-kit
     description: "PSE zk-kit: Merkle tree libraries used by Semaphore and similar membership-proof systems"
     language: "TypeScript"
 ---

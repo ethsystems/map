@@ -1,7 +1,7 @@
 ---
 title: "Approach: Private Identity"
 status: ready
-last_reviewed: 2026-06-24
+last_reviewed: 2026-10-21
 
 use_case: private-identity
 related_use_cases: [resilient-identity-continuity]
@@ -35,7 +35,7 @@ open_source_implementations:
     description: "Anon Aadhaar (Indian national ID, RSA in ZK)"
     language: TypeScript / Circom
   - url: https://github.com/0xPARC/pod2
-    description: "POD2 (composable provable object data)"
+    description: "POD2 (composable Provable Object Datatypes, Plonky2 backend)"
     language: Rust
   - url: https://github.com/tlsnotary
     description: "TLSNotary (zk-TLS transcript proofs)"
@@ -125,7 +125,7 @@ example_vendors: []
 
 **Summary:** zero-knowledge proofs over cryptographic data from government-issued identity documents (passport NFC, national ID signatures); selectively disclose attributes without revealing the document.
 
-**How it works:** ZKPassport reads passport NFC chips (120+ countries) and proves attributes (age, nationality, sanctions-list non-membership) under Noir / UltraHonk on mobile. Anon Aadhaar verifies UIDAI's RSA signature client-side and emits EVM-verifiable proofs over Indian national ID attributes. The verifier checks the SNARK; no identity data is collected.
+**How it works:** ZKPassport reads the NFC chips of passports, national ID cards, and residence permits (130+ countries per [zkpassport.id](https://zkpassport.id/), October 2026) and proves attributes (age, nationality, sanctions-list non-membership) under Noir / UltraHonk on mobile. Anon Aadhaar verifies UIDAI's RSA signature client-side and emits EVM-verifiable proofs over Indian national ID attributes. The verifier checks the SNARK; no identity data is collected.
 
 **Trust assumptions:**
 - Document-issuing authority signature integrity
@@ -134,7 +134,7 @@ example_vendors: []
 
 **Threat model:**
 - Document issuer compromise propagates to all proofs
-- Cloned passports / NFC replay; mitigated by document-side anti-cloning
+- Cloned passports / NFC replay; passive authentication alone does not detect a cloned chip, and the anti-cloning checks (Active or Chip Authentication) are optional for issuing states
 - Mobile platform compromise reveals derivation material
 
 **Works best when:**
@@ -156,9 +156,9 @@ uses_patterns: [pattern-zk-tls]
 example_vendors: []
 ```
 
-**Summary:** TLSNotary generates zero-knowledge proofs over TLS session transcripts from any web2 source (bank portals, government sites, social media); selectively discloses specific fields.
+**Summary:** TLSNotary proves the authenticity of TLS session transcript data from any web2 source (bank portals, government sites, social media); selectively discloses specific fields.
 
-**How it works:** A Notary co-signs the TLS session; the prover holds the session transcript and generates a zero-knowledge proof attesting to specific fields (account balance, government registry record, social signal). The verifier checks the proof against the Notary's signature and the TLS session metadata.
+**How it works:** The verifier joins the TLS session with the prover under MPC-TLS, or delegates that role to a Notary that signs commitments to the transcript for reuse with other verifiers. The prover holds the session transcript and discloses selected ranges, optionally with a zero-knowledge proof over redacted data, to attest to specific fields (account balance, government registry record, social signal). The verifier checks the disclosure against the MPC-TLS commitments, or against the Notary's signature in Notary mode.
 
 **Trust assumptions:**
 - Notary honesty and availability during the session
@@ -168,7 +168,7 @@ example_vendors: []
 **Threat model:**
 - Notary compromise corrupts the witnessing function
 - TLS server-side data manipulation between sessions
-- Disclosure granularity limited by TLS record structure
+- Disclosure is limited to the transcript ranges the prover committed to ([commit strategy](https://tlsnotary.org/docs/protocol/commit_strategy))
 
 **Works best when:**
 - Web2 data source has no API for direct attestation
@@ -177,7 +177,7 @@ example_vendors: []
 
 **Avoid when:**
 - Trusted Notary is incompatible with the threat model
-- Required disclosure granularity is below TLS record boundaries
+- Many different disclosure patterns are needed and artifact size matters (finer-grained commitments grow storage linearly)
 
 ### On-Chain Attestation
 
@@ -222,7 +222,7 @@ uses_patterns: [pattern-private-mtp-auth]
 example_vendors: []
 ```
 
-**Summary:** POD2 (Provable Object Data) bundles any data with a cryptographic proof of correctness; event tickets, community badges, poll responses, and access tokens share a composable format.
+**Summary:** POD2 (Provable Object Datatype) bundles any data with a cryptographic proof of correctness; event tickets, community badges, poll responses, and access tokens share a composable format.
 
 **How it works:** Each POD is a typed record signed by the issuer; verifiers check the signature and the typed schema. PODs compose: a holder can prove statements over multiple PODs in a single zero-knowledge proof (e.g., "I hold an event POD and a community POD without revealing which event or community").
 
@@ -259,7 +259,7 @@ example_vendors: []
 **How it works:** Any of these credential sources can enroll (passport, national ID, email DKIM, TLS notary, biometric, community vouch). The holder runs RFC 9497 + Jarecki threshold OPRF against the network (TACEO operates a threshold OPRF network, live in production). Output: a deterministic enrollment nullifier and a leaf added to the on-chain LeanIMT. Verification at any verifier checks a zero-knowledge proof against the on-chain root with public inputs (root, scope-bound nullifier, predicate parameters). Sybil resistance is layered: cryptographic (one enrollment per source credential), economic (refundable stake, default 0.1 ETH), social (web-of-trust vouching, future). Recovery via Shamir threshold splitting and guardian-based social recovery.
 
 **Trust assumptions:**
-- Threshold OPRF network availability (t-of-n liveness)
+- Threshold OPRF network availability (t-of-n liveness) and fewer than t colluding operators (t colluding operators can bypass the sybil gate and enumerate enrollments)
 - Source credential cryptography for enrollment
 - On-chain LeanIMT integrity
 - Recovery custodian / guardian set independence
@@ -288,8 +288,8 @@ example_vendors: []
 | **Maturity** | prototyped | prototyped | prototyped | production | prototyped | prototyped |
 | **Context** | i2i | both | both | both | both | both |
 | **CROPS** | CR:med O:y P:full S:hi | CR:med O:y P:full S:hi | CR:med O:y P:part S:med | CR:med O:y P:part S:med | CR:hi O:y P:full S:med | CR:hi O:y P:full S:hi |
-| **Trust model** | Registry operator | Document issuer | Notary + TLS server | Issuer signing key | POD issuer keys | Threshold OPRF + on-chain root |
-| **Privacy scope** | k-anonymity in the tree | Attribute-selective | Field-selective from TLS record | Issuer linkage unless ZK-wrapped | Composable, attestation-based | Multi-source, issuer-independent |
+| **Trust model** | Registry operator | Document issuer | Verifier or Notary + TLS server | Issuer signing key | POD issuer keys | Threshold OPRF + on-chain root |
+| **Privacy scope** | k-anonymity in the tree | Attribute-selective | Field-selective within committed transcript ranges | Issuer linkage unless ZK-wrapped | Composable, attestation-based | Multi-source, issuer-independent |
 | **Performance** | Low proof cost | Medium (mobile NFC + Noir) | Medium (TLS + ZK) | Low (signature check) | Low | Medium (OPRF + ZK) |
 | **Operator req.** | Yes (registry) | No (issuer cooperation only at refresh) | Yes (Notary) | Yes (issuer) | Yes (POD issuer) | Yes (OPRF threshold network) |
 | **Cost class** | Low | Medium | Medium | Low | Low | Medium |
@@ -304,7 +304,7 @@ For institutional KYC, sanctions compliance, and ERC-3643 permissioned token tra
 
 ### Technical perspective
 
-Engineering effort scales by approach. Registry Membership reuses Semaphore-class infrastructure with the lowest proof cost. Document ZK requires mobile NFC integration plus Noir or Circom circuits per document type. TLS Transcript Proofs add the Notary infrastructure and TLS-record introspection. On-Chain Attestation is the simplest verification surface (signature check) but requires registry hygiene at the issuer. POD2 is composable across heterogeneous attestations but the tooling is community-driven. Issuer-Independent OPRF is the heaviest engineering surface (threshold network, on-chain LeanIMT, recovery infrastructure) but is the only category designed to survive single-issuer failure.
+Engineering effort scales by approach. Registry Membership reuses Semaphore-class infrastructure with the lowest proof cost. Document ZK requires mobile NFC integration plus Noir or Circom circuits per document type. TLS Transcript Proofs add MPC-TLS verifier or Notary infrastructure and transcript commitment handling. On-Chain Attestation is the simplest verification surface (signature check) but requires registry hygiene at the issuer. POD2 is composable across heterogeneous attestations but the tooling is community-driven. Issuer-Independent OPRF is the heaviest engineering surface (threshold network, on-chain LeanIMT, recovery infrastructure) but is the only category designed to survive single-issuer failure.
 
 ### Legal & risk perspective
 
@@ -339,4 +339,3 @@ Run On-Chain Attestation as the default for production permissioned flows; layer
 5. **Credential Revocation.** Revocation across heterogeneous issuers without a central authority.
 6. **Guardian Recovery Design.** Minimum guardian set for anti-coercion; acceptable coordination overhead for quorum recovery.
 7. **Attribute Freshness.** Without an issuer to refresh, how stale attributes (expired passports, changed nationality) are handled in OPRF-anchored enrollment.
-
