@@ -34,7 +34,7 @@ open_source_implementations:
     description: "Aztec privacy-native L2"
     language: TypeScript / Noir
   - url: https://github.com/across-protocol/contracts
-    description: "Across (intents-based cross-chain settlement; its ERC-7683 v1 fill path is marked deprecated pending the revised standard)"
+    description: "Across (intents-based cross-chain settlement"
     language: Solidity
 ---
 

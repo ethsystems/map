@@ -110,3 +110,6 @@ Threat model:
 - On redemption, the holder burns the shielded note on the L2, proves the burn to L1, and unlocks the escrow.
 
 ## See also
+
+- [Privacy L2s](pattern-privacy-l2s.md)
+- [Forced Withdrawal (L1 Escape Hatch)](pattern-forced-withdrawal.md)
