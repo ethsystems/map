@@ -61,13 +61,13 @@ See [approach-private-trade-settlement.md](../approaches/approach-private-trade-
 
 - How do intraday settlement requirements interact with privacy mechanisms?
 - What's the migration path from centralized repo infrastructure?
-- How to handle collateral substitution with position privacy? (Locking a hidden position in favour of a lender is open question 13 in [Approach: Private Money Market Funds](../approaches/approach-private-money-market-funds.md#open-questions))
+- How to handle collateral substitution with position privacy?
 
 ## 7) Notes And Links
 
 - Related: [private-bonds.md](private-bonds.md) (collateral type, DvP patterns)
 - Related: [private-stablecoins.md](private-stablecoins.md) (cash leg privacy)
 - Related: [private-money-market-funds.md](private-money-market-funds.md) (MMF shares as confidential collateral; see open question 13 in [Approach: Private Money Market Funds](../approaches/approach-private-money-market-funds.md#open-questions))
-- **Domain:** [Trading](../domains/trading.md)
+- **Domains:** [Trading](../domains/trading.md), [Payments](../domains/payments.md)
 - Market context: U.S. repos outstanding averaged about USD 12.7 trillion a day from July 2025 to March 2026: USD 3.6 trillion centrally cleared, USD 3.1 trillion tri-party, USD 1.1 trillion cleared and tri-party, and USD 5.0 trillion non-centrally cleared bilateral ([OFR Brief 26-05](https://www.financialresearch.gov/briefs/2026/08/18/closer-look-us-nccbr-market/), 2026-08-18)
 - Analogy: Conceptually similar to DeFi over-collateralized lending (not flash loans, which are uncollateralized and same-transaction)

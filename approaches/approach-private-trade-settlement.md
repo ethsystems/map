@@ -34,7 +34,7 @@ open_source_implementations:
     description: "Aztec privacy-native L2"
     language: TypeScript / Noir
   - url: https://github.com/across-protocol/contracts
-    description: "Across (intents-based cross-chain settlement"
+    description: "Across (intents-based cross-chain settlement)"
     language: Solidity
 ---
 
@@ -73,7 +73,7 @@ example_vendors: [railgun, paladin]
 
 **Summary:** Both counterparties hold assets in a shielded pool; settlement runs as a coordinated JoinSplit that consumes input notes and produces output notes in a single atomic transaction.
 
-**How it works:** Each party deposits to the shielded pool; trade execution is one JoinSplit proof per asset, submitted together so both legs settle in one transaction: bond notes and cash notes are consumed, new owner-rotated notes are created. The verifier contract checks Merkle membership, nullifier uniqueness, and conservation of value within each asset. Per-note viewing keys enable selective disclosure to regulators.
+**How it works:** Each party deposits to the shielded pool; trade execution is one JoinSplit proof per asset: bond notes and cash notes are consumed, new owner-rotated notes are created. Each proof is valid on its own, so atomicity comes from binding both proofs to the trade (for example, a shared trade hash as a public input checked by one settlement call that carries both legs), so neither leg verifies alone. The verifier contract checks Merkle membership, nullifier uniqueness, and conservation of value within each asset. Per-note viewing keys enable selective disclosure to regulators.
 
 **Trust assumptions:**
 - L1 consensus and verifier contract correctness
@@ -133,7 +133,7 @@ example_vendors: [aztec, miden]
 ```yaml
 maturity: prototyped
 context: i2i
-crops: { cr: medium, o: partial, p: full, s: medium }
+crops: { cr: medium, o: partial, p: partial, s: medium }
 uses_patterns: [pattern-tee-zk-settlement]
 poc_spec: pocs/private-trade-settlement/tee_swap/SPEC.md
 example_vendors: []
@@ -210,13 +210,13 @@ example_vendors: []
 **How it works:** A user opens an intent (asset, amount, acceptable rate) with an intent protocol; [ERC-7683](https://eips.ethereum.org/EIPS/eip-7683) (Draft) standardizes how solvers read such orders, not how they settle. Solvers compete to fill the destination leg from their own inventory; the protocol reimburses the winning solver from the source leg after fill. Any solver collateral, reputation, or slashing rules are protocol-specific. Settlement on the destination chain is fast; source-side reimbursement runs over a slower verification path.
 
 **Trust assumptions:**
-- Solver collateral is adequate for the trade size
+- Solver collateral, where the protocol requires it, is adequate for the trade size
 - The intent protocol's settlement and dispute rules capture misbehavior
 - Source-side proof of fill is verifiable
 
 **Threat model:**
 - Intents are visible to solvers; privacy-preserving solver discovery is an open problem
-- Solver griefing or last-look behavior; mitigated by competition and slashing
+- Solver griefing or last-look behavior; mitigated by competition and, where the protocol has it, slashing
 - Source-side proof failure can lock funds in dispute
 
 **Works best when:**
@@ -234,8 +234,8 @@ example_vendors: []
 |---|---|---|---|---|---|
 | **Maturity** | production | documented | prototyped | documented | prototyped |
 | **Context** | i2i | i2i | i2i | i2i | i2i |
-| **CROPS** | CR:hi O:y P:full S:hi | CR:med O:part P:full S:med | CR:med O:part P:full S:med | CR:med O:part P:part S:med | CR:med O:y P:part S:med |
-| **Trust model** | Cryptographic | Sequencer + bridge | Hardware vendor | Honest-majority MPC | Solver collateral + reputation |
+| **CROPS** | CR:hi O:y P:full S:hi | CR:med O:part P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:part S:med | CR:med O:y P:part S:med |
+| **Trust model** | Cryptographic | Sequencer + bridge | Hardware vendor | Honest-majority MPC | Intent protocol's settlement rules |
 | **Privacy scope** | Amounts + counterparties + addresses | Full state on L2 | Encrypted coordination, stealth destinations | Strong (MPC) | Intents visible to solvers |
 | **Performance** | L1 gas; verification cost | L2-internal fees | Enclave speed | MPC rounds | Variable (solver competition) |
 | **Operator req.** | None (gas relayer optional) | Yes (sequencer) | Yes (TEE coordinator) | Yes (MPC committee) | Yes (solver network) |

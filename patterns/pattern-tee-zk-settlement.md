@@ -49,7 +49,7 @@ open_source_implementations: []
 
 Coordinate private settlement inside a Trusted Execution Environment while anchoring correctness with a zero-knowledge proof verified on-chain. The enclave acts as a neutral synchronization layer between parties who do not trust each other: it matches orders, manages escrow state, and produces a succinct proof of correct execution. External observers see only commitments, proofs, and stealth-address outputs, while the enclave operator sees plaintext under contractual terms.
 
-The key property is the separation of financial risk from privacy risk. The zero-knowledge proof attests that the state transition follows the rules the circuit checks, and the on-chain verifier rejects any settlement without a valid proof, so a compromised enclave cannot settle a transition the circuit rejects. On one network, the keys for both legs are revealed in the transaction that accepts the proof; across networks, atomicity falls back to timeout refunds (see Trade-offs). If the enclave is compromised, trade details leak, but the circuit and the timeout path keep locked funds from being lost. In institutional settings, this residual privacy exposure is managed through contractual controls (non-disclosure agreements, audit rights, penalties) with the enclave operator.
+The key property is the separation of financial risk from privacy risk. The zero-knowledge proof attests that the state transition follows the rules the circuit checks, and the on-chain verifier rejects any settlement without a valid proof, so a compromised enclave cannot settle a transition the circuit rejects. The keys for both legs are revealed together (on one network, in the transaction that accepts the proof), but settlement itself is not atomic on any network: after the timeout, refunds compete with unclaimed notes (see Trade-offs). If the enclave is compromised, trade details leak, but the circuit and the timeout path keep locked funds from being lost. In institutional settings, this residual privacy exposure is managed through contractual controls (non-disclosure agreements, audit rights, penalties) with the enclave operator.
 
 ## Components
 
@@ -77,7 +77,7 @@ Guarantees:
 
 - Counterparties, amounts, and matching logic are hidden from network observers; inside the enclave the operator can see plaintext under contractual terms.
 - Settlement correctness: the on-chain verifier accepts only state transitions that the circuit proves valid, whether or not the enclave is intact. The proof covers only what the circuit checks: confidentiality, liveness, and the choice of which orders reach matching still depend on the enclave and its operator.
-- Atomicity on one network: the keys for both legs are revealed in the transaction that accepts the proof, and recipients claim before the timeout opens the refund path. Across networks, atomicity is timeout-based (see Trade-offs).
+- Atomic reveal: the keys for both legs are revealed together (on one network, in the transaction that accepts the proof). Settlement itself is not atomic on any network: after the timeout, refunds compete with unclaimed notes, so each recipient has to claim in time (see Trade-offs).
 - Rollback safety: nonce monotonicity is enforced inside the circuit and anchored to an on-chain state root.
 - Liveness floor: the timeout refund circuit ensures original owners can reclaim locked notes if the enclave goes offline.
 - Auditability: viewing keys can disclose scoped data to regulators without exposing the full state.
@@ -95,7 +95,7 @@ Threat model:
 ## Trade-offs
 
 - Privacy depends on enclave integrity while financial correctness does not; this is the core design trade-off versus client-side zero-knowledge proving, which provides both at the cost of latency.
-- Cross-chain atomicity is timeout-based rather than cryptographic. One leg can succeed while the other fails, and timeout refunds provide safety but not true atomicity. Same-network settlement remains the cleanest atomic-DvP path.
+- Settlement atomicity is timeout-based rather than cryptographic, on one network or several. The refund path checks only the timeout, so a recipient who has not claimed by then can lose its leg to the original owner's refund while the other leg has already been claimed.
 - Performance overhead versus native execution (implementation-dependent), plus enclave memory limits that constrain batch sizes on some hardware.
 - Multiple enclave nodes with replicated encrypted state are required to avoid a single point of failure; otherwise one crash locks all in-flight settlements until the timeout path triggers.
 - Common anti-patterns (plaintext inputs or outputs, missing nonce monotonicity, shared encryption keys, in-memory-only state) silently weaken the guarantees and must be explicitly guarded against.
