@@ -4,7 +4,7 @@ status: ready
 maturity: research
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-18
+last_reviewed: 2026-10-21
 
 works-best-when:
   - Counterparty risk is the primary concern and atomic settlement is the goal.
@@ -31,8 +31,8 @@ crops_context:
 
 post_quantum:
   risk: high
-  vector: "Settlement proofs based on pairing-friendly curves (Groth16, PLONK with KZG) are broken by a CRQC; encrypted state blobs held by enclave operators face Harvest-Now-Decrypt-Later risk."
-  mitigation: "STARK-based settlement proofs with hash commitments. See [Post-Quantum Threats](../domains/post-quantum.md)."
+  vector: "A CRQC can forge settlement proofs based on pairing-friendly curves (Groth16, PLONK with KZG). Orders encrypted to an elliptic-curve enclave key and encrypted state blobs held by enclave operators face Harvest-Now-Decrypt-Later risk, and a CRQC can recover the ECDH secrets behind published stealth-address announcements, linking outputs to recipients."
+  mitigation: "STARK-based settlement proofs with hash commitments, and post-quantum key exchange for order encryption. See [Post-Quantum Threats](../domains/post-quantum.md)."
 
 standards: [EIP-5564, ERC-20, ERC-3643]
 
@@ -49,7 +49,7 @@ open_source_implementations: []
 
 Coordinate private settlement inside a Trusted Execution Environment while anchoring correctness with a zero-knowledge proof verified on-chain. The enclave acts as a neutral synchronization layer between parties who do not trust each other: it matches orders, manages escrow state, and produces a succinct proof of correct execution. External observers see only commitments, proofs, and stealth-address outputs, while the enclave operator sees plaintext under contractual terms.
 
-The key property is the separation of financial risk from privacy risk. The zero-knowledge proof guarantees atomic settlement and state-transition correctness on-chain regardless of enclave integrity, so counterparty risk is bounded by the protocol rather than by hardware trust. If the enclave is compromised, trade details leak but funds are not lost and settlement correctness is preserved. In institutional settings, this residual privacy exposure is managed through contractual controls (non-disclosure agreements, audit rights, penalties) with the enclave operator.
+The key property is the separation of financial risk from privacy risk. The zero-knowledge proof attests that the state transition follows the rules the circuit checks, and the on-chain verifier rejects any settlement without a valid proof, so a compromised enclave cannot settle a transition the circuit rejects. The keys for both legs are revealed together (on one network, in the transaction that accepts the proof), but settlement itself is not atomic on any network: after the timeout, refunds compete with unclaimed notes (see Trade-offs). If the enclave is compromised, trade details leak, but the circuit and the timeout path keep locked funds from being lost. In institutional settings, this residual privacy exposure is managed through contractual controls (non-disclosure agreements, audit rights, penalties) with the enclave operator.
 
 ## Components
 
@@ -76,7 +76,8 @@ The key property is the separation of financial risk from privacy risk. The zero
 Guarantees:
 
 - Counterparties, amounts, and matching logic are hidden from network observers; inside the enclave the operator can see plaintext under contractual terms.
-- Atomic settlement: the zero-knowledge proof guarantees correct execution on-chain regardless of enclave integrity, so financial correctness is independent of hardware trust.
+- Settlement correctness: the on-chain verifier accepts only state transitions that the circuit proves valid, whether or not the enclave is intact. The proof covers only what the circuit checks: confidentiality, liveness, and the choice of which orders reach matching still depend on the enclave and its operator.
+- Atomic reveal: the keys for both legs are revealed together (on one network, in the transaction that accepts the proof). Settlement itself is not atomic on any network: after the timeout, refunds compete with unclaimed notes, so each recipient has to claim in time (see Trade-offs).
 - Rollback safety: nonce monotonicity is enforced inside the circuit and anchored to an on-chain state root.
 - Liveness floor: the timeout refund circuit ensures original owners can reclaim locked notes if the enclave goes offline.
 - Auditability: viewing keys can disclose scoped data to regulators without exposing the full state.
@@ -85,15 +86,16 @@ Threat model:
 
 - Soundness of the zero-knowledge proof system and correctness of the on-chain verifier.
 - Attestation integrity: counterparties must verify the hardware signature, the code measurement, and the revocation status before encrypting orders.
-- Semi-honest enclave operator: a fully malicious operator can leak plaintext, reorder, delay, or drop messages, but cannot alter settlement outcomes because the proof is verified on-chain.
+- Semi-honest enclave operator: a fully malicious operator can leak plaintext, reorder, delay, or drop messages, but cannot settle a state transition that the circuit rejects, because the proof is verified on-chain.
 - Side-channel attacks on the underlying hardware (Spectre-family, cache-timing) can leak partial data even when attestation succeeds.
+- Physical memory-bus attacks by whoever hosts the hardware: low-cost DRAM interposers have read enclave memory or forged attestation on Intel SGX, Intel TDX, and AMD SEV-SNP ([Battering RAM](https://batteringram.eu/) and [WireTap](https://wiretap.fail/), 2025; [TEE.fail](https://tee.fail/), 2025; [DDRop](https://research.google/pubs/ddrop-generic-memory-interposer-attacks-on-confidential-vms-by-dropping-ddr5-writes/), 2026). Intel and AMD treat these attacks as outside their threat models, so a valid attestation report does not exclude an operator with physical access.
 - Metadata leakage: packet sizes, timing, and connection patterns can reveal trade magnitudes and enable front-running; padding and constant-time processing are required.
 - Supply-chain tampering on the hardware is out of scope for the protocol and must be handled at sourcing time.
 
 ## Trade-offs
 
 - Privacy depends on enclave integrity while financial correctness does not; this is the core design trade-off versus client-side zero-knowledge proving, which provides both at the cost of latency.
-- Cross-chain atomicity is timeout-based rather than cryptographic. One leg can succeed while the other fails, and timeout refunds provide safety but not true atomicity. Same-network settlement remains the cleanest atomic-DvP path.
+- Settlement atomicity is timeout-based rather than cryptographic, on one network or several. The refund path checks only the timeout, so a recipient who has not claimed by then can lose its leg to the original owner's refund while the other leg has already been claimed.
 - Performance overhead versus native execution (implementation-dependent), plus enclave memory limits that constrain batch sizes on some hardware.
 - Multiple enclave nodes with replicated encrypted state are required to avoid a single point of failure; otherwise one crash locks all in-flight settlements until the timeout path triggers.
 - Common anti-patterns (plaintext inputs or outputs, missing nonce monotonicity, shared encryption keys, in-memory-only state) silently weaken the guarantees and must be explicitly guarded against.
