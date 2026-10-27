@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: meta
 layer: hybrid
-last_reviewed: 2026-06-17
+last_reviewed: 2026-10-27
 
 sub_patterns:
   - name: "Threshold-encrypted mempool"
@@ -60,9 +60,9 @@ related_patterns:
   see_also: [pattern-private-pvp-stablecoins-erc7573, pattern-dvp-erc7573]
 
 open_source_implementations:
-  - url: https://github.com/shutter-network/shutter
-    description: "Threshold-encrypted mempool reference implementation"
-    language: "Rust, Go"
+  - url: https://github.com/shutter-network/rolling-shutter
+    description: "Threshold-encrypted mempool reference implementation (Shutter keyper, production on Gnosis Chain)"
+    language: Go
   - url: https://github.com/flashbots/suave-geth
     description: "Private builder and confidential compute environment for order flow (archived 2025; historical reference)"
     language: "Go"
@@ -123,5 +123,5 @@ Threat model:
 ## See also
 
 - [Shutter Network docs](https://docs.shutter.network/docs/shutter/research/the_road_towards_an_encrypted_mempool_on_ethereum)
-- [SUAVE overview](https://writings.flashbots.net/the-future-of-mev-is-suave)
+- [SUAVE overview](https://writings.flashbots.net/the-future-of-mev-is-suave) (historical: SUAVE is archived)
 - [Flashbots documentation](https://docs.flashbots.net/)

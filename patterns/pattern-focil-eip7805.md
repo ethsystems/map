@@ -4,7 +4,7 @@ status: ready
 maturity: testnet
 type: standard
 layer: L1
-last_reviewed: 2026-06-18
+last_reviewed: 2026-10-27
 
 works-best-when:
   - Censorship resistance is critical and must not depend on builder honesty.
@@ -27,7 +27,7 @@ crops_profile:
 crops_context:
   cr: "Reaches `high` through a 1-of-16 committee honesty assumption: a single honest IL committee member suffices to force-include a transaction. Drops if the P2P gossip network is partitioned or if committee selection is subverted."
   o: "Fully open specification (EIP-7805) implemented in consensus layer clients. Any staked validator rotates through the committee, and any node can verify IL satisfaction."
-  p: "No privacy: transaction details remain fully visible in the mempool and on chain. Could reach `partial` by combining with encrypted mempools so inclusion lists carry ciphertexts rather than plaintext transactions."
+  p: "No privacy: transaction details remain fully visible in the mempool and on chain. Would reach `partial` if inclusion lists carried sealed transactions, as LUCID (EIP-8184, Draft) proposes."
   s: "Inherits the security of Ethereum consensus. Fork-choice enforcement means non-compliant blocks cannot become canonical, so the guarantee is as strong as the underlying finality mechanism."
 
 post_quantum:
@@ -50,7 +50,7 @@ open_source_implementations:
 
 ## Intent
 
-Prevent censorship of Ethereum transactions by sophisticated block builders. A committee of 16 validators per slot can force-include transactions in the next block; non-compliant blocks fail fork-choice and cannot reach finality. The pattern provides no privacy on its own: transactions remain fully visible in the mempool and on chain. It guarantees only that a transaction cannot be censored once it reaches the public mempool.
+Prevent censorship of Ethereum transactions by sophisticated block builders. A committee of 16 validators per slot can force-include transactions in the next block; non-compliant blocks fail fork-choice and cannot reach finality. The pattern provides no privacy on its own: transactions remain fully visible in the mempool and on chain. It guarantees only that a transaction cannot be censored once it reaches the public mempool. FOCIL is scheduled for inclusion in the Hegotá upgrade, estimated for mid-2027.
 
 ## Components
 
@@ -85,7 +85,7 @@ Threat model:
 - At least one honest and well-connected IL committee member per slot; the P2P network reliably delivers their list before the view-freeze deadline.
 - Non-malicious builder with sufficient bandwidth between view freeze (t=9s) and block broadcast; builders disconnected from the committee can miss IL transactions.
 - No privacy protection. Transaction details remain publicly visible throughout the process.
-- Out of scope: builders that censor the entire mempool before any committee member sees a transaction; encrypted mempools are required to defend against that.
+- Out of scope: transactions sent privately to builders never reach the public mempool, so inclusion lists do not cover them. Until sealed transactions can be listed (LUCID), a sender chooses between pre-inclusion privacy and FOCIL's inclusion guarantee.
 
 ## Trade-offs
 
@@ -103,3 +103,5 @@ A bank submits a €5M stablecoin transfer to the public mempool at t=0s of slot
 
 - [EIP-7547: forward inclusion lists](https://eips.ethereum.org/EIPS/eip-7547) for a one-slot-delay alternative
 - [Private Payments Approach](../approaches/approach-private-payments.md)
+- [EIP-8184: LUCID encrypted mempool](https://eips.ethereum.org/EIPS/eip-8184), which extends inclusion lists to sealed transactions
+- [Private Transaction Broadcasting Approach](../approaches/approach-private-broadcasting.md)

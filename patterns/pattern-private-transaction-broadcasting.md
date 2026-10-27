@@ -4,7 +4,7 @@ status: ready
 maturity: production
 type: standard
 layer: hybrid
-last_reviewed: 2026-06-17
+last_reviewed: 2026-10-27
 
 works-best-when:
   - Transaction content must stay hidden from the public mempool until block inclusion to prevent MEV extraction.
@@ -84,18 +84,18 @@ Guarantees:
 
 Threat model:
 
-- In the relay variant: a colluding relay or builder can observe content; protection reduces to contractual and reputational enforcement.
+- In the relay variant: a colluding relay or builder can observe content; protection reduces to contractual and reputational enforcement. The relay or RPC endpoint also sees the submitter's IP address unless submission goes through a network anonymity layer.
 - In the threshold variant: a committee above the decryption threshold can reveal content before inclusion, defeating the guarantee.
 - Sender address and gas payer are typically visible during the pending phase.
+- FOCIL inclusion lists are built from the public mempool, so once FOCIL ships (Hegotá) a privately routed transaction does not get its inclusion guarantee.
 - A fallback to the public mempool on relay unavailability can silently leak the transaction; the fallback policy must be explicit.
 - Post-inclusion transaction details are fully public; this pattern does not provide shielded amounts or counterparties.
 
 ## Trade-offs
 
-- Block-inclusion latency overhead in the tens to low hundreds of milliseconds, plus a decryption step for the threshold variant.
-- Inclusion priority depends on the relay's agreements with builders; private routes may see higher variance in inclusion time than direct builder submissions.
+- A privately routed transaction is included only when a builder it reached wins the slot. Three builders produced about 88% of Ethereum blocks in late September 2026 ([relayscan](https://www.relayscan.io/)), so the relay's builder coverage sets inclusion latency.
 - Relay coverage varies over time; users should monitor live coverage metrics rather than assume a fixed figure.
-- The threshold variant requires a decryption committee infrastructure and adds a liveness dependency.
+- The threshold variant adds a key-release step after commitment, a decryption committee to operate, and a liveness dependency.
 - Cost model varies: some relay services are free, others take a share of MEV or charge fees.
 
 ## Example

@@ -16,7 +16,7 @@ iExec provides privacy-preserving computation, data governance, and trusted exec
 - [Pattern: Attestation verifiable on-chain](../patterns/pattern-verifiable-attestation.md) - Cryptographic attestation proves expected code ran in a genuine enclave; verified results are consumed on-chain.
 - [Pattern: Hybrid TEE + ZK Settlement](../patterns/pattern-tee-zk-settlement.md) - Private settlement and matching inside TEEs with ZK proofs for on-chain verifiability; compatible with hybrid TEE + ZK approaches.
 - [Pattern: TEE key manager](../patterns/pattern-tee-key-manager.md) - Keys and secrets are used inside secure enclaves, supporting confidential execution models.
-- [Pattern: Pre-trade privacy (Shutter/SUAVE/private RFQ)](../patterns/pattern-pretrade-privacy-encryption.md) - Sealed-bid and private RFQ flows; bids processed confidentially off-chain in TEEs, with settlement revealed on-chain.
+- [Pattern: Pre-trade privacy (encrypted order flow, private RFQ)](../patterns/pattern-pretrade-privacy-encryption.md) - Sealed-bid and private RFQ flows; bids processed confidentially off-chain in TEEs, with settlement revealed on-chain.
 - [Pattern: Low-cost L2 + Off-chain Encrypted Audit Log](../patterns/pattern-l2-encrypted-offchain-audit.md) - Off-chain encrypted execution with verifiable audit trail; compatible with confidential compute and attested logs.
 - [Pattern: Permissioned Ledger Interoperability](../patterns/pattern-permissioned-ledger-interoperability.md) - Bridges enterprise systems and permissioned ledgers with confidentiality and compliance using TEE-based workflows.
 

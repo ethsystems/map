@@ -45,6 +45,8 @@ Institutions need practical paths to onboard their users (corporates, funds, cou
 
 See detailed solution architecture and trade-offs in [**Approach: Private Payments**](../approaches/approach-private-payments.md).
 
+Pending transfers and compliance actions (freezes, blocklist updates) are visible in the public mempool before inclusion; see [Approach: Private Transaction Broadcasting](../approaches/approach-private-broadcasting.md).
+
 **Jurisdiction-Specific Implementations:**
 
 - **China:** Stablecoins are out of scope; the state-sanctioned analogue is e-CNY, a centrally operated PBoC system distributed through licensed operator banks rather than a public ledger. Permissioned enterprise chains (BSN) are a separate programme and are not an access channel to e-CNY, so these patterns apply only where an approved operator admits them
