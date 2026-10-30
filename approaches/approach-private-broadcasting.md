@@ -58,7 +58,7 @@ A trading desk routes large institutional orders against on-chain venues. Visibl
 ```yaml
 maturity: production
 context: both
-crops: { cr: medium, o: partial, p: partial, s: medium }
+crops: { cr: low, o: partial, p: partial, s: medium }
 uses_patterns: [pattern-private-transaction-broadcasting, pattern-network-anonymity]
 example_vendors: [flashbots]
 ```
@@ -73,7 +73,7 @@ example_vendors: [flashbots]
 
 **Threat model:**
 - A relay or builder that sees the order can trade ahead of it; contracts and reputation are the only enforcement
-- Inclusion waits for a reached builder to win a slot; three builders produced about 88% of blocks in late September 2026
+- Inclusion waits for a reached builder to win a slot; three builders produced about 88% of MEV-Boost blocks in late September 2026
 - Once FOCIL ships, privately routed transactions do not get its inclusion guarantee
 - A fallback to the public mempool on relay failure leaks the transaction
 
@@ -133,7 +133,7 @@ example_vendors: [shutter]
 **How it works:** The user encrypts the transaction to a key held by a threshold committee (in LUCID, a key publisher the user chooses) and submits the ciphertext. Builders and proposers commit to an ordering without seeing content; the key holders then release the key, and the transactions execute in the committed order. [Shutter](../vendors/shutter.md) runs this on Gnosis Chain. On Ethereum no encrypted mempool is live: LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)) is a Draft not scheduled for Hegotá, and out-of-protocol designs depend on builders opting in. On a permissioned chain where one operator sequences, the same construction hides transactions from the operator until the ordering is fixed.
 
 **Trust assumptions:**
-- Key holders: a t-of-n committee, or a key publisher the user chooses
+- Key holders: a t-of-n committee, or a key publisher the user chooses; a single publisher is one trusted party, as a relay is
 - Liveness of the key holders for the reveal step
 - Builders and proposers include ciphertexts and respect the encrypt-then-order discipline
 
@@ -193,7 +193,7 @@ example_vendors: [aztec, fhenix, zksync, ey]
 |---|---|---|---|---|
 | **Maturity** | production | production | prototyped | prototyped |
 | **Context** | both | i2i | both | both |
-| **CROPS** | CR:med O:part P:part S:med | CR:med O:y P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:full S:med |
+| **CROPS** | CR:low O:part P:part S:med | CR:med O:y P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:full S:med |
 | **Trust model** | Relay and builders | Venue or builder | Key holders (threshold committee) | Sequencer + bridge |
 | **Privacy scope** | Pre-inclusion content, hidden from the public only | Pre-trade content only | Pre-inclusion content, hidden from builders too | Mempool + state + execution |
 | **Performance** | Waits for a reached builder to win a slot | Minimal latency | Key-release step; next block in LUCID | L2-internal latency |
@@ -206,11 +206,11 @@ example_vendors: [aztec, fhenix, zksync, ey]
 
 ### Business perspective
 
-For institutional desks on public chains, a Private Relay is the production default for orders that must reach the chain: private RPCs and direct builder submission are mature and integrate with custody. OTC / Off-chain Matching suits size-sensitive trades, with Renegade and similar dark-pool venues offering ZK-backed matching. Encrypted Mempools win where builder or venue trust is unattractive and the chain supports threshold-encrypted ordering, which on Ethereum L1 waits for an enshrined design. Private Rollups are the suitable choice when privacy across mempool, state, and execution is required and the institution accepts the rollup operator model. The hybrid is to route by trade size and venue: large blocks through OTC, mid-size through encrypted mempools, flow that needs full privacy through a private rollup.
+For institutional desks on public chains, a Private Relay is the production default for orders that must reach the chain: private RPCs and direct builder submission are mature and integrate with custody. OTC / Off-chain Matching suits size-sensitive trades, with Renegade and similar dark-pool venues offering ZK-backed matching. Encrypted Mempools win where builder or venue trust is unattractive and the chain supports threshold-encrypted ordering, which on Ethereum L1 waits for an enshrined design. Private Rollups are the suitable choice when privacy across mempool, state, and execution is required and the institution accepts the rollup operator model. The hybrid is to route by trade size and venue: large blocks through OTC; mid-size through a Private Relay, or an encrypted mempool on chains that run one; flow that needs full privacy through a private rollup.
 
 ### Technical perspective
 
-A Private Relay is the lightest engineering integration: point the submission path at a private RPC or builder endpoint. OTC / Off-chain Matching adds a venue integration and ships signed bundles. Encrypted Mempools require a threshold network on the target chain (Shutter on Gnosis Chain; none on Ethereum L1 yet) and tolerating the encrypt-decrypt round trip. Private Rollups are the heaviest commit: deploy or join a privacy-native rollup, integrate with its sequencer model, and accept the bridge boundary as a liquidity surface. None of the three offers cryptographic ordering atomicity across builders or rollups; cross-domain MEV remains an open frontier for chains that have multiple block builders or sequencers competing for inclusion.
+A Private Relay is the lightest engineering integration: point the submission path at a private RPC or builder endpoint. OTC / Off-chain Matching adds a venue integration and ships signed bundles. Encrypted Mempools require a threshold network on the target chain (Shutter on Gnosis Chain; none on Ethereum L1 yet) and tolerating the encrypt-decrypt round trip. Private Rollups are the heaviest commit: deploy or join a privacy-native rollup, integrate with its sequencer model, and accept the bridge boundary as a liquidity surface. None of the four offers cryptographic ordering atomicity across builders or rollups; cross-domain MEV remains an open frontier for chains that have multiple block builders or sequencers competing for inclusion.
 
 ### Legal & risk perspective
 
@@ -231,7 +231,7 @@ For institutional desks on public chains, default to a Private Relay for orders 
 
 ### Hybrid
 
-Tier the privacy stack by trade size: large blocks (>EUR 5M-equivalent) through OTC; mid-size and time-sensitive flow through an encrypted mempool; comprehensive privacy flows (consortium or institutional desk) on a private rollup. Bridge balances out by routing all settlement to a shielded pool boundary so cross-tier movement does not re-expose history.
+Tier the privacy stack by trade size: large blocks (>EUR 5M-equivalent) through OTC; mid-size and time-sensitive flow through a Private Relay, or an encrypted mempool on chains that run one; comprehensive privacy flows (consortium or institutional desk) on a private rollup. Bridge balances out by routing all settlement to a shielded pool boundary so cross-tier movement does not re-expose history.
 
 ## Open questions
 

@@ -93,7 +93,7 @@ Threat model:
 
 ## Trade-offs
 
-- A privately routed transaction is included only when a builder it reached wins the slot. Three builders produced about 88% of Ethereum blocks in late September 2026 ([relayscan](https://www.relayscan.io/)), so the relay's builder coverage sets inclusion latency.
+- A privately routed transaction is included only when a builder it reached wins the slot. Three builders produced about 88% of MEV-Boost blocks in late September 2026 ([relayscan](https://www.relayscan.io/)), so the relay's builder coverage sets inclusion latency.
 - Relay coverage varies over time; users should monitor live coverage metrics rather than assume a fixed figure.
 - The threshold variant adds a key-release step after commitment, a decryption committee to operate, and a liveness dependency.
 - Cost model varies: some relay services are free, others take a share of MEV or charge fees.

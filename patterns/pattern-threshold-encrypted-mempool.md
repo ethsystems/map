@@ -9,7 +9,7 @@ last_reviewed: 2026-10-27
 works-best-when:
   - Maximal extractable value (MEV) protection is needed at the protocol level rather than through a trusted relay.
   - Users cannot or do not want to trust a private relay as a single point of trust.
-  - Censorship resistance must be combined with pre-inclusion content privacy.
+  - Resistance to content-based censorship must be combined with pre-inclusion content privacy.
 avoid-when:
   - The committee liveness dependency is unacceptable for the target use case.
   - Decryption latency is incompatible with the workload.
@@ -66,7 +66,7 @@ This pattern is the cryptographic sub-pattern of private transaction broadcastin
 - Distributed key generation: the committee jointly produces the threshold public key without any party ever holding the full private key.
 - Keyper committee: a distributed set of key holders drawn from validators, independent operators, or a delegated governance process.
 - Block builder integration: the builder accepts encrypted payloads and includes them without inspecting contents.
-- Key release: key holders publish decryption shares once the ordering is committed. LUCID generalises this to a key publisher the sender chooses: a committee, a single operator, or the sender itself.
+- Key release: key holders publish decryption shares once the ordering is committed. LUCID generalises this to a key publisher the sender chooses: a committee, a single operator, or the sender itself. A single operator is one trusted party, as a relay is.
 - Variants: identity-based keys per slot or epoch (Shutter), or batched threshold encryption, where each key holder publishes one share for a whole batch.
 
 ## Protocol
@@ -84,7 +84,7 @@ This pattern is the cryptographic sub-pattern of private transaction broadcastin
 Guarantees:
 
 - Pre-inclusion content privacy: transaction contents are hidden from block builders, searchers, and validators until after block commitment.
-- Cryptographic enforcement: no single party can decrypt, so front-running and sandwiching at the mempool stage are prevented without trusting a relay.
+- Cryptographic enforcement: with a threshold committee, no single party can decrypt, so front-running and sandwiching at the mempool stage are prevented without trusting a relay.
 - Censorship resistance: encrypted payloads carry no application-layer signal, so content-based censorship is not possible at the builder. Censorship by sender, or of all ciphertexts, remains possible.
 - Post-decryption auditability: once the slot key is released, transaction history becomes public and fully verifiable.
 

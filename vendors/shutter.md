@@ -41,8 +41,8 @@ A committee of keypers runs a distributed key generation and publishes a shared 
 ## Technical details
 
 - **Networks:** Gnosis Chain mainnet (encrypted mempool, 7 keypers with a threshold of 4); Shutter API on Gnosis Chain and Chiado
-- **Ethereum:** an out-of-protocol proof of concept with Primev's mev-commit was announced for the Hoodi testnet in December 2025 (3-of-5 keypers, builders commit before keys are released). The mainnet launch had not happened as of September 2026.
-- **Enshrinement:** Shutter authored [EIP-8105](https://eips.ethereum.org/EIPS/eip-8105) (Draft), an enshrined encrypted mempool. Its bid to headline the Hegotá upgrade was withdrawn in February 2026 in favour of LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)), which the team now supports for the upgrade after Hegotá.
+- **Ethereum:** an out-of-protocol proof of concept with Primev's mev-commit was announced for the Hoodi testnet in December 2025 (3-of-5 keypers, builders commit before keys are released). The mainnet launch had not happened as of September 2026, and Brainbot's [September 2026 update](https://shutternetwork.discourse.group/t/976) says the out-of-protocol work is blocked by Primev resource constraints.
+- **Enshrinement:** Shutter authored [EIP-8105](https://eips.ethereum.org/EIPS/eip-8105) (Draft), an enshrined encrypted mempool. Its bid to headline the Hegotá upgrade was withdrawn in February 2026 in favour of LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)), which the team now supports. The same update sets the goal of an encrypted mempool EIP ready to propose as headliner for I*, the upgrade after Hegotá.
 - **Code:** [rolling-shutter](https://github.com/shutter-network/rolling-shutter) (Go, MIT) is the active keyper implementation; the original `shutter` repository is legacy.
 - **Compatibility:** works with standard Ethereum transactions
 

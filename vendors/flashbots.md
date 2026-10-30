@@ -8,7 +8,7 @@ maturity: production
 
 ## What it is
 
-Flashbots develops MEV infrastructure for Ethereum: MEV-Boost, which validators use to source blocks from builders; Flashbots Protect, a private RPC that keeps transactions out of the public mempool; MEV-Share, which lets users share hints with searchers and capture part of the MEV their transactions create; and BuilderNet, a block-building network run by several operators. SUAVE, its earlier design for a decentralized intent platform, is archived.
+Flashbots develops MEV infrastructure for Ethereum: MEV-Boost, which validators use to source blocks from builders; Flashbots Protect, a private RPC that keeps transactions out of the public mempool; MEV-Share, which lets users share hints with searchers and capture part of the MEV their transactions create; and BuilderNet, a block-building network. SUAVE, its earlier design for a decentralized intent platform, is archived.
 
 ## Fits with patterns
 
@@ -34,7 +34,7 @@ Flashbots develops MEV infrastructure for Ethereum: MEV-Boost, which validators 
 
 **MEV-Share:** an operator-run node shares configurable hints about pending transactions with searchers, who may only backrun them. In Protect's fast mode, searchers running in TEEs receive the full transaction whatever the hint settings.
 
-**BuilderNet:** a block-building network operated by several parties. Since September 2026 its documentation says it is "transitioning to a new security model": during this period its nodes do not run in TEEs, while its backrunning and routing services still do.
+**BuilderNet:** a block-building network. Since September 2026 its documentation says it is "transitioning to a new security model": during this period its nodes do not run in TEEs, while its backrunning and routing services still do. The same documentation change removed the operator pages, since BuilderNet has no external operators.
 
 **SUAVE (archived):** a planned decentralized intent and block-building platform. The suave-geth repository was archived in May 2025.
 
