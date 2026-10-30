@@ -20,9 +20,11 @@ description: "Execute and settle without leaking intent, size, or counterparties
 ## Approaches
 - [Approach: Atomic DvP Settlement](../approaches/approach-dvp-atomic-settlement.md)
 - [Approach: Private Trade Settlement](../approaches/approach-private-trade-settlement.md)
+- [Approach: Private Transaction Broadcasting](../approaches/approach-private-broadcasting.md)
 
 ## Shortest-path patterns
-- [Pre-trade privacy (Shutter/SUAVE)](../patterns/pattern-pretrade-privacy-encryption.md)
+- [Pre-trade privacy (encrypted order flow)](../patterns/pattern-pretrade-privacy-encryption.md)
+- [Threshold-encrypted mempool](../patterns/pattern-threshold-encrypted-mempool.md)
 - [Atomic DvP via ERC-7573](../patterns/pattern-dvp-erc7573.md)
 - [Shielding](../patterns/pattern-shielding.md)
 - [Commit-and-Prove fallback](../patterns/pattern-commit-and-prove.md)

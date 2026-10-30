@@ -39,6 +39,14 @@ A dedicated network or service that publishes and stores the data required for D
 
 **Relayer**: Third party that submits transactions on behalf of users to hide identity
 
+**Mempool**: The set of signed transactions a node holds before they are included in a block. The public mempool is gossiped between nodes, so pending transactions are visible to anyone running one.
+
+**Block Builder**: Entity that orders transactions into an execution payload and bids for a proposer to publish it. Under ePBS ([EIP-7732](https://eips.ethereum.org/EIPS/eip-7732)) builders are staked in-protocol participants.
+
+**MEV (Maximal Extractable Value)**: Value a block builder or searcher can capture by including, excluding or reordering transactions, for example by front-running or sandwiching a pending trade.
+
+**Private Relay**: Endpoint that accepts signed transactions and forwards them to selected block builders instead of the public mempool. It hides pending transactions from public observers, not from the relay or the builders.
+
 **Paymaster**: ERC-4337 entity that defines how gas fees for user operations are paid or sponsored. It allows us to implement controlled gasless flows or internal fee routing.
 
 ### L2 Categories
@@ -81,6 +89,10 @@ A dedicated network or service that publishes and stores the data required for D
 
 **[EIP-7805](https://eips.ethereum.org/EIPS/eip-7805)**: Fork Choice Inclusion Lists (FOCIL) standard for censorship resistance through committee-enforced transaction inclusion
 
+**[EIP-7732](https://eips.ethereum.org/EIPS/eip-7732)**: Enshrined Proposer-Builder Separation (ePBS). The proposer commits to a builder's signed bid in the beacon block, and the builder reveals the payload afterwards. Scheduled for the Glamsterdam upgrade.
+
+**[EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)**: LUCID, a Draft proposal for an encrypted mempool on Ethereum. Sealed transactions are committed in a block before their decryption keys are released.
+
 **[EIP-7701](https://eips.ethereum.org/EIPS/eip-7701)**: Native account abstraction standard enabling custom account validation logic, institutional key management, and ZK-based privacy systems
 
 **[ERC-7945](https://ercs.ethereum.org/ERCS/erc-7945)**: Standard for confidential token transfers using cryptographic commitments to hide balances and amounts
@@ -102,6 +114,8 @@ A dedicated network or service that publishes and stores the data required for D
 **Co-SNARK**: Collaborative zero-knowledge proofs where multiple parties jointly prove properties
 
 **Shielded Pool**: Privacy mechanism using cryptographic commitments to hide transaction details
+
+**Encrypted Mempool**: Mempool in which transactions stay encrypted until their ordering is committed. A threshold committee, or another key publisher, releases the decryption key afterwards.
 
 **Confidential Contract**: Smart contract that operates on encrypted state while maintaining verifiability
 
