@@ -4,7 +4,7 @@ status: ready
 last_reviewed: 2026-10-05
 
 use_case: private-stablecoins
-related_use_cases: [resilient-disbursement-rails, private-treasuries]
+related_use_cases: [resilient-disbursement-rails, private-treasuries, private-tokenized-deposits]
 
 primary_patterns:
   - pattern-shielding

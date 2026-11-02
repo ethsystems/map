@@ -9,7 +9,7 @@ secondary_domain:
 
 Institutions want to use stablecoins as settlement cash without exposing amounts, counterparties, or workflow metadata to non-participants. The solution requires stakeholder-only visibility with selective disclosure and atomic settlement capabilities with assets.
 
-**Note:** In jurisdictions where stablecoins are restricted, these same privacy patterns apply to authorized digital currencies (e.g., CBDCs, tokenized deposits).
+**Note:** In jurisdictions where stablecoins are restricted, these same privacy patterns apply to authorized digital currencies (e.g., CBDCs, tokenized deposits). Tokenized deposits have their own entry: [Private Tokenized Deposits](private-tokenized-deposits.md).
 
 ## 2) Additional Context
 
