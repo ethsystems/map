@@ -50,7 +50,7 @@ open_source_implementations:
 
 ## Intent
 
-Prevent censorship of Ethereum transactions by sophisticated block builders. A committee of 16 validators per slot can force-include transactions in the next block; non-compliant blocks fail fork-choice and cannot reach finality. The pattern provides no privacy on its own: transactions remain fully visible in the mempool and on chain. It guarantees only that a transaction cannot be censored once it reaches the public mempool. FOCIL is scheduled for inclusion in the Hegotá upgrade, estimated for mid-2027.
+Prevent censorship of Ethereum transactions by sophisticated block builders. A committee of 16 validators per slot can force-include transactions in the next block; non-compliant blocks fail fork-choice and cannot reach finality. The pattern provides no privacy on its own: transactions remain fully visible in the mempool and on chain. It guarantees only that a transaction cannot be censored once it reaches the public mempool. FOCIL is scheduled for inclusion in the Hegotá upgrade ([EIP-8081](https://eips.ethereum.org/EIPS/eip-8081)); no date is set, and [Forkcast](https://forkcast.org/upgrade/hegota) lists 2027.
 
 ## Components
 

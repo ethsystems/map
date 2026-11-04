@@ -47,7 +47,7 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/shutter-network/rolling-shutter
-    description: "Shutter keyper and threshold-encryption framework, in production on Gnosis Chain"
+    description: "Shutter keyper and threshold-encryption framework, deployed on Gnosis Chain from July 2024"
     language: Go
   - url: https://github.com/commonwarexyz/simple-bte
     description: "Batched threshold encryption research prototype"
@@ -56,7 +56,7 @@ open_source_implementations:
 
 ## Intent
 
-Prevent maximal extractable value (MEV) extraction by encrypting transaction content before mempool submission and releasing the decryption key only after block ordering is committed. A distributed committee holds threshold key shares, so no single party can decrypt prematurely. The result is cryptographic protection against front-running, back-running, and sandwich attacks, without handing trust to any one relay. Shutter runs this in production on Gnosis Chain. On Ethereum no encrypted mempool is live: LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)), the leading proposal to enshrine one, is a Draft and is not scheduled for Hegotá.
+Prevent maximal extractable value (MEV) extraction by encrypting transaction content before mempool submission and releasing the decryption key only after block ordering is committed. A distributed committee holds threshold key shares, so no single party can decrypt prematurely. The result is cryptographic protection against front-running and sandwich attacks, without handing trust to any one relay; back-running after decryption stays possible. Shutter ran this on Gnosis Chain from July 2024; Gnosis archived its Shutter docs in September 2026. On Ethereum no encrypted mempool is live: LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)), the leading proposal to enshrine one, is a Draft and is not scheduled for Hegotá.
 
 This pattern is the cryptographic sub-pattern of private transaction broadcasting. The trust-based private-relay variant is documented as a related pattern (see related_patterns.requires).
 
@@ -113,7 +113,7 @@ A trading desk submits a large stablecoin trade on a chain that runs a threshold
 
 - [Shutter Network overview](https://shutter.network/)
 - [Shutter documentation](https://docs.shutter.network/)
-- [Gnosis Chain Shutter integration](https://docs.gnosischain.com/about/specs/shutter/)
+- [Gnosis Chain Shutter specification](https://github.com/gnosischain/specs/tree/master/shutter)
 - [EIP-8184: LUCID encrypted mempool](https://eips.ethereum.org/EIPS/eip-8184)
 - [EIP-8105: Universal Enshrined Encrypted Mempool](https://eips.ethereum.org/EIPS/eip-8105)
 - [Batched threshold encryption (eprint 2024/669)](https://eprint.iacr.org/2024/669)

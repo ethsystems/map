@@ -21,7 +21,7 @@ open_source_implementations:
     description: "SUAVE private-intent execution (suave-geth archived May 2025; Flashbots migrated to BuilderNet)"
     language: Go
   - url: https://github.com/shutter-network/rolling-shutter
-    description: "Shutter Network keyper (threshold-encrypted mempool, production on Gnosis Chain)"
+    description: "Shutter Network keyper (threshold-encrypted mempool, deployed on Gnosis Chain from July 2024)"
     language: Go
   - url: https://github.com/AztecProtocol/aztec-packages
     description: "Aztec privacy-native L2"
@@ -73,7 +73,7 @@ example_vendors: [flashbots]
 
 **Threat model:**
 - A relay or builder that sees the order can trade ahead of it; contracts and reputation are the only enforcement
-- Inclusion waits for a reached builder to win a slot; three builders produced about 88% of MEV-Boost blocks in late September 2026
+- Inclusion waits for a reached builder to win a slot; three builders produced over 90% of MEV-Boost blocks on each day from 22 to 30 September 2026 ([relayscan](https://www.relayscan.io/stats/day/2026-09-25))
 - Once FOCIL ships, privately routed transactions do not get its inclusion guarantee
 - A fallback to the public mempool on relay failure leaks the transaction
 
@@ -90,7 +90,7 @@ example_vendors: [flashbots]
 ```yaml
 maturity: production
 context: i2i
-crops: { cr: medium, o: yes, p: full, s: medium }
+crops: { cr: low, o: yes, p: full, s: medium }
 uses_patterns: [pattern-network-anonymity]
 example_vendors: [renegade, flashbots]
 ```
@@ -130,7 +130,7 @@ example_vendors: [shutter]
 
 **Summary:** Transactions are encrypted before submission. Decryption happens after ordering is fixed, never before. See [Threshold-Encrypted Mempool](../patterns/pattern-threshold-encrypted-mempool.md) for the underlying primitive and [Pre-trade Privacy Encryption](../patterns/pattern-pretrade-privacy-encryption.md) for its use with RFQ flows.
 
-**How it works:** The user encrypts the transaction to a key held by a threshold committee (in LUCID, a key publisher the user chooses) and submits the ciphertext. Builders and proposers commit to an ordering without seeing content; the key holders then release the key, and the transactions execute in the committed order. [Shutter](../vendors/shutter.md) runs this on Gnosis Chain. On Ethereum no encrypted mempool is live: LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)) is a Draft not scheduled for Hegotá, and out-of-protocol designs depend on builders opting in. On a permissioned chain where one operator sequences, the same construction hides transactions from the operator until the ordering is fixed.
+**How it works:** The user encrypts the transaction to a key held by a threshold committee (in LUCID, a key publisher the user chooses) and submits the ciphertext. Builders and proposers commit to an ordering without seeing content; the key holders then release the key, and the transactions execute in the committed order. [Shutter](../vendors/shutter.md) ran this on Gnosis Chain from July 2024; Gnosis archived its Shutter docs in September 2026. On Ethereum no encrypted mempool is live: LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)) is a Draft not scheduled for Hegotá, and out-of-protocol designs depend on builders opting in. On a permissioned chain where one operator sequences, the same construction hides transactions from the operator until the ordering is fixed.
 
 **Trust assumptions:**
 - Key holders: a t-of-n committee, or a key publisher the user chooses; a single publisher is one trusted party, as a relay is
@@ -193,7 +193,7 @@ example_vendors: [aztec, fhenix, zksync, ey]
 |---|---|---|---|---|
 | **Maturity** | production | production | prototyped | prototyped |
 | **Context** | both | i2i | both | both |
-| **CROPS** | CR:low O:part P:part S:med | CR:med O:y P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:full S:med |
+| **CROPS** | CR:low O:part P:part S:med | CR:low O:y P:full S:med | CR:med O:part P:part S:med | CR:med O:part P:full S:med |
 | **Trust model** | Relay and builders | Venue or builder | Key holders (threshold committee) | Sequencer + bridge |
 | **Privacy scope** | Pre-inclusion content, hidden from the public only | Pre-trade content only | Pre-inclusion content, hidden from builders too | Mempool + state + execution |
 | **Performance** | Waits for a reached builder to win a slot | Minimal latency | Key-release step; next block in LUCID | L2-internal latency |
@@ -210,7 +210,7 @@ For institutional desks on public chains, a Private Relay is the production defa
 
 ### Technical perspective
 
-A Private Relay is the lightest engineering integration: point the submission path at a private RPC or builder endpoint. OTC / Off-chain Matching adds a venue integration and ships signed bundles. Encrypted Mempools require a threshold network on the target chain (Shutter on Gnosis Chain; none on Ethereum L1 yet) and tolerating the encrypt-decrypt round trip. Private Rollups are the heaviest commit: deploy or join a privacy-native rollup, integrate with its sequencer model, and accept the bridge boundary as a liquidity surface. None of the four offers cryptographic ordering atomicity across builders or rollups; cross-domain MEV remains an open frontier for chains that have multiple block builders or sequencers competing for inclusion.
+A Private Relay is the lightest engineering integration: point the submission path at a private RPC or builder endpoint. OTC / Off-chain Matching adds a venue integration and ships signed bundles. Encrypted Mempools require a threshold network on the target chain (none on Ethereum L1 yet, and Gnosis archived its Shutter docs in September 2026) and tolerating the encrypt-decrypt round trip. Private Rollups are the heaviest commit: deploy or join a privacy-native rollup, integrate with its sequencer model, and accept the bridge boundary as a liquidity surface. None of the four offers cryptographic ordering atomicity across builders or rollups; cross-domain MEV remains an open frontier for chains that have multiple block builders or sequencers competing for inclusion.
 
 ### Legal & risk perspective
 

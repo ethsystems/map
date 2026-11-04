@@ -61,7 +61,7 @@ related_patterns:
 
 open_source_implementations:
   - url: https://github.com/shutter-network/rolling-shutter
-    description: "Threshold-encrypted mempool reference implementation (Shutter keyper, production on Gnosis Chain)"
+    description: "Threshold-encrypted mempool reference implementation (Shutter keyper, deployed on Gnosis Chain from July 2024)"
     language: Go
   - url: https://github.com/flashbots/suave-geth
     description: "Private builder and confidential compute environment for order flow (archived 2025; historical reference)"

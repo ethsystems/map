@@ -47,7 +47,7 @@ open_source_implementations:
     description: "MEV-Boost relay infrastructure used by the majority of Ethereum validators"
     language: Go
   - url: https://github.com/shutter-network/rolling-shutter
-    description: "Threshold-encrypted mempool reference stack (production on Gnosis Chain)"
+    description: "Threshold-encrypted mempool reference stack (deployed on Gnosis Chain from July 2024)"
     language: Go
 ---
 
@@ -93,7 +93,7 @@ Threat model:
 
 ## Trade-offs
 
-- A privately routed transaction is included only when a builder it reached wins the slot. Three builders produced about 88% of MEV-Boost blocks in late September 2026 ([relayscan](https://www.relayscan.io/)), so the relay's builder coverage sets inclusion latency.
+- A privately routed transaction is included only when a builder it reached wins the slot. Three builders produced over 90% of MEV-Boost blocks on each day from 22 to 30 September 2026 ([relayscan](https://www.relayscan.io/stats/day/2026-09-25)), so the relay's builder coverage sets inclusion latency.
 - Relay coverage varies over time; users should monitor live coverage metrics rather than assume a fixed figure.
 - The threshold variant adds a key-release step after commitment, a decryption committee to operate, and a liveness dependency.
 - Cost model varies: some relay services are free, others take a share of MEV or charge fees.

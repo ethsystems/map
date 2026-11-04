@@ -4,7 +4,7 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
-- fix(approach): Phase 1 review of [Private Transaction Broadcasting](approaches/approach-private-broadcasting.md) for the encrypted mempool cycle, with a new Private Relay sub-approach.
+- fix(approach): review of [Private Transaction Broadcasting](approaches/approach-private-broadcasting.md), with a new Private Relay sub-approach ([#213](https://github.com/ethsystems/map/pull/213)).
 - fix: review of the patterns, vendors and use cases it links. [Threshold-Encrypted Mempool](patterns/pattern-threshold-encrypted-mempool.md) censorship resistance moves from `high` to `medium`.
 - fix: factual audit of the [Private FX](use-cases/private-fx.md) entry.
 - fix: factual audit of the [Private Repo](use-cases/private-repo.md) entry and the Private Trade Settlement cards it builds on.

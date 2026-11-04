@@ -8,7 +8,7 @@ maturity: production
 
 ## What it is
 
-Shutter Network provides encrypted-mempool infrastructure that prevents MEV extraction and front-running by encrypting transactions until their ordering is committed, using threshold cryptography for decryption. Brainbot develops it. Shutterized Gnosis Chain has been live since July 2024, opt-in through a Shutter RPC. On Ethereum mainnet no Shutter encrypted mempool is live as of October 2026.
+Shutter Network provides encrypted-mempool infrastructure that prevents MEV extraction and front-running by encrypting transactions until their ordering is committed, using threshold cryptography for decryption. Brainbot develops it. Shutterized Gnosis Chain went live in July 2024, opt-in through a Shutter RPC. In September 2026 Gnosis archived its Shutter docs, saying Shutter is no longer part of Gnosis Chain ([Gnosis docs](https://github.com/gnosischain/documentation/blob/main/archives/Shutter/README.md)); Brainbot's September update still reports an active keyper set. On Ethereum mainnet no Shutter encrypted mempool is live as of October 2026.
 
 ## Fits with patterns
 
@@ -29,7 +29,7 @@ A committee of keypers runs a distributed key generation and publishes a shared 
 
 ## Privacy domains
 
-- **Encrypted mempool (Gnosis Chain):** transactions sent through a Shutterized RPC stay encrypted until the keypers release the slot's key.
+- **Encrypted mempool (Gnosis Chain):** transactions sent through a Shutterized RPC stay encrypted until the keypers release the slot's key. Gnosis archived its Shutter docs in September 2026.
 - **Shutter API:** a commit-and-reveal (timelock) encryption service on Gnosis Chain and Chiado, with its own keyper sets, for applications such as sealed-bid auctions and private voting.
 
 ## Enterprise demand and use cases
@@ -40,7 +40,7 @@ A committee of keypers runs a distributed key generation and publishes a shared 
 
 ## Technical details
 
-- **Networks:** Gnosis Chain mainnet (encrypted mempool, 7 keypers with a threshold of 4); Shutter API on Gnosis Chain and Chiado
+- **Networks:** Gnosis Chain mainnet (encrypted mempool, 7 keypers with a threshold of 4, 6 online in September 2026; Gnosis archived its Shutter docs that month); Shutter API on Gnosis Chain and Chiado
 - **Ethereum:** an out-of-protocol proof of concept with Primev's mev-commit was announced for the Hoodi testnet in December 2025 (3-of-5 keypers, builders commit before keys are released). The mainnet launch had not happened as of September 2026, and Brainbot's [September 2026 update](https://shutternetwork.discourse.group/t/976) says the out-of-protocol work is blocked by Primev resource constraints.
 - **Enshrinement:** Shutter authored [EIP-8105](https://eips.ethereum.org/EIPS/eip-8105) (Draft), an enshrined encrypted mempool. Its bid to headline the Hegotá upgrade was withdrawn in February 2026 in favour of LUCID ([EIP-8184](https://eips.ethereum.org/EIPS/eip-8184)), which the team now supports. The same update sets the goal of an encrypted mempool EIP ready to propose as headliner for I*, the upgrade after Hegotá.
 - **Code:** [rolling-shutter](https://github.com/shutter-network/rolling-shutter) (Go, MIT) is the active keyper implementation; the original `shutter` repository is legacy.
@@ -48,7 +48,7 @@ A committee of keypers runs a distributed key generation and publishes a shared 
 
 ## Strengths
 
-- Production deployment on Gnosis Chain since 2024
+- Production deployment on Gnosis Chain from July 2024
 - Threshold decryption: no single keyper can read pending transactions
 - Open-source keyper software
 - Active in the Ethereum protocol process for an enshrined encrypted mempool
