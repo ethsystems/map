@@ -52,11 +52,7 @@ Settlement instructions, confirmation messages, and reconciliation communication
 
 ## 5) Recommended Approaches
 
-Approach TBD. Consider:
-
-- Integration with existing institutional messaging platforms
-- On-chain anchoring for message integrity with off-chain content
-- Selective disclosure mechanisms for regulatory access
+See detailed solution architecture and trade-offs in [**Approach: Private Institutional Messaging**](../approaches/approach-private-messaging.md): anchored off-chain messaging as the practical default (encrypted counterpart channels, periodic integrity anchors, scoped disclosure keys), mixnet-routed messaging when counterparty graph secrecy matters, and on-chain encrypted channels for deal milestones where no intermediary may hold the record.
 
 ## 6) Open Questions
 
