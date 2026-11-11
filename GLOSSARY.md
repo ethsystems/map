@@ -75,6 +75,8 @@ A dedicated network or service that publishes and stores the data required for D
 
 **NAV (Net Asset Value)**: Total value of a fund's assets minus liabilities. Per-share NAV = total NAV / shares outstanding.
 
+**RTGS (Real-Time Gross Settlement)**: Central bank payment system in which banks settle payments with each other one at a time, as they arrive, in central bank money (e.g., Fedwire in the US, T2 in the euro area)
+
 ### Standards & Protocols
 
 **[ERC-3643](https://eips.ethereum.org/EIPS/eip-3643)**: Ethereum standard for permissioned tokenized securities with built-in compliance framework

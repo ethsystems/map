@@ -4,8 +4,9 @@ All notable changes to the EthSystems Map are documented here.
 
 ## [Unreleased]
 
-- fix(approach): review of [Private Transaction Broadcasting](approaches/approach-private-broadcasting.md), with a new Private Relay sub-approach ([#213](https://github.com/ethsystems/map/pull/213)).
-- fix: review of the patterns, vendors and use cases it links. [Threshold-Encrypted Mempool](patterns/pattern-threshold-encrypted-mempool.md) censorship resistance moves from `high` to `medium`.
+- fix(approach): review of [Private Transaction Broadcasting](approaches/approach-private-broadcasting.md), with a new Private Relay sub-approach. Review of the patterns, vendors and use cases it links. [Threshold-Encrypted Mempool](patterns/pattern-threshold-encrypted-mempool.md) censorship resistance moves from `high` to `medium` ([#213](https://github.com/ethsystems/map/pull/213)).
+- feat(approach): [Private Institutional Messaging](approaches/approach-private-messaging.md), filling the "Approach TBD" gap on [Private Messaging](use-cases/private-messaging.md), whose recommended-approaches section now links to the card. Compares anchored off-chain messaging (documented, I2I), mixnet-routed messaging (concept) and on-chain encrypted channels (concept), with a 10-row comparison matrix, persona perspectives, a conditional recommendation and open questions. ([#215](https://github.com/ethsystems/map/pull/215))
+- feat(use-case): [Private Tokenized Deposits](use-cases/private-tokenized-deposits.md), bank deposits as claims on a shared ledger: payment privacy between banks, the interbank settlement leg, and the link to the core banking system. Linked from [Private Stablecoins](use-cases/private-stablecoins.md), the [Private Payments](approaches/approach-private-payments.md) approach and the [Payments](domains/payments.md) domain. Adds RTGS to the [Glossary](GLOSSARY.md) ([#214](https://github.com/ethsystems/map/pull/214))
 - fix: factual audit of the [Private FX](use-cases/private-fx.md) entry.
 - fix: factual audit of the [Private Repo](use-cases/private-repo.md) entry and the Private Trade Settlement cards it builds on.
 - fix: factual audit of the [Private Identity](use-cases/private-identity.md) entry and the cards one hop out. 

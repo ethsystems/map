@@ -12,6 +12,7 @@ description: "Move value with stakeholder-scoped visibility, from institutional 
 
 ## Primary use cases
 - [Private Stablecoins for Institutional Payments](../use-cases/private-stablecoins.md)
+- [Private Tokenized Deposits](../use-cases/private-tokenized-deposits.md)
 - [Resilient Disbursement Rails](../use-cases/resilient-disbursement-rails.md)
 
 ## Shortest-path patterns
