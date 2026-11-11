@@ -40,6 +40,8 @@ Visible daily cashflows and buffer levels expose risk appetites and strategies, 
 
 See detailed solution architecture and trade-offs in [**Approach: Private Derivatives**](../approaches/approach-private-derivatives.md).
 
+For the mempool side channel (pending margin and settlement transactions), see [Approach: Private Transaction Broadcasting](../approaches/approach-private-broadcasting.md).
+
 ## 6) Open Questions
 
 - Trust model for **valuation oracle** under privacy

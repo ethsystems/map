@@ -4,7 +4,7 @@ status: ready
 maturity: concept
 type: meta
 layer: offchain
-last_reviewed: 2026-04-22
+last_reviewed: 2026-10-27
 
 works-best-when:
   - Metadata leakage (IP, timing, query patterns) is a threat model concern.

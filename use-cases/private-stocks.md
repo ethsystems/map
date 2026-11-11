@@ -56,6 +56,8 @@ See [approach-private-trade-settlement.md](../approaches/approach-private-trade-
 - Privacy-preserving beneficial ownership registries
 - Hybrid on-chain/off-chain settlement models
 
+To keep orders out of the public mempool before inclusion, see [Approach: Private Transaction Broadcasting](../approaches/approach-private-broadcasting.md).
+
 ## 6) Open Questions
 
 - How do privacy requirements interact with securities law disclosure obligations?

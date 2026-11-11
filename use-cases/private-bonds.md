@@ -44,6 +44,8 @@ See [Approach: Atomic DvP Settlement](../approaches/approach-dvp-atomic-settleme
 
 **PoC Implementation:** [Private Bond PoC](https://github.com/ethsystems/pocs/tree/master/pocs/private-bond); three approaches: Custom UTXO (EVM), Privacy L2 (Aztec), and FHE (Zama fhEVM).
 
+To keep orders and settlement transactions out of the public mempool before inclusion, see [Approach: Private Transaction Broadcasting](../approaches/approach-private-broadcasting.md).
+
 ## 6) Open Questions
 
 _Notes below reference the PoC implementation._

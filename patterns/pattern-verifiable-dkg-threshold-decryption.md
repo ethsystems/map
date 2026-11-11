@@ -4,7 +4,7 @@ status: draft
 maturity: testnet
 type: standard
 layer: offchain
-last_reviewed: 2026-07-21
+last_reviewed: 2026-10-27
 
 works-best-when:
   - Decryption authority must be distributed across independent operators so no single party can unilaterally expose private inputs.
@@ -48,9 +48,9 @@ open_source_implementations:
   - url: https://github.com/theinterfold/interfold
     description: "The Interfold protocol: threshold BFV, PV-TBFV, DKG and decryption aggregator circuits"
     language: "Rust, Noir, Solidity"
-  - url: https://github.com/shutter-network/shutter
-    description: "Shutter threshold-encryption toolkit with on-chain keyper verification"
-    language: "Rust, Go"
+  - url: https://github.com/shutter-network/rolling-shutter
+    description: "Shutter keyper implementation: DKG and threshold decryption for encrypted mempools"
+    language: Go
 ---
 
 ## Intent
@@ -108,6 +108,6 @@ A sealed-bid auction protocol requests a committee of 5 nodes with a threshold o
 
 ## See also
 
-- [The Interfold Documentation: Cryptography](https://docs.theinterfold.com/cryptography)
+- [The Interfold Documentation: Cryptography](https://docs.theinterfold.com/learn/cryptography)
 - [Shutter Network: Threshold Encryption](https://docs.shutter.network/)
 - [PVSS: Publicly Verifiable Secret Sharing (Stadler, 1996)](https://link.springer.com/chapter/10.1007/3-540-68697-5_15)

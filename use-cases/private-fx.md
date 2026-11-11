@@ -59,6 +59,8 @@ See [approach-private-trade-settlement.md](../approaches/approach-private-trade-
 - Cross-network settlement options and their recovery paths in [Approach: Atomic DvP Settlement](../approaches/approach-dvp-atomic-settlement.md)
 - Stablecoin privacy patterns from [private-stablecoins.md](private-stablecoins.md)
 
+To keep trading intent out of the public mempool before inclusion (Problem 1), see [Approach: Private Transaction Broadcasting](../approaches/approach-private-broadcasting.md).
+
 ## 6) Open Questions
 
 - How does privacy interact with real-time gross settlement requirements?
