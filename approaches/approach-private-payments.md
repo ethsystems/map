@@ -4,7 +4,7 @@ status: ready
 last_reviewed: 2026-10-05
 
 use_case: private-stablecoins
-related_use_cases: [resilient-disbursement-rails, private-treasuries, private-tokenized-deposits]
+related_use_cases: [resilient-disbursement-rails, private-payments, private-treasuries, private-tokenized-deposits]
 
 primary_patterns:
   - pattern-shielding
@@ -80,6 +80,12 @@ A multinational bank executes daily institutional stablecoin transfers (USDC, EU
 - L1 verification gas at current shielded-pool sizes is costly per transfer
 - Adversarial-jurisdiction rail has no client-side ZK, no reliable internet, EAL4+ smartcard envelope
 - Organizational separation between identity-layer operator and field partner is mandatory for the disbursement rail
+
+### Variants
+
+This card's coverage extends to the broader [Private Payments](../use-cases/private-payments.md) use case, of which stablecoin settlement is the principal instance. Non-stablecoin rails follow the same sub-approach menu with pattern differences: bank deposits and tokenized deposits move the off-ramp boundary from issuer redemption to the issuing bank's ledger, [Private ISO 20022](../patterns/pattern-private-iso20022.md) carries message-level privacy toward traditional rails, and CBDC deployments trade the issuer's commercial incentives for central-bank policy, with the same shielded-pool or privacy-L2 mechanics underneath.
+
+Consumer retail adds merchant acceptance, chargeback and dispute-resolution paths that the shielded-pool sub-approaches do not address; consumer deployments therefore lean on viewing-key disclosure combined with existing rail integration rather than treating the shielded pool as the consumer interface.
 
 ## Approaches
 
