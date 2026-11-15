@@ -81,7 +81,7 @@ uses_patterns: [pattern-tee-based-privacy, pattern-tee-key-manager]
 
 **Summary:** Queries are encrypted to an attested enclave operated by a private-RPC provider, which serves state without observing what is read or by whom.
 
-**How it works:** The provider runs its RPC serving layer inside a trusted execution environment. Institutions authenticate, encrypt queries to the enclave's attested key, and receive responses; the provider sees only aggregate counters and billing metadata. Remote attestation lets the institution verify the exact code before sending anything. The provider still fronts the public network, so its own node connections follow normal visibility rules.
+**How it works:** The provider runs its RPC serving layer inside a Trusted Execution Environment. Institutions authenticate, encrypt queries to the enclave's attested key, and receive responses; the provider sees only aggregate counters and billing metadata. Remote attestation lets the institution verify the exact code before sending anything. The provider still fronts the public network, so its own node connections follow normal visibility rules.
 
 **Trust assumptions:**
 - TEE hardware and attestation infrastructure behave as specified
