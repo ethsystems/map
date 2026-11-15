@@ -79,7 +79,7 @@ crops: { cr: medium, o: partial, p: full, s: medium }
 uses_patterns: [pattern-tee-based-privacy, pattern-tee-key-manager]
 ```
 
-**Summary:** Queries arrive encrypted to a key held inside a trusted execution environment; the enclave resolves and serves them without the operator observing content or requester.
+**Summary:** Queries arrive encrypted to a key held inside a Trusted Execution Environment; the enclave resolves and serves them without the operator observing content or requester.
 
 **How it works:** The oracle runs its serving logic inside a TEE. Consumers encrypt queries to the enclave's attested key; the enclave decrypts, looks up, and returns the data, logging only aggregate counters. Remote attestation lets consumers verify the exact code handling their queries before sending them. The operator provisions hardware and network but cannot read query content.
 
