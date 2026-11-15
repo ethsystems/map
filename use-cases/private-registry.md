@@ -67,7 +67,7 @@ Registry updates (new entries, status changes, revocations) must be auditable wi
 
 ## 5) Recommended Approaches
 
-Approach TBD. Key architectural considerations:
+Covered by [Private Registry](../approaches/approach-private-registry.md), which compares a sparse Merkle registry with selective proofs, encrypted registry state with scoped viewing keys and a cross-border attestation bridge, with a 10-row comparison matrix, persona perspectives and a conditional recommendation. Key architectural considerations:
 
 - Merkle-tree-based registries: entries stored as leaves, proofs for individual lookups without revealing siblings
 - Encrypted state with scoped decryption: registry state encrypted, viewing keys scoped by role (operator, regulator, entry owner)
