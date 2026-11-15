@@ -67,7 +67,7 @@ Counterfeit goods (particularly pharmaceuticals) are a safety and economic risk.
 
 ## 5) Recommended Approaches
 
-Approach TBD. Key architectural considerations:
+Covered by [Private Supply Chain and Procurement](../approaches/approach-private-supply-chain.md), which compares an attested handoff chain, committed logistics data with compliance proofs and sealed procurement on shared rails, with CROPS scores, a comparison matrix, persona perspectives and a conditional recommendation. Key architectural considerations:
 
 - Attestation chains with selective disclosure: each party attests to their step; downstream parties verify without seeing upstream details
 - Commitment schemes for batch-level data: commit to logistics data on-chain, reveal only to authorized parties
@@ -84,5 +84,6 @@ Approach TBD. Key architectural considerations:
 ## 7) Notes And Links
 
 - Related patterns: [Verifiable Attestation](../patterns/pattern-verifiable-attestation.md), [L2 Encrypted Offchain Audit](../patterns/pattern-l2-encrypted-offchain-audit.md), [Commit and Prove](../patterns/pattern-commit-and-prove.md)
+- Related use case: [private-procurement.md](private-procurement.md) (shares the supply chain and procurement approach)
 - Regulatory drivers: EU Falsified Medicines Directive (FMD), US Drug Supply Chain Security Act (DSCSA)
 - See also: [EPIC map](https://epic-webapp.vercel.app/) (GovTech & EPIC team): pharmaceuticals, food aid, supply integrity, customs
