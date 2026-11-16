@@ -15,7 +15,7 @@ supporting_patterns:
   - pattern-private-iso20022
   - pattern-plasma-stateless-privacy
   - pattern-tee-based-privacy
-  - pattern-co-snark
+  - pattern-private-shared-state-cosnark
   - pattern-user-controlled-viewing-keys
   - pattern-verifiable-attestation
   - pattern-network-anonymity
@@ -279,7 +279,7 @@ example_vendors: [inco]
 maturity: prototyped
 context: i2i
 crops: { cr: medium, o: partial, p: partial, s: medium }
-uses_patterns: [pattern-co-snark]
+uses_patterns: [pattern-private-shared-state-cosnark]
 example_vendors: [taceo-merces]
 ```
 
