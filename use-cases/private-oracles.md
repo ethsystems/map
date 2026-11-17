@@ -67,7 +67,7 @@ When oracles aggregate data from multiple institutional sources, data providers 
 
 ## 5) Recommended Approaches
 
-Approach TBD. Going forward, assumption is oracles should be default private.
+Covered by [Private Oracles](../approaches/approach-private-oracles.md), which compares private information retrieval, TEE-served encrypted queries and batched delivery with anchored provenance, with a 10-row comparison matrix, persona perspectives and a conditional recommendation. Going forward, assumption is oracles should be default private.
 
 Consider:
 - Private information retrieval (PIR) techniques
