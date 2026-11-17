@@ -6,8 +6,8 @@ last_reviewed: 2026-11-15
 use_case: private-supply-chain
 related_use_cases: [private-procurement]
 
-primary_patterns: [pattern-verifiable-attestation, pattern-commit-and-prove, pattern-l2-encrypted-offchain-audit]
-supporting_patterns: [pattern-regulatory-disclosure-keys-proofs, pattern-zk-proof-systems]
+primary_patterns: [pattern-verifiable-attestation, pattern-l2-encrypted-offchain-audit]
+supporting_patterns: [pattern-regulatory-disclosure-keys-proofs, pattern-zk-proof-systems, pattern-private-transaction-broadcasting]
 ---
 
 # Approach: Private Supply Chain and Procurement
@@ -43,7 +43,7 @@ A mid-size pharmaceutical manufacturer with three contract manufacturers and two
 ```yaml
 maturity: documented
 context: both
-crops: { cr: medium, o: yes, p: partial, s: medium }
+crops: { cr: low, o: partial, p: partial, s: medium }
 uses_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-keys-proofs, pattern-l2-encrypted-offchain-audit]
 ```
 
@@ -73,15 +73,15 @@ uses_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-ke
 - Even the fact of a transaction is commercially sensitive
 - Verification must run fully offline at the point of use
 
-CROPS rationale: CR medium, because participation is permissioned to supply chain members and a member can be excluded by the consortium, but no single party controls another's attestations and readers verify without permission. O yes: attestation layers and schemas are open source and records are portable. P partial: payloads are minimized, but attestation existence and timing are public and disclosure is structured. S medium: signature security is sound, while key management and consortium governance concentrate operational risk.
+CROPS rationale: CR low, because the consortium gates membership and can exclude a participant, which needs institutional approval. O partial: attestation layers and schemas are open source and records are portable, but the encrypted-store and key-management code behind the audit trail is often closed. P partial: payloads are minimized, but attestation existence and timing are public and disclosure is structured. S medium: signature security is sound, while key management and consortium governance concentrate operational risk.
 
 ### Committed logistics data with compliance proofs
 
 ```yaml
 maturity: concept
 context: both
-crops: { cr: high, o: partial, p: full, s: medium }
-uses_patterns: [pattern-commit-and-prove, pattern-zk-proof-systems]
+crops: { cr: medium, o: partial, p: partial, s: medium }
+uses_patterns: [pattern-zk-proof-systems]
 ```
 
 **Summary:** Batch and invoice detail never leaves the holder in readable form; zero-knowledge proofs assert compliance claims against commitments anchored on-chain.
@@ -93,6 +93,7 @@ uses_patterns: [pattern-commit-and-prove, pattern-zk-proof-systems]
 - Claim semantics (what "compliant" means) are encoded in circuits all parties can review
 - Off-chain source data must survive; its loss breaks future proofs
 - Proving infrastructure availability is an operational dependency
+- Committed inputs come from signed sensors, issuer attestations or zkTLS; a proof cannot make false input data true
 
 **Threat model:**
 - Circuit bugs prove false claims; third-party circuit audit is the mitigation
@@ -109,7 +110,7 @@ uses_patterns: [pattern-commit-and-prove, pattern-zk-proof-systems]
 - Regulators require the raw record itself by statute, not just claims
 - Parties cannot operate proving infrastructure at unit scale (millions of units per year)
 
-CROPS rationale: CR high, because verification is permissionless once claims are defined and exclusion requires blocking the chain rather than an operator's decision. O partial: the proof-system stacks are open, but circuits and claim semantics are authored per deployment. P full: nothing beyond the claim is revealed by design. S medium: cryptographic assumptions are strong; circuit correctness and off-chain data custody are the weak links.
+CROPS rationale: CR medium, because proposers can censor commits to a known contract, and exclusion then needs only block-building power rather than an operator's decision. O partial: the proof-system stacks are open, but circuits and claim semantics are authored per deployment. P partial: nothing beyond the claim is revealed by design, but on-chain commitments show who committed, when and how often, and regulator disclosure paths make visibility at best partial. S medium: cryptographic assumptions are strong; circuit correctness and off-chain data custody are the weak links.
 
 ### Sealed procurement on shared rails
 
@@ -117,12 +118,12 @@ CROPS rationale: CR high, because verification is permissionless once claims are
 maturity: concept
 context: i2i
 crops: { cr: medium, o: yes, p: partial, s: medium }
-uses_patterns: [pattern-commit-and-prove, pattern-l2-encrypted-offchain-audit]
+uses_patterns: [pattern-verifiable-dkg-threshold-decryption, pattern-private-transaction-broadcasting, pattern-l2-encrypted-offchain-audit]
 ```
 
-**Summary:** The procurement leg: bids committed sealed on-chain, opened by the contract at the deadline, evaluation evidenced against declared criteria, and payment released on attested milestones.
+**Summary:** The procurement leg: bids committed sealed on-chain, opened after the deadline by bidder reveal or by a threshold key holder, evaluation asserted against declared criteria, and payment released on attested milestones.
 
-**How it works:** Bidders commit to their bids on-chain before a deadline; the contract enforces commit and reveal phase timing so late bids and post-commit modification are impossible. After the deadline, bids open, on-chain or to the evaluation committee under disclosure keys depending on the jurisdiction. Evaluation outcomes are attested against the declared criteria, so the trail shows procedure was followed without revealing losing-bid detail. Payment runs on attested milestones with amounts visible only to the parties and their auditors.
+**How it works:** Bidders commit to their bids on-chain before a deadline; the contract enforces commit and reveal phase timing so late bids and post-commit modification are impossible. After the deadline, bids open by bidder reveal or through a threshold key holder; a contract cannot open a hash commitment on its own, and public on-chain opening conflicts with tender-confidentiality rules such as EU directive 2014/24/EU. Bids are submitted through a relayer or shielded submission, since a plain commit from the bidder's own address shows who bid. Evaluation outcomes are asserted by the evaluator against the declared criteria, so the trail shows an attested assertion that procedure was followed without revealing losing-bid detail. Payment runs on attested milestones with amounts visible only to the parties and their auditors.
 
 **Trust assumptions:**
 - Bidders control commitment timing and entropy
@@ -132,16 +133,17 @@ uses_patterns: [pattern-commit-and-prove, pattern-l2-encrypted-offchain-audit]
 **Threat model:**
 - Block proposers censor commits inside the bid window
 - Bid sniping at the phase boundary; ending the commit phase before the reveal phase mitigates it
+- A bidder withholds its reveal after seeing other bids; require a deposit or slashing for non-reveal, or use threshold decryption to remove the reveal step
 - Collusion signaled through timing patterns rather than amounts
 
 **Works best when:**
 - The tender is high-stakes enough to justify a two-phase ceremony
-- Public procurement law allows a sealed phase, as most regimes do
+- Public procurement law in the relevant regime permits a sealed phase and restricts opened data; EU directive 2014/24/EU annex IV(f) requires opened data to remain accessible only to authorised persons
 
 **Avoid when:**
 - Procurement volume is high-frequency and low-value, where ceremony overhead dominates
 
-CROPS rationale: CR medium, because commit windows are enforced by contract but block proposers can censor commits, which needs inclusion-list style mitigations. O yes: the pattern is implementable entirely with open contracts. P partial: commitments hide amounts while bid timing and count stay observable. S medium: tamper-proof timing holds only if the opening step is operated honestly.
+CROPS rationale: CR medium, because commit windows are enforced by contract but block proposers can censor commits to a known contract; mempool privacy alone does not stop this, which is the case `pattern-focil-eip7805` (inclusion lists) addresses. O yes: the pattern is implementable entirely with open contracts. P partial: commitments hide amounts while bid timing, count and (absent shielded submission) bidder identity stay observable. S medium: tamper-proof timing holds only if the opening step is operated honestly.
 
 ## Comparison
 
@@ -149,13 +151,13 @@ CROPS rationale: CR medium, because commit windows are enforced by contract but 
 |---|---|---|---|
 | **Maturity** | documented | concept | concept |
 | **Context** | both | both | i2i |
-| **CROPS** | CR medium · O yes · P partial · S medium | CR high · O partial · P full · S medium | CR medium · O yes · P partial · S medium |
+| **CROPS** | CR low · O partial · P partial · S medium | CR medium · O partial · P partial · S medium | CR medium · O yes · P partial · S medium |
 | **Trust model** | signed attestations per party, consortium schema | cryptographic proofs, no data disclosure | contract-enforced commit/reveal timing |
 | **Privacy scope** | payloads minimized, existence public | claim-only disclosure, private by design | amounts hidden, timing observable |
 | **Performance** | not measured | proof generation per check, not measured | two-phase ceremony per tender |
-| **Operator req.** | Yes (off-chain store, disclosure keys) | Yes (proving infrastructure, data custody) | No (contract-run phases) |
+| **Operator req.** | Yes (off-chain store, disclosure keys) | Yes (proving infrastructure, data custody) | Yes (opening or key holder) |
 | **Cost class** | low | high | medium |
-| **Regulatory fit** | strong: selective disclosure to regulators | strong where claims suffice; weak where raw record mandated | strong: matches sealed-bid statutes |
+| **Regulatory fit** | strong: selective disclosure to regulators | strong where claims suffice; weak where raw record mandated | depends on the opening model; public opening conflicts with EU tender confidentiality |
 | **Failure modes** | key compromise; consortium holdout | circuit bugs; source data loss | commit censorship; dishonest opening |
 
 ## Persona perspectives
@@ -166,17 +168,17 @@ For an institution whose competitive edge is the supplier network or bid strateg
 
 ### Technical perspective
 
-The attested handoff chain is operationally light: signing keys, a schema registry, an encrypted off-chain store; the hard parts are schema governance across jurisdictions and disclosure-key custody. The committed-data approach is a different engineering class: circuit design, proof infrastructure, and per-check latency at unit scale, since a dispensing check must complete in seconds, plus custody discipline for source data whose loss breaks future proofs. Sealed procurement is contract engineering with careful phase semantics; known risks are commit-window censorship and timing side channels, both addressable with existing mempool-privacy patterns at some operational cost. Sequence the work: attestation schema first, proofs second, procurement ceremonies third.
+The attested handoff chain is operationally light: signing keys, a schema registry, an encrypted off-chain store; the hard parts are schema governance across jurisdictions and disclosure-key custody. The committed-data approach is a different engineering class: circuit design, proof infrastructure, and per-check latency at unit scale, since a dispensing check must complete in seconds, plus custody discipline for source data whose loss breaks future proofs. Sealed procurement is contract engineering with careful phase semantics; known risks are commit-window censorship, addressed with inclusion lists (`pattern-focil-eip7805`), and timing side channels; mempool privacy alone does not stop censorship of commits to a known contract. Dispensing-path proofs also face a hard latency ceiling in the EU: delegated regulation (EU) 2016/161 article 35(1)(f) requires the medicines repository to respond within 300 ms in at least 95% of queries. Sequence the work: attestation schema first, proofs second, procurement ceremonies third.
 
 ### Legal & risk perspective
 
-Two questions dominate. First, disclosure: serialization mandates (EU FMD, US DSCSA) give regulators access rights a privacy-preserving design must satisfy by construction, so scoped disclosure paths need review against each authority's actual access procedure, and a design that proves claims may not satisfy a statute demanding the raw record. Second, procurement law: sealed-bid rules generally permit commitment schemes, but the evidentiary value of an on-chain trail depends on the attestation's legal weight, which varies by jurisdiction, so test whether audit authorities accept cryptographic attestation in place of document production. Retention obligations, commonly five to ten years, also constrain key management: keys that make data unreadable can conflict with mandated retention. This is not legal advice.
+Two questions dominate. First, disclosure: serialization mandates (EU FMD, US DSCSA) give regulators access rights a privacy-preserving design must satisfy by construction, so scoped disclosure paths need review against each authority's actual access procedure, and a design that proves claims may not satisfy a statute demanding the raw record. Second, procurement law: sealed-bid rules in many regimes permit commitment schemes, but the treatment of opened tender data is stricter than the commitment itself, and the evidentiary value of an on-chain trail depends on the attestation's legal weight, which varies by jurisdiction, so test whether audit authorities accept cryptographic attestation in place of document production. Retention obligations, commonly five to ten years, also constrain key management: keys that make data unreadable can conflict with mandated retention. This is not legal advice.
 
 ## Recommendation
 
 ### Default
 
-For the baseline institutional case, moderate volume and standard compliance, the attested handoff chain is the default: it delivers verifiable provenance and sealed audit trails on infrastructure that runs today, and leaves room to deepen privacy where a specific segment demands it.
+For the baseline institutional case, moderate volume and standard compliance, the attested handoff chain is the default: its attestation layer runs in production today, its encrypted audit trail is at testnet maturity, and it leaves room to deepen privacy where a specific segment demands it.
 
 ### Decision factors
 
