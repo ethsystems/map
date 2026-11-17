@@ -7,7 +7,7 @@ use_case: private-oracles
 related_use_cases: [private-read, private-derivatives]
 
 primary_patterns: [pattern-private-information-retrieval, pattern-tee-based-privacy, pattern-verifiable-attestation]
-supporting_patterns: [pattern-zk-tls, pattern-tee-key-manager]
+supporting_patterns: [pattern-network-anonymity, pattern-mixnet-anonymity, pattern-regulatory-disclosure-keys-proofs]
 ---
 
 # Approach: Private Oracles
@@ -40,15 +40,15 @@ An institutional trading desk queries price feeds many times a day; the oracle o
 ### Private information retrieval
 
 ```yaml
-maturity: documented
+maturity: concept
 context: both
-crops: { cr: high, o: partial, p: full, s: medium }
+crops: { cr: low, o: yes, p: full, s: high }
 uses_patterns: [pattern-private-information-retrieval]
 ```
 
 **Summary:** The consumer fetches a record from the oracle's dataset without the serving infrastructure learning which record was fetched.
 
-**How it works:** The oracle publishes an indexed dataset (price history, reference data). The consumer runs a PIR query: the server processes an encrypted query vector and returns a response the client decrypts to exactly the requested record, while the server learns nothing about which index was read. Batching many consumers' queries shares server cost, and update streams keep the dataset fresh between republications.
+**How it works:** The oracle publishes an indexed dataset (price history, reference data). The consumer runs a PIR query: the server processes an encrypted query vector and returns a response the client decrypts to exactly the requested record, while the server learns nothing about which index was read. Batching shares the per-query client work but not the per-query server work: in single-server PIR the server must touch every bit of the database to answer even one query (simplePIR, Henzinger et al., USENIX Security 2023). Consumers share a preprocessing hint instead, roughly 121 MB per 1 GB of dataset, and every dataset update forces the server to repeat part of the preprocessing; for price data, where updates are frequent, that update cost is the binding cost. Pair PIR with a signed snapshot or state-root anchor so freshness and correctness are proven against a separate integrity anchor.
 
 **Trust assumptions:**
 - The PIR implementation and its parameters are public and audited
@@ -56,7 +56,7 @@ uses_patterns: [pattern-private-information-retrieval]
 - Single-server PIR rests on computational assumptions; multi-server variants need non-colluding operators
 
 **Threat model:**
-- Timing or size side channels leak which record was fetched
+- Query timing and rate leak trading intent; non-oblivious implementations may also leak the index
 - A stale dataset served to a targeted consumer, since integrity is out of PIR's scope
 - Collusion between server operators breaks multi-server privacy
 
@@ -68,18 +68,18 @@ uses_patterns: [pattern-private-information-retrieval]
 - The consumer needs proof the served value is fresh and correct, not just unseen
 - Real-time tick data under strict latency at very high rates
 
-CROPS rationale: CR high, because no operator permission is needed to read and nothing at the network layer identifies the record. O partial: implementations are open, but dataset packaging is operator-specific. P full: the query content is hidden by construction. S medium: strong assumptions, while side channels and dataset integrity remain open.
+CROPS rationale: CR low, because the operator holds the only copy of the dataset and can deny any read; this is the single-operator case where the pattern scores CR low. O yes: the implementations are open. P full: the query content is hidden by construction. S high: the assumptions are strong, while side channels and dataset integrity remain open.
 
 ### TEE-served encrypted queries
 
 ```yaml
 maturity: documented
 context: both
-crops: { cr: medium, o: partial, p: full, s: medium }
-uses_patterns: [pattern-tee-based-privacy, pattern-tee-key-manager]
+crops: { cr: low, o: partial, p: partial, s: medium }
+uses_patterns: [pattern-tee-based-privacy, pattern-network-anonymity]
 ```
 
-**Summary:** Queries arrive encrypted to a key held inside a Trusted Execution Environment; the enclave resolves and serves them without the operator observing content or requester.
+**Summary:** Queries arrive encrypted to a key held inside a Trusted Execution Environment; the enclave resolves and serves them without the operator reading query content. The operator still sees which consumer connects, and when.
 
 **How it works:** The oracle runs its serving logic inside a TEE. Consumers encrypt queries to the enclave's attested key; the enclave decrypts, looks up, and returns the data, logging only aggregate counters. Remote attestation lets consumers verify the exact code handling their queries before sending them. The operator provisions hardware and network but cannot read query content.
 
@@ -101,7 +101,7 @@ uses_patterns: [pattern-tee-based-privacy, pattern-tee-key-manager]
 - Threat actors include the hardware supply chain
 - Policy requires cryptographic rather than hardware-rooted privacy
 
-CROPS rationale: CR medium, because service depends on the operator's infrastructure even though query content is hidden. O partial: enclave code can be open, while the TEE stack is vendor-controlled. P full against the operator, conditional on hardware. S medium: hardware trust and side channels are the weak links.
+CROPS rationale: CR low, because the operator can withhold or delay service selectively, which is exclusion through institutional control under the rubric. O partial: enclave code can be open, while the TEE stack is vendor-controlled. P partial: query content is hidden against the operator, conditional on hardware, but the operator sees which consumer connects, when and how much. S medium: hardware trust and side channels are the weak links.
 
 ### Batched delivery with anchored provenance
 
@@ -109,10 +109,10 @@ CROPS rationale: CR medium, because service depends on the operator's infrastruc
 maturity: documented
 context: i2i
 crops: { cr: medium, o: yes, p: partial, s: medium }
-uses_patterns: [pattern-verifiable-attestation, pattern-commit-and-prove]
+uses_patterns: [pattern-verifiable-attestation, pattern-mixnet-anonymity]
 ```
 
-**Summary:** Queries hide inside aggregate delivery rounds and provider provenance is attested on-chain, so neither consumption patterns nor data origin leak at the individual level.
+**Summary:** Feeds publish in fixed rounds with provider provenance attested on-chain, so a consumer's individual queries hide inside a round, while round cadence, volume and the set of contributing providers stay visible.
 
 **How it works:** The oracle publishes feeds in fixed rounds and batches; consumers receive the round bundle or a subset through a mix, so observing the network shows only that an institution consumed a round, not which series it priced off. Each round carries attestations of the contributing providers, the methodology version and freshness; consent receipts anchor provider-consumer data-use agreements on-chain. Auditors and regulators get scoped disclosure into the provenance trail.
 
@@ -139,12 +139,12 @@ CROPS rationale: CR medium, because the operator runs the rounds and can exclude
 
 | Axis | Private information retrieval | TEE-served encrypted queries | Batched delivery with anchored provenance |
 |---|---|---|---|
-| **Maturity** | documented | documented | documented |
+| **Maturity** | concept | documented | documented |
 | **Context** | both | both | i2i |
-| **CROPS** | CR high · O partial · P full · S medium | CR medium · O partial · P full · S medium | CR medium · O yes · P partial · S medium |
+| **CROPS** | CR low · O yes · P full · S high | CR low · O partial · P partial · S medium | CR medium · O yes · P partial · S medium |
 | **Trust model** | computational (PIR) or non-colluding servers | hardware attestation and enclave code | signers and batch size |
 | **Privacy scope** | query content hidden from server | query hidden from operator; availability theirs | consumption hidden within rounds; provenance selective |
-| **Performance** | server cost heavy, client light | fast lookups, no hot-path proving | round cadence latency |
+| **Performance** | server touches every bit per query; client downloads a hint (about 121 MB per 1 GB); update cost binds | fast lookups, no hot-path proving | round cadence latency |
 | **Operator req.** | Yes (dataset hosting) | Yes (TEE infrastructure) | Yes (round operation) |
 | **Cost class** | medium | medium | low |
 | **Regulatory fit** | strong on query privacy; needs an integrity layer | strong; audit path is operator-side | strong: provenance and consent are first-class |
@@ -168,11 +168,11 @@ Query patterns are commercially sensitive but also exactly what market-surveilla
 
 ### Default
 
-For an institutional consumer buying reference data with latency requirements, TEE-served encrypted queries are the default: they hide query content from the operator with production-grade latency and add little beyond the hardware trust a conventional oracle already implies.
+For an institutional consumer buying reference data with latency requirements, TEE-served encrypted queries are the default: they hide query content from the operator without proving on the hot path, at the cost of a hardware-vendor trust anchor.
 
 ### Decision factors
 
-- If the operator itself cannot be trusted with any query visibility, use private information retrieval instead.
+- If the operator must not learn which record is read, even under a hardware compromise, use private information retrieval instead.
 - If licensing and consent management is the binding constraint, add the batched delivery layer with anchored provenance.
 - If regulators require query-level audit, keep it behind scoped disclosure rather than standing access.
 
@@ -186,3 +186,4 @@ Serve the hot path through a TEE or PIR, publish reference data in attested roun
 2. How do market-surveillance regimes treat an oracle's query audit trail, and what disclosure granularity will they accept?
 3. Can consent receipts be standardized enough that providers and consumers anchor the same agreement identically?
 4. How should freshness attestations compose with PIR so integrity is proven, not just assumed?
+5. How can contributions from multiple providers aggregate without a single trusted party, while provider attribution and revenue sharing stay private?
