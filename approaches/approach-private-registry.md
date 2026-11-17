@@ -6,8 +6,8 @@ last_reviewed: 2026-11-15
 use_case: private-registry
 related_use_cases: [private-identity]
 
-primary_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-keys-proofs, pattern-user-controlled-viewing-keys]
-supporting_patterns: [pattern-crypto-registry-bridge-ewpg-eas]
+primary_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-keys-proofs]
+supporting_patterns: [pattern-crypto-registry-bridge-ewpg-eas, pattern-private-information-retrieval]
 ---
 
 # Approach: Private Registry
@@ -34,21 +34,24 @@ A securities registry operator maintains holder positions for an issuer whose sh
 - Jurisdictions use different identifiers, schemas and legal frameworks
 - Revocations must propagate to relying parties without always revealing which entry was revoked
 - Registered entities must be able to rely on the operator's liveness and correct state transitions
+- Legal forms constrain designs: eWpG section 16(1) requires a forgery-proof recording system, defined in section 4(11) as a decentralized one, so a single operator that keeps a tree and anchors its root does not obviously qualify ([de-eWpG](jurisdictions/de-eWpG.md))
 
 ## Approaches
+
+The first two sub-approaches are the real alternatives for the domestic registry; the third is a cross-border layer that composes over either of them.
 
 ### Sparse Merkle registry with selective proofs
 
 ```yaml
 maturity: documented
 context: both
-crops: { cr: medium, o: yes, p: partial, s: medium }
+crops: { cr: low, o: yes, p: partial, s: medium }
 uses_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-keys-proofs]
 ```
 
 **Summary:** Registry entries live as leaves in a sparse Merkle tree anchored on-chain; verifiers receive Merkle proofs for specific lookups without seeing the rest of the tree.
 
-**How it works:** The operator maintains the sparse Merkle tree, whose root is anchored on-chain each epoch. A verifier asking "is this entity registered and in good standing" receives a Merkle proof for that leaf, which proves the entry's inclusion and current status without revealing sibling entries. Updates touch only affected paths, so additions, modifications and revocations stay cheap even in very large registries. Revocations update the leaf's status field, and non-existence proofs let a verifier establish that no entry exists for a key.
+**How it works:** The operator maintains the sparse Merkle tree, whose root is anchored on-chain each epoch. A verifier asking "is this entity registered and in good standing" receives a Merkle proof for that leaf, which proves the entry's inclusion and current status without revealing sibling entries. Updates touch only affected paths, so additions, modifications and revocations stay cheap even in very large registries. Revocations update the leaf's status field, and non-existence proofs let a verifier establish that no entry exists for a key. Leaves must be salted commitments: a Merkle path carries a sibling hash at every level and empty subtrees hash to known defaults, so an unsalted proof shows which subtrees near the key are occupied and a low-entropy leaf can be brute-forced from its hash. Where the path itself must stay hidden, wrap the proof in zk as in `pattern-private-mtp-auth`.
 
 **Trust assumptions:**
 - The operator maintains the tree honestly against the anchored root
@@ -56,7 +59,7 @@ uses_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-ke
 - Verifiers trust the anchoring chain's settlement guarantees
 
 **Threat model:**
-- An operator publishes proofs for entries it altered after anchoring (mitigated by frequent anchoring)
+- An operator anchors a root that contains an unauthorized change, or shows different roots to different verifiers (mitigated by validity proofs over state transitions and a single canonical anchor)
 - Proof granularity leaks structure through repeated related queries
 - Operator liveness: a stalling operator freezes verifiability
 
@@ -68,20 +71,20 @@ uses_patterns: [pattern-verifiable-attestation, pattern-regulatory-disclosure-ke
 - Verifiers need to enumerate or join across entries
 - The operator itself is the trust concern
 
-CROPS rationale: CR medium, because proofs answer only what a verifier asks, but the operator gates who may query and the anchoring cadence is operator-chosen. O yes: sparse Merkle constructions and anchoring are standard, open technology. P partial: individual entries stay hidden, while query patterns and aggregate structure remain observable. S medium: cryptographic soundness is strong, with operator liveness and honest maintenance the residual trust.
+CROPS rationale: CR low, because the operator gates who may query and no independent path bypasses that approval; proofs answer only what a verifier asks, but admission is institutional. O yes: sparse Merkle constructions and anchoring are standard, open technology. P partial: individual entries stay hidden, while query patterns and aggregate structure remain observable. S medium: cryptographic soundness is strong, with operator liveness and honest maintenance the residual trust.
 
 ### Encrypted registry state with scoped viewing keys
 
 ```yaml
 maturity: documented
 context: both
-crops: { cr: medium, o: partial, p: full, s: medium }
-uses_patterns: [pattern-user-controlled-viewing-keys, pattern-regulatory-disclosure-keys-proofs]
+crops: { cr: low, o: partial, p: partial, s: medium }
+uses_patterns: [pattern-regulatory-disclosure-keys-proofs]
 ```
 
 **Summary:** The registry's state is stored encrypted; role-scoped viewing keys let the operator, regulators and entry owners decrypt exactly their slice without exposing the rest.
 
-**How it works:** Every entry is written to the registry in encrypted form, with the on-chain record carrying commitments and version information rather than plaintext. Viewing keys are issued per role and per scope: an entry owner can read its own entry, a regulator can read the entries in its jurisdiction or investigation, and the operator can read what it operates. Auditors receive derived, scoped keys for a defined period rather than standing access. Change history stays encrypted, so the trail is verifiable in structure while its content stays gated.
+**How it works:** Every entry is written to the registry in encrypted form, with the on-chain record carrying commitments and version information rather than plaintext. Viewing keys are issued per role and per scope: an entry owner can read its own entry, a regulator can read the entries in its jurisdiction or investigation, and the operator can read what it operates. Auditors receive derived, scoped keys for a defined period rather than standing access. A time window limits which data a key decrypts, not how long the holder can read it: revoking a key stops future grants but cannot recall data already in scope. Change history stays encrypted, so the trail is verifiable in structure while its content stays gated.
 
 **Trust assumptions:**
 - Key management is sound: a leaked regulator key exposes its whole scope
@@ -101,20 +104,20 @@ uses_patterns: [pattern-user-controlled-viewing-keys, pattern-regulatory-disclos
 - Key ceremony and recovery overhead outweigh the registry's sensitivity
 - Jurisdictions mandate plaintext mirroring of the registry of record
 
-CROPS rationale: CR medium, because access is permissioned by key issuance and the operator controls admission, though anyone holding a key verifies without further permission. O partial: the cryptography is open, while per-registry key schemes are deployment-specific. P full at the data layer: nothing but ciphertext and commitments is public. S medium: key management concentration is the dominant risk.
+CROPS rationale: CR low, because access is permissioned by operator key issuance with no independent path. O partial: the cryptography is open, while per-registry key schemes are deployment-specific. P partial: nothing but ciphertext and commitments is public at the data layer, but the operator can read what it operates, so visibility against the operator is partial, and regulator keys narrow but do not remove it. S medium: key management concentration is the dominant risk.
 
-### Cross-border attestation bridge
+### Cross-border attestation bridge (overlay)
 
 ```yaml
-maturity: documented
+maturity: concept
 context: i2i
-crops: { cr: medium, o: yes, p: partial, s: medium }
-uses_patterns: [pattern-crypto-registry-bridge-ewpg-eas, pattern-verifiable-attestation]
+crops: { cr: none, o: partial, p: partial, s: medium }
+uses_patterns: [pattern-crypto-registry-bridge-ewpg-eas, pattern-verifiable-attestation, pattern-private-information-retrieval]
 ```
 
-**Summary:** Foreign registry queries are answered with signed attestations rather than raw data exchange, so sovereignty holds and query patterns stay with the parties.
+**Summary:** Foreign registry queries are answered with signed attestations rather than raw data exchange, so registry data stays in its jurisdiction. The answering operator learns which entity is checked unless the lookup uses private information retrieval, and on-chain attestations expose query timing and volume to anyone.
 
-**How it works:** Each registry operator runs an attestation endpoint that answers defined queries ("is this license valid", "is this entity registered") with a signed, schema-defined attestation anchored on-chain. A querying institution in another jurisdiction verifies the attestation against the operator's public key and the anchoring chain, without ever receiving bulk data. The query audit trail lives with the two parties and is disclosed to authorities through scoped disclosure when mutual legal assistance requires it.
+**How it works:** Each registry operator runs an attestation endpoint that answers defined queries ("is this license valid", "is this entity registered") with a signed, schema-defined attestation anchored on-chain. A querying institution in another jurisdiction verifies the attestation against the operator's public key and the anchoring chain, without ever receiving bulk data. Attestations anchored individually expose the timing and volume of checks; anchoring batched roots, or issuing attestations off-chain with batched on-chain proofs, keeps that leak down, and a PIR lookup hides which entity was checked. The query audit trail lives with the two parties and is disclosed to authorities through scoped disclosure when mutual legal assistance requires it.
 
 **Trust assumptions:**
 - Each operator attests honestly about its own registry
@@ -133,21 +136,21 @@ uses_patterns: [pattern-crypto-registry-bridge-ewpg-eas, pattern-verifiable-atte
 **Avoid when:**
 - The query needs rich data, not a yes/no or attribute answer
 
-CROPS rationale: CR medium, because verification is permissioned to parties holding the operator's trust anchor, and admission is bilateral. O yes: the bridge pattern and attestation layers are open. P partial: answers are scoped to the question, while query existence and volume are visible to the counterpart. S medium: attestation honesty and schema governance are the trust carriers.
+CROPS rationale: CR none, because the bridge pattern itself has no censorship-resistance story: admission is bilateral and either operator can stop answering. O partial: the bridge pattern and attestation layers are open, but the middleware is often proprietary and the pattern covers one German registrar mirroring record hashes, with no cross-border query flow. P partial: answers are scoped to the question, while query existence and volume are visible to the counterpart unless the lookup uses PIR. S medium: attestation honesty and schema governance are the trust carriers.
 
 ## Comparison
 
 | Axis | Sparse Merkle registry with selective proofs | Encrypted state with scoped viewing keys | Cross-border attestation bridge |
 |---|---|---|---|
-| **Maturity** | documented | documented | documented |
+| **Maturity** | documented | documented | concept (overlay) |
 | **Context** | both | both | i2i |
-| **CROPS** | CR medium · O yes · P partial · S medium | CR medium · O partial · P full · S medium | CR medium · O yes · P partial · S medium |
+| **CROPS** | CR low · O yes · P partial · S medium | CR low · O partial · P partial · S medium | CR none · O partial · P partial · S medium |
 | **Trust model** | honest operator, anchored root | key management per role | honest attesting operators |
 | **Privacy scope** | entries hidden; query patterns visible | data fully encrypted; keys gated | answers scoped; volume visible |
 | **Performance** | cheap per-lookup proofs, cheap updates | encryption on the write and read paths | one attestation per query |
 | **Operator req.** | Yes (tree maintenance) | Yes (key issuance) | Yes (attestation endpoint) |
 | **Cost class** | low | medium | low |
-| **Regulatory fit** | strong: proofs plus scoped disclosure | strong where scoped keys are accepted | strong: preserves sovereignty |
+| **Regulatory fit** | depends on jurisdiction; see [eWpG](jurisdictions/de-eWpG.md) | strong where scoped keys are accepted: regulator access without bulk mirroring | strong where answers are attestations rather than raw exchange: sovereignty holds by construction |
 | **Failure modes** | operator liveness; stale proofs | key compromise; scope creep | stale attestations; schema drift |
 
 ## Persona perspectives
@@ -183,7 +186,7 @@ Run the domestic registry as a sparse Merkle tree for lookups, encrypt the entri
 ## Open questions
 
 1. What data structure best supports privacy-preserving registries with efficient updates at national scale (sparse Merkle trees, indexed Merkle trees, append-only logs)?
-2. How do privacy-preserving registries interact with existing registry legal frameworks such as eWpG crypto-registry requirements?
+2. How do privacy-preserving registries interact with existing registry legal frameworks such as the eWpG crypto-registry requirements ([de-eWpG](jurisdictions/de-eWpG.md))?
 3. What is the minimum viable cross-border attestation protocol that satisfies both privacy and sovereignty requirements?
 4. How should registry corrections (errors, court orders) work in an append-only privacy-preserving system?
-5. What trust assumptions must registered entities make about operator liveness, censorship resistance and honest state transitions, and how can they be minimized or made verifiable?
+5. What trust assumptions must registered entities make about operator liveness, censorship resistance, Data Availability and honest state transitions, and how can they be minimized or made verifiable?
