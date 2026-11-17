@@ -52,10 +52,7 @@ Query patterns preceding transactions enable MEV extraction. Knowing what an ins
 
 ## 5) Recommended Approaches
 
-Covered by [Private Read](../approaches/approach-private-read.md), which compares institution-run nodes, TEE-hosted private RPC and obfuscated aggregate reads, with a 10-row comparison matrix, persona perspectives and a conditional recommendation. Consider:
-- Private RPC services with query obfuscation
-- Query batching and timing randomization
-- Institution-run infrastructure where feasible
+See [Approach: Private Read](../approaches/approach-private-read.md): institution-run nodes where the institution can operate them, a TEE-hosted private RPC otherwise, and obfuscated aggregate reads as a research path.
 
 ## 6) Open Questions
 

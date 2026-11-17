@@ -7,7 +7,7 @@ use_case: private-read
 related_use_cases: [private-oracles]
 
 primary_patterns: [pattern-tee-based-privacy, pattern-private-information-retrieval, pattern-network-anonymity]
-supporting_patterns: [pattern-tee-key-manager]
+supporting_patterns: [pattern-tee-network-anonymity, pattern-private-transaction-broadcasting]
 ---
 
 # Approach: Private Read
@@ -16,7 +16,7 @@ supporting_patterns: [pattern-tee-key-manager]
 
 ### Scenario
 
-An asset manager monitors twenty addresses and queries transaction history ahead of execution. Every JSON-RPC call it makes is visible to its RPC provider, and the provider's node peers see the request pattern too. Read patterns leak portfolio composition, counterparty relationships and imminent trading intent, which MEV searchers monetize and competitors harvest. The institution does not want to run its own infrastructure everywhere, and the same read path must stay private against both the RPC provider and network observers, with regulator access available as scoped disclosure rather than standing visibility.
+An asset manager monitors twenty addresses and queries transaction history ahead of execution. Every JSON-RPC call it makes is visible to its RPC provider. Read patterns leak portfolio composition, counterparty relationships and imminent trading intent, which MEV searchers monetize and competitors harvest. The institution does not want to run its own infrastructure everywhere, and the same read path must stay private against both the RPC provider and network observers, with regulator access available as scoped disclosure rather than standing visibility.
 
 ### Requirements
 
@@ -43,12 +43,12 @@ An asset manager monitors twenty addresses and queries transaction history ahead
 maturity: production
 context: both
 crops: { cr: high, o: yes, p: partial, s: medium }
-uses_patterns: [pattern-network-anonymity]
+uses_patterns: [pattern-network-anonymity, pattern-private-transaction-broadcasting]
 ```
 
 **Summary:** The institution runs its own full or archive node and queries local state, so no third party ever sees its reads.
 
-**How it works:** The institution operates open-source execution and consensus clients against the public peer-to-peer network. State reads resolve locally against synced data, so query content, targets and timing never leave the institution. The remaining exposure is network-level: peer connections and IP visibility are handled with network-anonymity measures where needed. Monitoring systems, risk engines and trading stacks point at an internal endpoint instead of a vendor RPC.
+**How it works:** The institution operates open-source execution and consensus clients against the public peer-to-peer network. State reads resolve locally against synced data, so query content, targets and timing never leave the institution. Transaction history additionally needs a self-hosted indexer, since the execution APIs define no method that returns an address's transactions; a node alone does not answer that query. The remaining exposure is network-level: peer connections and IP visibility are handled with network-anonymity measures where needed. Monitoring systems, risk engines and trading stacks point at an internal endpoint instead of a vendor RPC.
 
 **Trust assumptions:**
 - Client software is open source and runs as published
@@ -56,7 +56,8 @@ uses_patterns: [pattern-network-anonymity]
 - Local state is only as fresh as the node's sync
 
 **Threat model:**
-- Network observers correlate the node's traffic with known addresses
+- Transactions broadcast from the node reveal its IP as their origin; pair with [private transaction broadcasting](../patterns/pattern-private-transaction-broadcasting.md)
+- History queries routed to a third-party indexer or explorer leak those reads even when the node itself is self-hosted
 - A degraded or lagging node serves stale state without warning
 - Operational failure of a single node becomes a single point of failure for the desk
 
@@ -75,13 +76,13 @@ CROPS rationale: CR high, because no external party participates in the read at 
 ```yaml
 maturity: documented
 context: both
-crops: { cr: medium, o: partial, p: full, s: medium }
-uses_patterns: [pattern-tee-based-privacy, pattern-tee-key-manager]
+crops: { cr: low, o: partial, p: partial, s: medium }
+uses_patterns: [pattern-tee-based-privacy, pattern-tee-network-anonymity]
 ```
 
-**Summary:** Queries are encrypted to an attested enclave operated by a private-RPC provider, which serves state without observing what is read or by whom.
+**Summary:** Queries are encrypted to an attested enclave operated by a private-RPC provider. The provider cannot read query content, but it sees who queries, when and how much, and it needs an oblivious state store (ORAM) to hide which state the enclave reads.
 
-**How it works:** The provider runs its RPC serving layer inside a Trusted Execution Environment. Institutions authenticate, encrypt queries to the enclave's attested key, and receive responses; the provider sees only aggregate counters and billing metadata. Remote attestation lets the institution verify the exact code before sending anything. The provider still fronts the public network, so its own node connections follow normal visibility rules.
+**How it works:** The provider runs its RPC serving layer inside a Trusted Execution Environment. Institutions authenticate, encrypt queries to the enclave's attested key, and receive responses; the provider sees only aggregate counters and billing metadata. Remote attestation lets the institution verify the exact code before sending anything. The provider still fronts the public network, so its own node connections follow normal visibility rules. Where the provider must not learn which consumer connects, the enclave path pairs with [TEE network anonymity](../patterns/pattern-tee-network-anonymity.md).
 
 **Trust assumptions:**
 - TEE hardware and attestation infrastructure behave as specified
@@ -101,7 +102,7 @@ uses_patterns: [pattern-tee-based-privacy, pattern-tee-key-manager]
 - The threat model includes the hardware supply chain
 - Policy requires cryptographic rather than hardware-rooted privacy
 
-CROPS rationale: CR medium, because service availability and admission depend on the provider even though query content is hidden. O partial: enclave code can be open while the TEE stack is vendor-controlled. P full against the provider, conditional on hardware. S medium: hardware trust and side channels are the weak links, as with any TEE deployment.
+CROPS rationale: CR low, because the provider can deny or throttle service selectively, which is exclusion through institutional control under the rubric. O partial: enclave code can be open while the TEE stack is vendor-controlled. P partial: the provider authenticates and bills each caller, so it always sees who queries, when and how much; the enclave hides only content, and needs ORAM to hide which state it reads. S medium: hardware trust and side channels are the weak links, as with any TEE deployment.
 
 ### Obfuscated aggregate reads
 
@@ -114,12 +115,12 @@ uses_patterns: [pattern-private-information-retrieval, pattern-network-anonymity
 
 **Summary:** Read patterns are hidden inside aggregate traffic and cryptographic retrieval: batching, timing randomization and PIR-style state access make individual reads unattributable.
 
-**How it works:** Reads from many consumers are batched at a gateway, and timing is randomized within windows so request correlation fails. For specific record lookups, PIR-style retrieval lets the consumer read a value the gateway cannot identify. The gateway is designed so that its own logs are structurally unable to answer "who read what", rather than protected by policy alone.
+**How it works:** Reads from many consumers are batched at a gateway, and timing is randomized within windows so request correlation fails for the systems behind the gateway; the gateway itself sees who sent each request and when. For specific record lookups, PIR-style retrieval hides which record is read, but the gateway still sees that a query was issued and how often, and network metadata stays outside PIR's scope. So the gateway logs can answer "who read, when" for batched traffic, and "which record" only for PIR reads, never both at once.
 
 **Trust assumptions:**
 - Batch composition is large enough for individual reads to drown
 - Gateway software is open and honestly implements the batching policy
-- PIR parameters resist the traffic analysis they claim to
+- PIR hides the record index only; network-level metadata is out of its scope
 
 **Threat model:**
 - Small batches or sparse windows allow timing correlation
@@ -134,7 +135,7 @@ uses_patterns: [pattern-private-information-retrieval, pattern-network-anonymity
 - A single consumer's volume dominates the batch, re-identifying it
 - Strict real-time latency rules out batching windows
 
-CROPS rationale: CR high, because reads are hidden within aggregate traffic without operator permission, though the operator still gates admission. O partial: the design is open, but working deployments are operator-specific. P partial: batch membership is hidden while timing and volume leak by design. S medium: batch discipline and honest gateways carry the privacy.
+CROPS rationale: CR high, because reads are hidden within aggregate traffic without operator permission, though the operator still gates admission. O partial: the design is open, but there are no deployments. P partial: batch membership is hidden while timing and volume leak by design. S medium: batch discipline and honest gateways carry the privacy.
 
 ## Comparison
 
@@ -147,7 +148,7 @@ CROPS rationale: CR high, because reads are hidden within aggregate traffic with
 | **Privacy scope** | query private; network traffic observable | query hidden from provider; edge traffic observable | reads hidden in aggregate; timing leaks |
 | **Performance** | local reads, fastest | fast, no hot-path proving | batching windows add latency |
 | **Operator req.** | Yes (the institution's own) | Yes (provider infrastructure) | Yes (gateway operation) |
-| **Cost class** | medium to high | low to medium | low |
+| **Cost class** | medium to high | low to medium | high (server compute); not measured |
 | **Regulatory fit** | institution holds its own logs | provider-side audit path | structural privacy complicates audit |
 | **Failure modes** | stale state; single node failure | side channels; selective denial | timing correlation; batch re-identification |
 
