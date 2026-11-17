@@ -15,7 +15,7 @@ supporting_patterns:
   - pattern-private-iso20022
   - pattern-plasma-stateless-privacy
   - pattern-tee-based-privacy
-  - pattern-co-snark
+  - pattern-private-shared-state-cosnark
   - pattern-user-controlled-viewing-keys
   - pattern-verifiable-attestation
   - pattern-network-anonymity
@@ -136,9 +136,9 @@ example_vendors: [railgun]
 
 | Operation          | Value                      |
 | ------------------ | -------------------------- |
-| Gas: deposit       | ~155K + ~2.6M verification |
-| Gas: transfer      | ~181K + ~2.6M verification |
-| Gas: withdraw      | ~47K + ~2.6M verification  |
+| Gas: deposit       | ~155K + ~694K verification |
+| Gas: transfer      | ~181K + ~730K verification |
+| Gas: withdraw      | ~47K + ~712K verification  |
 | Proof gen (client) | 410-991ms                  |
 | Trusted setup      | No                         |
 
@@ -279,7 +279,7 @@ example_vendors: [inco]
 maturity: prototyped
 context: i2i
 crops: { cr: medium, o: partial, p: partial, s: medium }
-uses_patterns: [pattern-co-snark]
+uses_patterns: [pattern-private-shared-state-cosnark]
 example_vendors: [taceo-merces]
 ```
 
@@ -373,7 +373,7 @@ example_vendors: []
 | **CROPS**          | CR:hi O:y P:part S:hi                   | CR:med O:part P:full S:med          | CR:med O:part P:full S:med                           | CR:med O:no P:full S:lo          | CR:med O:part P:part S:med          | CR:hi O:y P:full S:hi                                    |
 | **Trust model**    | L1 + relayer liveness                   | Sequencer + bridge                  | Operator + L1 anchor                                 | TEE vendor + supply chain        | Honest-majority MPC                 | Multi-relay + smartcard + IResilientIdentity             |
 | **Privacy scope**  | Anonymity (amounts may leak)            | Amounts + counterparties + patterns | Amounts + counterparties (commitments only on chain) | Full inside enclave              | Amounts only; counterparties public | Forward-secure + off-ramp unlinkable                     |
-| **Performance**    | ~181K + ~2.6M gas / 410-991ms           | L2-internal fees                    | Off-chain transfer / operator-amortized              | Variable                         | MPC overhead, batched               | Relay-mediated, mesh-bounded                             |
+| **Performance**    | ~181K + ~730K gas / 410-991ms           | L2-internal fees                    | Off-chain transfer / operator-amortized              | Variable                         | MPC overhead, batched               | Relay-mediated, mesh-bounded                             |
 | **Operator req.**  | No (gas relayer optional)               | Yes (sequencer)                     | Yes                                                  | Yes (cloud)                      | Yes (MPC committee)                 | Yes (relay set with floors)                              |
 | **Cost class**     | High (L1 verify)                        | Low                                 | Lowest (amortized)                                   | Variable                         | Medium                              | Relay-mediated                                           |
 | **Regulatory fit** | Strong with viewing keys                | Strong with viewing keys            | Conditional (operator audit)                         | Conditional (vendor attestation) | Strong for known-counterparty       | Architectural minimization at funder layer               |
@@ -418,7 +418,7 @@ Operate L1 Shielded Payments and Privacy L2 in tiers, bridging via cross-tier me
 3. **Operational Recovery.** Dual-key architecture handles balance inspection under cold-storage spending keys; full business continuity workflows and key rotation under shielding are unresolved.
 4. **Cross-Jurisdiction Disclosure Standards.** No common selective-disclosure format across MiCA / GENIUS / national regimes.
 5. **Traditional Rail Standards.** Technical standards for SWIFT / ISO 20022 integration with privacy infrastructure are emergent.
-6. **Verification Gas Viability.** At ~2.6M gas per on-chain verification, the volume threshold above which L2 amortization is mandatory needs measurement per asset class.
+6. **Verification Gas Viability.** At ~0.7M gas per on-chain verification, the volume threshold above which L2 amortization is mandatory needs measurement per asset class.
 7. **Network Timing Correlation.** Acceptable latency overhead for network-anonymity mitigations is unresolved.
 8. **Relay Economic Recovery (Resilient Disbursement Rails).** Commission, L2 settlement, or funder reimbursement each carry distinct privacy consequences; unresolved.
 9. **Audit-Friendly View-Key Extension (Resilient Disbursement Rails).** Recipient-derived destinations have no view-key split; can a view-only credential be added without an interactive sender step?
