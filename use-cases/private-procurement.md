@@ -67,7 +67,7 @@ Regulators and auditors need assurance that procurement followed proper procedur
 
 ## 5) Recommended Approaches
 
-Approach TBD. Key architectural considerations:
+Covered by [Private Supply Chain and Procurement](../approaches/approach-private-supply-chain.md), which compares an attested handoff chain, committed logistics data with compliance proofs and sealed procurement on shared rails, with CROPS scores, a comparison matrix, persona perspectives and a conditional recommendation. Key architectural considerations:
 
 - Commit-and-reveal for sealed bids: bidders commit to bids on-chain, reveal after deadline
 - Selective disclosure for audit: prove procedural compliance without exposing all commercial terms
@@ -83,5 +83,5 @@ Approach TBD. Key architectural considerations:
 ## 7) Notes And Links
 
 - Related patterns: [Commit and Prove](../patterns/pattern-commit-and-prove.md), [L2 Encrypted Offchain Audit](../patterns/pattern-l2-encrypted-offchain-audit.md), [Verifiable Attestation](../patterns/pattern-verifiable-attestation.md)
-- Related use cases: [private-payments.md](private-payments.md) (payment privacy), [private-government-debt.md](private-government-debt.md) (sealed auction parallels)
+- Related use cases: [private-payments.md](private-payments.md) (payment privacy), [private-supply-chain.md](private-supply-chain.md) (shares the supply chain and procurement approach), [private-government-debt.md](private-government-debt.md) (sealed auction parallels)
 - See also: [EPIC map](https://epic-webapp.vercel.app/) (GovTech & EPIC team): procurement & invoicing, audit trails, grants tracking
