@@ -31,3 +31,5 @@ Regulatory authority over crypto assets moved from the commodity futures regulat
 - [Jurisdiction: Singapore / MAS](./sg-MAS.md)
 - [Jurisdiction: Hong Kong SAR (HK)](./hk-crypto-licensing.md)
 - [Jurisdiction: China (CN)](./cn-crypto-ban.md)
+- [Jurisdiction: Japan / FSA](./jp-FSA.md)
+- [Jurisdiction: South Korea / FSC](./kr-FSC.md)
