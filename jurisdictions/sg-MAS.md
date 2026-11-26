@@ -31,3 +31,5 @@ Singapore is permissive toward digital asset activity and heavily licensed in ho
 - [MAS consultation on legislative amendments to implement the stablecoin framework (Sep 2026)](https://www.mas.gov.sg/news/media-releases/2026/mas-consults-on-legislative-amendments-to-implement-stablecoin-regulatory-framework)
 - [Jurisdiction: Indonesia / OJK (Digital Financial Assets)](./id-OJK.md)
 - [Jurisdiction: Hong Kong SAR (HK)](./hk-crypto-licensing.md)
+- [Jurisdiction: Japan / FSA](./jp-FSA.md)
+- [Jurisdiction: South Korea / FSC](./kr-FSC.md)

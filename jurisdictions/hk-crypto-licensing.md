@@ -32,3 +32,5 @@ Under "One Country, Two Systems," Hong Kong runs a separate, progressive regime,
 - [Register of Licensed Stablecoin Issuers (HKMA)](https://www.hkma.gov.hk/eng/regulatory-resources/registers/register-of-licensed-stablecoin-issuers/)
 - [Virtual asset trading platform operators (SFC)](https://www.sfc.hk/en/Rules-and-standards/Virtual-assets/Virtual-asset-trading-platforms-operators)
 - [AMLO Guidance (HKMA)](https://www.hkma.gov.hk/eng/key-functions/banking/anti-money-laundering-and-counter-financing-of-terrorism/ordinances-statutory-guidelines/)
+- [Jurisdiction: Japan / FSA](jp-FSA.md)
+- [Jurisdiction: South Korea / FSC](kr-FSC.md)
